@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento - Voe Agora Airlines</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; position: relative; overflow-x: hidden; }
+        body::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); animation: float 20s infinite linear; }
+        .container { display: grid; grid-template-columns: 1fr 400px; gap: 2rem; max-width: 1200px; width: 100%; position: relative; z-index: 1; }
+        .payment-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 24px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15); padding: 2.5rem; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .summary-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 24px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15); padding: 2rem; border: 1px solid rgba(255, 255, 255, 0.2); height: fit-content; position: sticky; top: 2rem; }
+        .header { text-align: center; margin-bottom: 2rem; }
+        .logo { display: flex; align-items: center; justify-content: center; gap: 0.75rem; margin-bottom: 1rem; }
+        .logo-icon { width: 50px; height: 50px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem; }
+        .logo h1 { font-size: 1.5rem; font-weight: 700; color: #2d3748; margin: 0; }
+        .header h2 { color: #2d3748; font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .header p { color: #718096; font-size: 1rem; }
+        .payment-options { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem; }
+        .payment-option { border: 2px solid #e2e8f0; border-radius: 16px; padding: 1.5rem; cursor: pointer; transition: all 0.3s ease; position: relative; background: white; }
+        .payment-option:hover { border-color: #667eea; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15); }
+        .payment-option.selected { border-color: #667eea; background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%); }
+        .payment-option input { position: absolute; opacity: 0; }
+        .option-content { display: flex; justify-content: space-between; align-items: center; }
+        .option-info { flex: 1; }
+        .option-title { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem; }
+        .option-name { font-weight: 600; color: #2d3748; font-size: 1.1rem; }
+        .option-description { color: #718096; font-size: 0.9rem; line-height: 1.4; }
+        .discount-badge { background: #10b981; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-left: 0.5rem; }
+        .option-icon { font-size: 2rem; margin-left: 1rem; }
+        .payment-fields { display: none; animation: fadeIn 0.5s ease; }
+        .payment-fields.visible { display: block; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #2d3748; font-size: 0.9rem; }
+        .form-input { width: 100%; padding: 1rem; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; transition: all 0.3s ease; background: white; font-family: 'Inter', sans-serif; }
+        .form-input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        .form-input::placeholder { color: #a0aec0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .info-box { background: #e8f4fd; border: 1px solid #b6e0fe; border-radius: 12px; padding: 1.5rem; margin-top: 1rem; text-align: center; }
+        .info-box.success { background: #d1fae5; border-color: #a7f3d0; }
+        .info-title { font-weight: 600; color: #1e40af; margin-bottom: 0.5rem; }
+        .info-text { color: #374151; margin-bottom: 0.5rem; }
+        .btn-payment { width: 100%; padding: 1.25rem; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; font-family: 'Inter', sans-serif; }
+        .btn-payment:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(102, 126, 234, 0.4); }
+        .btn-payment:active { transform: translateY(0); }
+        .btn-payment:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-loading::after { content: ''; position: absolute; top: 50%; left: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; border: 2px solid transparent; border-top: 2px solid white; border-radius: 50%; animation: spin 1s linear infinite; }
+        .loading { display: none; text-align: center; margin-top: 1rem; color: #667eea; font-weight: 500; }
+        .loading.visible { display: block; }
+        .summary-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 2px solid #e2e8f0; }
+        .summary-icon { width: 40px; height: 40px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; }
+        .summary-title { font-weight: 700; color: #2d3748; font-size: 1.25rem; }
+        .flight-info { margin-bottom: 1.5rem; }
+        .flight-route { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; padding: 1rem; background: #f7fafc; border-radius: 12px; }
+        .airport { text-align: center; }
+        .airport-code { font-size: 1.5rem; font-weight: 700; color: #2d3748; margin-bottom: 0.25rem; }
+        .airport-name { font-size: 0.8rem; color: #718096; }
+        .route-arrow { color: #667eea; font-size: 1.25rem; }
+        .flight-details { display: grid; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .detail-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #e2e8f0; }
+        .detail-label { color: #718096; font-weight: 500; }
+        .detail-value { color: #2d3748; font-weight: 600; }
+        .price-breakdown { background: #f7fafc; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .price-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+        .price-item:last-child { margin-bottom: 0; }
+        .price-total { border-top: 2px solid #e2e8f0; padding-top: 1rem; margin-top: 1rem; font-weight: 700; font-size: 1.2rem; color: #2d3748; }
+        .discount-text { color: #10b981; font-weight: 600; }
+        @keyframes float { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(-50px, -50px) rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 968px) { .container { grid-template-columns: 1fr; max-width: 600px; } .summary-card { position: static; } }
+        @media (max-width: 480px) { .payment-card, .summary-card { padding: 1.5rem; } .row { grid-template-columns: 1fr; } .option-content { flex-direction: column; align-items: flex-start; gap: 1rem; } .option-icon { margin-left: 0; align-self: flex-end; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="payment-card">
+            <div class="header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-plane"></i>
+                    </div>
+                    <h1>Voe Agora Airlines</h1>
+                </div>
+                <h2>Finalizar Pagamento</h2>
+                <p>Escolha a forma de pagamento e complete sua compra</p>
+            </div>
+
+            <div class="payment-options">
+                <label class="payment-option" data-forma="cartao">
+                    <input type="radio" name="forma-pagamento" value="Cartão de Crédito">
+                    <div class="option-content">
+                        <div class="option-info">
+                            <div class="option-title">
+                                <span class="option-name"><i class="fas fa-credit-card"></i> Cartão de Crédito</span>
+                            </div>
+                            <div class="option-description">Parcele em até 18x sem juros • Pagamento seguro</div>
+                        </div>
+                        <div class="option-icon">💳</div>
+                    </div>
+                </label>
+
+                <label class="payment-option" data-forma="pix">
+                    <input type="radio" name="forma-pagamento" value="PIX">
+                    <div class="option-content">
+                        <div class="option-info">
+                            <div class="option-title">
+                                <span class="option-name"><i class="fas fa-qrcode"></i> PIX</span>
+                                <span class="discount-badge">5% OFF</span>
+                            </div>
+                            <div class="option-description">Pagamento instantâneo • Chave PIX ou QR Code</div>
+                        </div>
+                        <div class="option-icon">📱</div>
+                    </div>
+                </label>
+
+                <label class="payment-option" data-forma="boleto">
+                    <input type="radio" name="forma-pagamento" value="Boleto Bancário">
+                    <div class="option-content">
+                        <div class="option-info">
+                            <div class="option-title">
+                                <span class="option-name"><i class="fas fa-barcode"></i> Boleto Bancário</span>
+                                <span class="discount-badge">3% OFF</span>
+                            </div>
+                            <div class="option-description">Até 10x no cartão • 3% de desconto à vista</div>
+                        </div>
+                        <div class="option-icon">📄</div>
+                    </div>
+                </label>
+            </div>
+
+            <div class="payment-fields" id="campos-cartao">
+                <div class="form-group">
+                    <label for="numero-cartao" class="form-label">Número do Cartão</label>
+                    <input type="text" id="numero-cartao" class="form-input" placeholder="0000 0000 0000 0000" maxlength="19">
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label for="validade" class="form-label">Validade (MM/AA)</label>
+                        <input type="text" id="validade" class="form-input" placeholder="MM/AA" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv" class="form-label">CVV</label>
+                        <input type="text" id="cvv" class="form-input" placeholder="000" maxlength="3">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="nome-titular" class="form-label">Nome do Titular</label>
+                    <input type="text" id="nome-titular" class="form-input" placeholder="Como está no cartão">
+                </div>
+                <div class="form-group">
+                    <label for="cpf-titular" class="form-label">CPF do Titular</label>
+                    <input type="text" id="cpf-titular" class="form-input" placeholder="000.000.000-00">
+                </div>
+                <div class="form-group">
+                    <label for="parcelas" class="form-label">Número de Parcelas</label>
+                    <select id="parcelas" class="form-input" style="padding: 1rem;">
+                        <option value="1">1x sem juros</option>
+                        <option value="2">2x sem juros</option>
+                        <option value="3">3x sem juros</option>
+                        <option value="4">4x sem juros</option>
+                        <option value="5">5x sem juros</option>
+                        <option value="6">6x sem juros</option>
+                        <option value="7">7x sem juros</option>
+                        <option value="8">8x sem juros</option>
+                        <option value="9">9x sem juros</option>
+                        <option value="10">10x sem juros</option>
+                        <option value="11">11x sem juros</option>
+                        <option value="12">12x sem juros</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="payment-fields" id="info-pix">
+                <div class="info-box success">
+                    <div class="info-title"><i class="fas fa-bolt"></i> Pagamento Instantâneo</div>
+                    <div class="info-text">Você receberá um QR Code para pagamento via PIX</div>
+                    <div class="discount-text">🎉 5% de desconto aplicado automaticamente!</div>
+                </div>
+            </div>
+
+            <div class="payment-fields" id="info-boleto">
+                <div class="form-group">
+                    <label for="parcelas-boleto" class="form-label">Número de Parcelas</label>
+                    <select id="parcelas-boleto" class="form-input" style="padding: 1rem;">
+                        <option value="1">1x à vista com 3% de desconto</option>
+                        <option value="2">2x sem juros</option>
+                        <option value="3">3x sem juros</option>
+                        <option value="4">4x sem juros</option>
+                        <option value="5">5x sem juros</option>
+                        <option value="6">6x sem juros</option>
+                        <option value="7">7x sem juros</option>
+                        <option value="8">8x sem juros</option>
+                        <option value="9">9x sem juros</option>
+                        <option value="10">10x sem juros</option>
+                    </select>
+                </div>
+                <div class="info-box">
+                    <div class="info-title"><i class="fas fa-file-invoice"></i> Boleto Bancário</div>
+                    <div class="info-text">O boleto será gerado após a confirmação do pedido</div>
+                    <div class="discount-text">💸 3% de desconto no pagamento à vista!</div>
+                </div>
+            </div>
+
+            <button class="btn-payment" id="btn-finalizar">
+                <span id="btn-text">Finalizar Pagamento</span>
+            </button>
+
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                Processando seu pagamento...
+            </div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-header">
+                <div class="summary-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <div class="summary-title">Resumo do Pedido</div>
+            </div>
+
+            <div class="flight-info">
+                <div class="flight-route">
+                    <div class="airport">
+                        <div class="airport-code" id="origem-code">...</div>
+                        <div class="airport-name" id="origem-name">...</div>
+                    </div>
+                    <div class="route-arrow">
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    <div class="airport">
+                        <div class="airport-code" id="destino-code">...</div>
+                        <div class="airport-name" id="destino-name">...</div>
+                    </div>
+                </div>
+
+                <div class="flight-details">
+                    <div class="detail-item">
+                        <span class="detail-label">Data do Voo</span>
+                        <span class="detail-value" id="flight-date">--/--/----</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Horário</span>
+                        <span class="detail-value" id="flight-time">--:--</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Código do Voo</span>
+                        <span class="detail-value" id="flight-code">-----</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Passageiros</span>
+                        <span class="detail-value">1 adulto</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Classe</span>
+                        <select id="classe-select" class="form-input" style="padding: 0.5rem; font-size: 0.9rem; max-width: 150px;">
+                            <option value="economica">Econômica</option>
+                            <option value="executiva">Executiva (+50%)</option>
+                            <option value="primeira">Primeira (+100%)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="price-breakdown">
+                <div class="price-item">
+                    <span>Passagem</span>
+                    <span id="base-price">R$ 0,00</span>
+                </div>
+                <div class="price-item">
+                    <span>Taxas</span>
+                    <span id="taxas-price">R$ 45,00</span>
+                </div>
+                <div class="price-item discount-text" style="display: none;"> <span>Desconto</span>
+                    <span id="discount-amount">- R$ 0,00</span>
+                </div>
+                <div class="price-item price-total">
+                    <span>Total</span>
+                    <span id="total-price">R$ 0,00</span>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-title"><i class="fas fa-shield-alt"></i> Compra 100% Segura</div>
+                <div class="info-text">Seus dados estão protegidos...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais para armazenar dados
+        let vooSelecionado = null;
+        let usuarioLogado = null;
+        let precoBaseVoo = 0;
+        const TAXAS = 45.00;
+
+        // Elementos
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const camposCartao = document.getElementById('campos-cartao');
+        const infoPix = document.getElementById('info-pix');
+        const infoBoleto = document.getElementById('info-boleto');
+        const btnFinalizar = document.getElementById('btn-finalizar');
+        const btnText = document.getElementById('btn-text');
+        const loading = document.getElementById('loading');
+        const classeSelect = document.getElementById('classe-select');
+
+        // Carregar dados do voo e usuário
+        function carregarDadosIniciais() {
+            // 1. Carregar Voo do sessionStorage
+            const vooData = sessionStorage.getItem('vooSelecionado');
+            if (vooData) {
+                vooSelecionado = JSON.parse(vooData);
+                console.log("Voo carregado:", vooSelecionado);
+
+                // ***** ✅ CORREÇÃO 1 (NaN / toFixed) *****
+                // O objeto voo do seu banco usa 'preco_base', 'data_partida', e 'hora_partida'
+                precoBaseVoo = parseFloat(vooSelecionado.preco_base); 
+                
+                if (isNaN(precoBaseVoo)) {
+                    console.error("Erro fatal: 'preco_base' não encontrado ou inválido no objeto voo:", vooSelecionado);
+                    precoBaseVoo = 0; // Previne o NaN
+                }
+                
+                document.getElementById('origem-code').textContent = vooSelecionado.origem;
+                document.getElementById('origem-name').textContent = getCityName(vooSelecionado.origem);
+                document.getElementById('destino-code').textContent = vooSelecionado.destino;
+                document.getElementById('destino-name').textContent = getCityName(vooSelecionado.destino);
+                document.getElementById('flight-date').textContent = formatarData(vooSelecionado.data_partida); // Corrigido
+                document.getElementById('flight-time').textContent = vooSelecionado.hora_partida; // Corrigido
+                document.getElementById('flight-code').textContent = vooSelecionado.codigo;
+                
+                // O preço base no resumo é atualizado pela função updateTotalPrice
+                document.getElementById('taxas-price').textContent = `R$ ${TAXAS.toFixed(2)}`;
+                
+                updateTotalPrice(); // Calcular total inicial
+            } else {
+                console.error("Nenhum voo selecionado!");
+                alert("❌ Nenhum voo selecionado! Você será redirecionado.");
+                window.location.href = '/cliente';
+            }
+
+            // 2. Carregar Usuário do localStorage
+            const userData = localStorage.getItem('user');
+            if (userData) {
+                usuarioLogado = JSON.parse(userData);
+                console.log("Usuário logado:", usuarioLogado);
+            } else {
+                console.error("Nenhum usuário logado!");
+                alert("❌ Sua sessão expirou! Faça login novamente.");
+                window.location.href = '/login';
+            }
+        }
+
+        function getCityName(code) {
+             // Função auxiliar simples
+            if (code.includes('GRU')) return 'São Paulo';
+            if (code.includes('GIG')) return 'Rio de Janeiro';
+            if (code.includes('BSB')) return 'Brasília';
+            if (code.includes('SSA')) return 'Salvador';
+            if (code.includes('CNF')) return 'Belo Horizonte';
+            return code;
+        }
+
+        function formatarData(data) {
+            if (!data) return '-';
+            // Formato esperado: YYYY-MM-DD
+            const [ano, mes, dia] = data.split('T')[0].split('-');
+            if (dia && mes && ano) {
+                return `${dia}/${mes}/${ano}`;
+            }
+            return data; // Retorna original se o formato for inesperado
+        }
+
+        // Formatação de inputs (sem alterações)
+        document.getElementById('numero-cartao')?.addEventListener('input', function(e) { /* ... */ });
+        document.getElementById('validade')?.addEventListener('input', function(e) { /* ... */ });
+        document.getElementById('cvv')?.addEventListener('input', function(e) { /* ... */ });
+        document.getElementById('cpf-titular')?.addEventListener('input', function(e) { /* ... */ });
+
+        // Seleção de forma de pagamento
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                paymentOptions.forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                const forma = this.dataset.forma;
+                hideAllFields();
+                
+                if (forma === 'cartao') {
+                    camposCartao.classList.add('visible');
+                } else if (forma === 'pix') {
+                    infoPix.classList.add('visible');
+                } else if (forma === 'boleto') {
+                    infoBoleto.classList.add('visible');
+                }
+                updateTotalPrice(); // Recalcula o preço ao mudar a forma
+            });
+        });
+
+        // Listeners para qualquer mudança que afete o preço
+        document.getElementById('parcelas-boleto').addEventListener('change', updateTotalPrice);
+        classeSelect.addEventListener('change', updateTotalPrice);
+
+        function hideAllFields() {
+            camposCartao.classList.remove('visible');
+            infoPix.classList.remove('visible');
+            infoBoleto.classList.remove('visible');
+        }
+
+        // ✅ FUNÇÃO DE PREÇO CENTRALIZADA
+        function updateTotalPrice() {
+            if (!vooSelecionado) return;
+
+            const formaSelecionada = document.querySelector('.payment-option.selected');
+            const classe = classeSelect.value;
+            let percent = 0;
+            let multiplicadorClasse = 1.0;
+
+            // 1. Calcular multiplicador da classe
+            if (classe === 'executiva') multiplicadorClasse = 1.5;
+            if (classe === 'primeira') multiplicadorClasse = 2.0;
+            
+            const precoClasse = precoBaseVoo * multiplicadorClasse;
+
+            // 2. Calcular desconto da forma de pagamento
+            if (formaSelecionada) {
+                const forma = formaSelecionada.dataset.forma;
+                if (forma === 'pix') {
+                    percent = 5;
+                } else if (forma === 'boleto') {
+                    const parcelasBoleto = parseInt(document.getElementById('parcelas-boleto').value);
+                    if (parcelasBoleto === 1) percent = 3;
+                }
+            }
+
+            const discount = (precoClasse * percent / 100);
+            const total = precoClasse + TAXAS - discount;
+            
+            // 3. Atualizar o Resumo
+            document.getElementById('base-price').textContent = `R$ ${precoClasse.toFixed(2)}`;
+            document.getElementById('discount-amount').textContent = `- R$ ${discount.toFixed(2)}`;
+            document.getElementById('total-price').textContent = `R$ ${total.toFixed(2)}`;
+            
+            const discountEl = document.getElementById('discount-amount').parentElement;
+            discountEl.style.display = (percent > 0) ? 'flex' : 'none';
+        }
+
+        // Finalizar pagamento
+        btnFinalizar.addEventListener('click', async function() {
+            const formaSelecionada = document.querySelector('input[name="forma-pagamento"]:checked');
+            
+            if (!formaSelecionada) {
+                showMessage('Por favor, selecione uma forma de pagamento', 'error');
+                return;
+            }
+
+            const formaPagamento = formaSelecionada.value;
+            const classe = classeSelect.value;
+            let parcelas = 1;
+
+            if (formaPagamento === 'Cartão de Crédito') {
+                parcelas = parseInt(document.getElementById('parcelas').value);
+            } else if (formaPagamento === 'Boleto Bancário') {
+                parcelas = parseInt(document.getElementById('parcelas-boleto').value);
+            }
+
+            if (!usuarioLogado || !vooSelecionado) {
+                showMessage('error', '❌ Erro ao carregar dados. Tente recarregar a página.');
+                return;
+            }
+
+            // ***** ✅ CORREÇÃO 2 (Obrigatórios) *****
+            // O backend (passagens.js) espera 'voo_id' e 'usuario_id'
+            const dadosCompra = {
+                voo_id: vooSelecionado.id, 
+                usuario_id: usuarioLogado.id, 
+                formaPagamento: formaPagamento,
+                parcelas: parcelas,
+                classe: classe // <-- Envia a classe selecionada
+            };
+
+            console.log("Enviando dados da compra:", dadosCompra);
+
+            showLoading(true);
+
+            try {
+                const response = await fetch('/api/passagens/comprar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dadosCompra)
+                });
+
+                const data = await response.json();
+                console.log("Resposta do back-end:", data);
+
+                if (data.success) {
+                    showMessage('success', `✅ ${data.message}\n\nSua passagem foi emitida com sucesso! Redirecionando...`);
+                    sessionStorage.removeItem('vooSelecionado');
+                    setTimeout(() => {
+                        window.location.href = '/cliente';
+                    }, 3000);
+                    
+                } else {
+                    showMessage('error', `❌ ${data.message}`);
+                    showLoading(false);
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showMessage('error', '❌ Erro ao processar pagamento. Tente novamente.');
+                showLoading(false);
+            }
+        });
+
+        function showLoading(show) {
+            if (show) {
+                btnFinalizar.disabled = true;
+                btnFinalizar.classList.add('btn-loading');
+                btnText.textContent = 'Processando...';
+                loading.classList.add('visible');
+            } else {
+                btnFinalizar.disabled = false;
+                btnFinalizar.classList.remove('btn-loading');
+                btnText.textContent = 'Finalizar Pagamento';
+                loading.classList.remove('visible');
+            }
+        }
+
+        function showMessage(type, message) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: type,
+                    title: type === 'success' ? 'Sucesso!' : 'Erro',
+                    text: message,
+                    confirmButtonColor: '#667eea'
+                });
+            } else {
+                alert(message);
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarDadosIniciais();
+            // Selecionar cartão por padrão
+            document.querySelector('.payment-option[data-forma="cartao"]').click();
+            
+            // Incluir SweetAlert2 se não estiver disponível
+            if (typeof Swal === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/sweetalert2@11';
+                document.head.appendChild(script);
+            }
+        });
+    </script>
+</body>
+</html>

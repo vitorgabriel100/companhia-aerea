@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Comissário - Voe Agora Airlines</title>
+    <link rel="stylesheet" href="/assets/styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stats-badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .passenger-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--gray-light);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .passenger-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .passenger-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .service-badge.refeicao {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .service-badge.especial {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .btn-responsive {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .flight-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .flight-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .flight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .flight-route {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .flight-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .info-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .info-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .info-line:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--gray-light);
+            border-radius: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .service-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--gray-light);
+        }
+
+        .service-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .service-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--gray);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .boarding-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-embarque {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-finalizado {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pendente {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .passenger-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .user-info {
+                justify-content: center;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-responsive {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tabs button {
+                width: 100%;
+                text-align: center;
+            }
+
+            .flight-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard fade-in">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div>
+                    <h1><i class="fas fa-user-tie"></i> Voe Agora Airlines</h1>
+                    <p style="opacity: 0.9; margin-top: 0.5rem;">Painel do Comissário</p>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">C</div>
+                    <div>
+                        <div style="font-weight: 600;" id="userName">Carregando...</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8;">Comissário</div>
+                    </div>
+                    <button class="btn btn-outline btn-responsive" onclick="sair()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="dashboard-nav">
+                <ul class="nav-tabs">
+                    <li><button class="active" onclick="showScreen('meusVoos')"><i class="fas fa-plane"></i> Meus Voos</button></li>
+                    <li><button onclick="showScreen('passageiros')"><i class="fas fa-users"></i> Passageiros</button></li>
+                    <li><button onclick="showScreen('servicos')"><i class="fas fa-concierge-bell"></i> Serviços de Bordo</button></li>
+                    <li><button onclick="showScreen('checkin')"><i class="fas fa-qrcode"></i> Controle de Embarque</button></li>
+                    <li><button onclick="showScreen('perfil')"><i class="fas fa-user"></i> Meu Perfil</button></li>
+                </ul>
+            </div>
+
+            <!-- Content -->
+            <div class="dashboard-content">
+                <!-- Meus Voos -->
+                <div id="meusVoos" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-plane"></i> Meus Próximos Voos</h2>
+                        <div class="stats-badge" id="totalVoos">0 voos</div>
+                    </div>
+                    <div id="listaMeusVoos" class="card-grid"></div>
+                </div>
+
+                <!-- Passageiros -->
+                <div id="passageiros" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-users"></i> Lista de Passageiros</h2>
+                        <div class="search-box">
+                            <input type="text" id="searchPassenger" placeholder="Buscar passageiro..." class="form-control" onkeyup="filtrarPassageiros()">
+                            <select id="filtroVoo" class="form-control" onchange="filtrarPassageiros()">
+                                <option value="">Todos os voos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="listaPassageiros" class="card-grid"></div>
+                </div>
+
+                <!-- Serviços de Bordo -->
+                <div id="servicos" class="content-section" style="display: none;">
+                    <h2><i class="fas fa-concierge-bell"></i> Serviços de Bordo</h2>
+                    <div class="service-grid">
+                        <div class="service-item">
+                            <div class="service-header">
+                                <h3><i class="fas fa-utensils"></i> Pedidos de Refeição</h3>
+                                <span class="stats-badge" id="totalPedidos">0 pedidos</span>
+                            </div>
+                            <div id="pedidosRefeicao" class="info-container">
+                                Carregando pedidos...
+                            </div>
+                        </div>
+                        <div class="service-item">
+                            <div class="service-header">
+                                <h3><i class="fas fa-wine-bottle"></i> Estoque de Bebidas</h3>
+                                <span class="stats-badge" id="estoqueStatus">Disponível</span>
+                            </div>
+                            <div id="estoqueBebidas" class="info-container">
+                                Carregando estoque...
+                            </div>
+                        </div>
+                        <div class="service-item">
+                            <div class="service-header">
+                                <h3><i class="fas fa-first-aid"></i> Atendimentos Especiais</h3>
+                                <span class="stats-badge" id="totalEspeciais">0</span>
+                            </div>
+                            <div id="atendimentosEspeciais" class="info-container">
+                                Carregando atendimentos...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controle de Embarque -->
+                <div id="checkin" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-qrcode"></i> Controle de Embarque</h2>
+                        <div class="stats-badge" id="statusEmbarque">Aguardando</div>
+                    </div>
+                    <div class="card-grid">
+                        <div class="card">
+                            <h3><i class="fas fa-plane-departure"></i> Embarque Atual</h3>
+                            <div id="infoEmbarque" class="info-container">
+                                Nenhum embarque em andamento
+                            </div>
+                            <div class="service-actions">
+                                <button class="btn btn-primary" onclick="iniciarEmbarque()">
+                                    <i class="fas fa-play"></i> Iniciar Embarque
+                                </button>
+                                <button class="btn btn-outline" onclick="finalizarEmbarque()">
+                                    <i class="fas fa-stop"></i> Finalizar
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3><i class="fas fa-chart-line"></i> Estatísticas do Voo</h3>
+                            <div class="stats-container">
+                                <div class="stat-item">
+                                    <div class="stat-value" id="statEmbarcados">0</div>
+                                    <div class="stat-label">Embarcados</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="statPendentes">0</div>
+                                    <div class="stat-label">Pendentes</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="statTotal">0</div>
+                                    <div class="stat-label">Total</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="statProgresso">0%</div>
+                                    <div class="stat-label">Progresso</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perfil -->
+                <div id="perfil" class="content-section" style="display: none;">
+                    <h2><i class="fas fa-user"></i> Meu Perfil</h2>
+                    <div class="card-grid">
+                        <div class="card">
+                            <h3><i class="fas fa-id-card"></i> Informações Pessoais</h3>
+                            <div id="perfilInfo" class="info-container">
+                                Carregando...
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3><i class="fas fa-chart-bar"></i> Estatísticas</h3>
+                            <div class="stats-container">
+                                <div class="stat-item">
+                                    <div class="stat-value" id="statVoos">0</div>
+                                    <div class="stat-label">Voos Realizados</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="statHoras">0h</div>
+                                    <div class="stat-label">Horas de Voo</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="statPassageiros">0</div>
+                                    <div class="stat-label">Passageiros Atendidos</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value" id="statAvaliacao">0.0</div>
+                                    <div class="stat-label">Avaliação Média</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let usuarioLogado = null;
+        let meusVoos = [];
+        let todosPassageiros = [];
+        let embarqueAtivo = false;
+        let vooEmbarqueAtual = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = localStorage.getItem('user');
+            if (userData) {
+                usuarioLogado = JSON.parse(userData);
+                console.log('✅ Comissário logado:', usuarioLogado);
+                
+                document.getElementById('userName').textContent = usuarioLogado.nome;
+                document.getElementById('userAvatar').textContent = usuarioLogado.nome.charAt(0).toUpperCase();
+                
+                carregarMeusVoos();
+                carregarPerfil();
+                carregarServicosBordo();
+            } else {
+                alert('❌ Usuário não logado!');
+                window.location.href = '/login';
+            }
+        });
+
+        async function carregarMeusVoos() {
+            try {
+                const response = await fetch('/api/voos');
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Filtrar voos para o comissário (simulação)
+                    meusVoos = data.voos.filter(voo => 
+                        voo.data === new Date().toISOString().split('T')[0] || 
+                        voo.id % 2 === 0 // Simulação de atribuição
+                    ).slice(0, 4);
+                    
+                    const container = document.getElementById('listaMeusVoos');
+                    document.getElementById('totalVoos').textContent = `${meusVoos.length} voos`;
+                    
+                    if (meusVoos.length > 0) {
+                        container.innerHTML = '';
+                        
+                        meusVoos.forEach(voo => {
+                            const card = document.createElement('div');
+                            card.className = 'flight-card';
+                            const status = getStatusVoo(voo.data, voo.horario);
+                            
+                            card.innerHTML = `
+                                <div class="flight-header">
+                                    <div class="flight-route">
+                                        <i class="fas fa-plane-departure"></i> ${voo.origem} 
+                                        <i class="fas fa-arrow-right" style="margin: 0 1rem;"></i>
+                                        <i class="fas fa-plane-arrival"></i> ${voo.destino}
+                                    </div>
+                                    <span class="boarding-status status-${status}">
+                                        <i class="fas ${getStatusIcon(status)}"></i> ${getStatusText(status)}
+                                    </span>
+                                </div>
+                                <div class="flight-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Data</span>
+                                        <span class="detail-value">${formatarData(voo.data)}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Horário</span>
+                                        <span class="detail-value">${voo.horario}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Código</span>
+                                        <span class="detail-value">${voo.codigo}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Passageiros</span>
+                                        <span class="detail-value">${150 - voo.assentos_disponiveis} / 150</span>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                                    <button class="btn btn-primary btn-responsive" onclick="verPassageiros(${voo.id})">
+                                        <i class="fas fa-users"></i> Passageiros
+                                    </button>
+                                    <button class="btn btn-outline btn-responsive" onclick="iniciarEmbarqueVoo(${voo.id})" ${status !== 'embarque' ? 'disabled' : ''}>
+                                        <i class="fas fa-qrcode"></i> Embarque
+                                    </button>
+                                </div>
+                            `;
+                            container.appendChild(card);
+                        });
+
+                        // Carregar filtro de voos
+                        carregarFiltroVoos();
+                    } else {
+                        container.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-plane-slash"></i>
+                                <h3>Nenhum voo atribuído</h3>
+                                <p>Você não tem voos atribuídos para hoje.</p>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar voos:', error);
+            }
+        }
+
+        function getStatusVoo(data, horario) {
+            const agora = new Date();
+            const dataVoo = new Date(`${data}T${horario}`);
+            const diferenca = dataVoo - agora;
+            const horasParaVoo = diferenca / (1000 * 60 * 60);
+
+            if (horasParaVoo < 0) return 'finalizado';
+            if (horasParaVoo <= 2) return 'embarque';
+            return 'pendente';
+        }
+
+        function getStatusIcon(status) {
+            switch(status) {
+                case 'embarque': return 'fa-play';
+                case 'finalizado': return 'fa-check';
+                default: return 'fa-clock';
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'embarque': return 'EMBARQUE';
+                case 'finalizado': return 'FINALIZADO';
+                default: return 'AGENDADO';
+            }
+        }
+
+        function carregarFiltroVoos() {
+            const filtroVoo = document.getElementById('filtroVoo');
+            filtroVoo.innerHTML = '<option value="">Todos os voos</option>';
+            
+            meusVoos.forEach(voo => {
+                const option = document.createElement('option');
+                option.value = voo.id;
+                option.textContent = `${voo.codigo} - ${voo.origem} → ${voo.destino}`;
+                filtroVoo.appendChild(option);
+            });
+        }
+
+        async function carregarPerfil() {
+            if (!usuarioLogado) return;
+            
+            document.getElementById('perfilInfo').innerHTML = `
+                <div class="info-line">
+                    <span class="info-label">Nome completo</span>
+                    <span class="info-value">${usuarioLogado.nome}</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Matrícula</span>
+                    <span class="info-value">${usuarioLogado.matricula || 'COM001'}</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Função</span>
+                    <span class="info-value">Comissário de Bordo</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">E-mail</span>
+                    <span class="info-value">${usuarioLogado.email || 'comissario@voeagora.com'}</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Data de Admissão</span>
+                    <span class="info-value">15/03/2023</span>
+                </div>
+            `;
+
+            // Estatísticas simuladas
+            document.getElementById('statVoos').textContent = '47';
+            document.getElementById('statHoras').textContent = '320h';
+            document.getElementById('statPassageiros').textContent = '1.250';
+            document.getElementById('statAvaliacao').textContent = '4.8';
+        }
+
+        async function carregarServicosBordo() {
+            // Simulação de dados de serviços
+            document.getElementById('pedidosRefeicao').innerHTML = `
+                <div class="info-line">
+                    <span class="info-label">Refeições Normais</span>
+                    <span class="info-value">45 pedidos</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Vegetarianas</span>
+                    <span class="info-value">12 pedidos</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Veganas</span>
+                    <span class="info-value">8 pedidos</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Sem Glúten</span>
+                    <span class="info-value">5 pedidos</span>
+                </div>
+            `;
+
+            document.getElementById('estoqueBebidas').innerHTML = `
+                <div class="info-line">
+                    <span class="info-label">Água Mineral</span>
+                    <span class="info-value">120 unidades</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Refrigerantes</span>
+                    <span class="info-value">80 unidades</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Sucos</span>
+                    <span class="info-value">60 unidades</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Bebidas Quentes</span>
+                    <span class="info-value">Estoque OK</span>
+                </div>
+            `;
+
+            document.getElementById('atendimentosEspeciais').innerHTML = `
+                <div class="info-line">
+                    <span class="info-label">Cadeirantes</span>
+                    <span class="info-value">2 passageiros</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Idosos</span>
+                    <span class="info-value">5 passageiros</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Crianças</span>
+                    <span class="info-value">8 passageiros</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Emergência Médica</span>
+                    <span class="info-value">1 passageiro</span>
+                </div>
+            `;
+
+            document.getElementById('totalPedidos').textContent = '70 pedidos';
+            document.getElementById('totalEspeciais').textContent = '16';
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(screenId).style.display = 'block';
+            
+            // Carregar dados específicos da tela
+            switch(screenId) {
+                case 'passageiros':
+                    carregarPassageiros();
+                    break;
+                case 'checkin':
+                    atualizarPainelEmbarque();
+                    break;
+                case 'servicos':
+                    carregarServicosBordo();
+                    break;
+            }
+        }
+
+        async function carregarPassageiros() {
+            try {
+                // Simulação de dados de passageiros
+                const passageiros = [
+                    { id: 1, nome: 'João Silva', voo: 'VG1001', assento: '12A', refeicao: 'Normal', especial: '' },
+                    { id: 2, nome: 'Maria Santos', voo: 'VG1001', assento: '12B', refeicao: 'Vegetariana', especial: '' },
+                    { id: 3, nome: 'Pedro Costa', voo: 'VG1001', assento: '13A', refeicao: 'Normal', especial: 'Cadeirante' },
+                    { id: 4, nome: 'Ana Oliveira', voo: 'VG1002', assento: '8C', refeicao: 'Vegana', especial: '' },
+                    { id: 5, nome: 'Carlos Lima', voo: 'VG1002', assento: '8D', refeicao: 'Sem Glúten', especial: 'Idoso' }
+                ];
+
+                todosPassageiros = passageiros;
+                renderizarPassageiros(passageiros);
+            } catch (error) {
+                console.error('Erro ao carregar passageiros:', error);
+            }
+        }
+
+        function renderizarPassageiros(passageiros) {
+            const container = document.getElementById('listaPassageiros');
+            
+            if (passageiros.length > 0) {
+                container.innerHTML = '';
+                
+                passageiros.forEach(passageiro => {
+                    const card = document.createElement('div');
+                    card.className = 'passenger-card';
+                    card.innerHTML = `
+                        <div class="passenger-info">
+                            <div>
+                                <strong>${passageiro.nome}</strong><br>
+                                <small>Assento: ${passageiro.assento}</small><br>
+                                <small>Voo: ${passageiro.voo}</small>
+                            </div>
+                            <div>
+                                ${passageiro.refeicao ? `<span class="service-badge refeicao">${passageiro.refeicao}</span><br>` : ''}
+                                ${passageiro.especial ? `<span class="service-badge especial">${passageiro.especial}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="service-actions">
+                            <button class="btn btn-outline btn-sm" onclick="verDetalhesPassageiro(${passageiro.id})">
+                                <i class="fas fa-eye"></i> Detalhes
+                            </button>
+                            <button class="btn btn-outline btn-sm" onclick="registrarAtendimento(${passageiro.id})">
+                                <i class="fas fa-notes-medical"></i> Atendimento
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users-slash"></i>
+                        <h3>Nenhum passageiro encontrado</h3>
+                        <p>Tente ajustar os filtros de busca.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function filtrarPassageiros() {
+            const searchTerm = document.getElementById('searchPassenger').value.toLowerCase();
+            const filtroVoo = document.getElementById('filtroVoo').value;
+            
+            const passageirosFiltrados = todosPassageiros.filter(passageiro => {
+                const matchSearch = passageiro.nome.toLowerCase().includes(searchTerm);
+                const matchVoo = !filtroVoo || passageiro.voo === meusVoos.find(v => v.id == filtroVoo)?.codigo;
+                return matchSearch && matchVoo;
+            });
+            
+            renderizarPassageiros(passageirosFiltrados);
+        }
+
+        function verPassageiros(vooId) {
+            showScreen('passageiros');
+            document.getElementById('filtroVoo').value = vooId;
+            filtrarPassageiros();
+        }
+
+        function verDetalhesPassageiro(passageiroId) {
+            const passageiro = todosPassageiros.find(p => p.id === passageiroId);
+            if (passageiro) {
+                alert(`Detalhes do Passageiro:\n\nNome: ${passageiro.nome}\nVoo: ${passageiro.voo}\nAssento: ${passageiro.assento}\nRefeição: ${passageiro.refeicao}\nAtendimento Especial: ${passageiro.especial || 'Nenhum'}`);
+            }
+        }
+
+        function registrarAtendimento(passageiroId) {
+            const passageiro = todosPassageiros.find(p => p.id === passageiroId);
+            if (passageiro) {
+                const atendimento = prompt(`Registrar atendimento para ${passageiro.nome}:`);
+                if (atendimento) {
+                    alert(`✅ Atendimento registrado para ${passageiro.nome}:\n"${atendimento}"`);
+                }
+            }
+        }
+
+        function iniciarEmbarqueVoo(vooId) {
+            vooEmbarqueAtual = meusVoos.find(v => v.id === vooId);
+            if (vooEmbarqueAtual) {
+                showScreen('checkin');
+                iniciarEmbarque();
+            }
+        }
+
+        function iniciarEmbarque() {
+            if (!vooEmbarqueAtual) {
+                alert('❌ Selecione um voo primeiro!');
+                return;
+            }
+
+            embarqueAtivo = true;
+            document.getElementById('statusEmbarque').textContent = 'Em Andamento';
+            document.getElementById('statusEmbarque').style.background = '#10b981';
+            
+            document.getElementById('infoEmbarque').innerHTML = `
+                <div class="info-line">
+                    <span class="info-label">Voo</span>
+                    <span class="info-value">${vooEmbarqueAtual.codigo}</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Rota</span>
+                    <span class="info-value">${vooEmbarqueAtual.origem} → ${vooEmbarqueAtual.destino}</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Horário</span>
+                    <span class="info-value">${vooEmbarqueAtual.horario}</span>
+                </div>
+                <div class="info-line">
+                    <span class="info-label">Portão</span>
+                    <span class="info-value">A${Math.floor(Math.random() * 10) + 1}</span>
+                </div>
+            `;
+
+            // Simular progresso do embarque
+            simularProgressoEmbarque();
+        }
+
+        function finalizarEmbarque() {
+            embarqueAtivo = false;
+            document.getElementById('statusEmbarque').textContent = 'Finalizado';
+            document.getElementById('statusEmbarque').style.background = '#6b7280';
+            alert('✅ Embarque finalizado com sucesso!');
+        }
+
+        function simularProgressoEmbarque() {
+            if (!embarqueAtivo) return;
+
+            let embarcados = 0;
+            const total = 150;
+            const interval = setInterval(() => {
+                if (!embarqueAtivo) {
+                    clearInterval(interval);
+                    return;
+                }
+
+                embarcados += Math.floor(Math.random() * 5) + 1;
+                if (embarcados > total) embarcados = total;
+
+                document.getElementById('statEmbarcados').textContent = embarcados;
+                document.getElementById('statPendentes').textContent = total - embarcados;
+                document.getElementById('statTotal').textContent = total;
+                document.getElementById('statProgresso').textContent = Math.round((embarcados / total) * 100) + '%';
+
+                if (embarcados >= total) {
+                    finalizarEmbarque();
+                    clearInterval(interval);
+                }
+            }, 1000);
+        }
+
+        function atualizarPainelEmbarque() {
+            // Atualizar estatísticas do embarque
+            if (!embarqueAtivo) {
+                document.getElementById('statEmbarcados').textContent = '0';
+                document.getElementById('statPendentes').textContent = '0';
+                document.getElementById('statTotal').textContent = '0';
+                document.getElementById('statProgresso').textContent = '0%';
+            }
+        }
+
+        function sair() {
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('user');
+                window.location.href = '/';
+            }
+        }
+
+        function formatarData(data) {
+            if (!data) return '-';
+            const [ano, mes, dia] = data.split('-');
+            return `${dia}/${mes}/${ano}`;
+        }
+    </script>
+</body>
+</html>

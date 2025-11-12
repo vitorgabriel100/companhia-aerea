@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Piloto - Voe Agora Airlines</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ===== VARIÁVEIS CSS ===== */
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --gray-light: #f1f5f9;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+            --radius-lg: 16px;
+        }
+
+        /* ===== RESET E ESTILOS BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8fafc;
+            color: var(--dark);
+            line-height: 1.5;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* ===== COMPONENTES BASE ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-light);
+            margin-bottom: 1.5rem;
+        }
+
+        /* ===== LAYOUT DO DASHBOARD ===== */
+        .dashboard {
+            min-height: 100vh;
+            padding: 1rem 0;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .dashboard-header h1 {
+            font-size: 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        /* ===== NAVEGAÇÃO ===== */
+        .dashboard-nav {
+            margin-bottom: 2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .nav-tabs button {
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-tabs button:hover {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .nav-tabs button.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* ===== CONTEÚDO PRINCIPAL ===== */
+        .dashboard-content {
+            margin-bottom: 2rem;
+        }
+
+        .content-section {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--dark);
+        }
+
+        .stats-badge {
+            background: var(--primary);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* ===== COMPONENTES ESPECÍFICOS DO PILOTO ===== */
+        .pilot-badge {
+            background: linear-gradient(135deg, #1e40af, #3730a3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .flight-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .flight-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .flight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .flight-route {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .flight-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .flight-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-confirmed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-preflight {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-boarding {
+            background: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .status-completed {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+            transition: background-color 0.2s ease;
+        }
+
+        .checklist-item:hover {
+            background-color: var(--gray-light);
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .checklist-item input {
+            margin-right: 1rem;
+            transform: scale(1.2);
+            cursor: pointer;
+        }
+
+        .checklist-item label {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .btn-responsive {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .info-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .info-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .info-line:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--gray-light);
+            border-radius: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--gray-light);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--gray);
+            grid-column: 1 / -1;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .flight-instruments {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .instrument {
+            background: var(--dark);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        .instrument-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        .instrument-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .modal-content p {
+            margin-bottom: 2rem;
+            color: var(--gray);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .modal-buttons .btn {
+            flex: 1;
+        }
+
+        /* ===== ANIMAÇÕES ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== RESPONSIVIDADE ===== */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .user-info {
+                justify-content: center;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .nav-tabs button {
+                flex: 1;
+                min-width: 140px;
+                justify-content: center;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+            
+            .flight-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .flight-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-responsive {
+                padding: 0.6rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tabs button {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .checklist-item {
+                padding: 0.75rem;
+            }
+            
+            .flight-instruments {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 1rem;
+            }
+            
+            .flight-card {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard fade-in">
+            <!-- Header -->
+            <div class="dashboard-header">
+                <div>
+                    <h1><i class="fas fa-plane"></i> Voe Agora Airlines</h1>
+                    <p style="opacity: 0.9; margin-top: 0.5rem;">Painel do Comandante</p>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">P</div>
+                    <div>
+                        <div style="font-weight: 600;" id="userName">Carregando...</div>
+                        <div style="font-size: 0.8rem; opacity: 0.8;">Comandante</div>
+                    </div>
+                    <button class="btn btn-outline btn-responsive" onclick="abrirModalSair()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="dashboard-nav">
+                <ul class="nav-tabs">
+                    <li><button class="active" onclick="showScreen('dashboard', this)"><i class="fas fa-home"></i> Dashboard</button></li>
+                    <li><button onclick="showScreen('voosProgramados', this)"><i class="fas fa-calendar-alt"></i> Voos Programados</button></li>
+                    <li><button onclick="showScreen('checklist', this)"><i class="fas fa-clipboard-check"></i> Checklist</button></li>
+                    <li><button onclick="showScreen('meteorologia', this)"><i class="fas fa-cloud-sun"></i> Meteorologia</button></li>
+                    <li><button onclick="showScreen('perfil', this)"><i class="fas fa-user"></i> Meu Perfil</button></li>
+                </ul>
+            </div>
+
+            <!-- Content -->
+            <div class="dashboard-content">
+                <!-- Dashboard -->
+                <div id="dashboard" class="content-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-home"></i> Dashboard do Comandante</h2>
+                        <div class="stats-badge" id="statusOperacional">Operacional</div>
+                    </div>
+
+                    <!-- Próximo Voo -->
+                    <div class="card">
+                        <h3><i class="fas fa-plane"></i> Próximo Voo</h3>
+                        <div id="proximoVooInfo">
+                            <div class="empty-state" style="padding: 2rem;">
+                                <i class="fas fa-plane-slash"></i>
+                                <h3>Nenhum voo próximo</h3>
+                                <p>Não há voos atribuídos a você no momento.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instrumentos (Estático) -->
+                    <div class="card">
+                        <h3><i class="fas fa-tachometer-alt"></i> Status da Aeronave (Simulado)</h3>
+                        <div class="flight-instruments">
+                            <div class="instrument">
+                                <div class="instrument-value" id="dashAeronave">--</div>
+                                <div class="instrument-label">Aeronave</div>
+                            </div>
+                            <div class="instrument">
+                                <div class="instrument-value">98%</div>
+                                <div class="instrument-label">Combustível</div>
+                            </div>
+                            <div class="instrument">
+                                <div class="instrument-value">OK</div>
+                                <div class="instrument-label">Sistemas</div>
+                            </div>
+                            <div class="instrument">
+                                <div class="instrument-value">25°C</div>
+                                <div class="instrument-label">Temperatura</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voos Programados -->
+                <div id="voosProgramados" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-calendar-alt"></i> Voos Programados</h2>
+                        <div class="stats-badge" id="totalVoos">0 voos</div>
+                    </div>
+                    <div id="listaVoosProgramados" class="card-grid">
+                        <div class="empty-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <h3>Carregando voos...</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checklist -->
+                <div id="checklist" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-clipboard-check"></i> Checklist Pré-Voo</h2>
+                        <div class="stats-badge" id="checklistProgress">0%</div>
+                    </div>
+                    <div class="card">
+                        <h3 id="checklistTitulo">Checklist</h3>
+                        <div id="checklistItems">
+                            <div class="empty-state" style="padding: 2rem;">
+                                <i class="fas fa-list-ul"></i>
+                                <h3>Nenhum voo selecionado</h3>
+                                <p>Por favor, vá para "Voos Programados" e selecione "Iniciar Checklist" em um voo.</p>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-light); display: none;" id="checklistFooter">
+                            <button class="btn btn-primary btn-responsive" onclick="finalizarChecklist()" id="btnFinalizarChecklist">
+                                <i class="fas fa-check-circle"></i> Finalizar Checklist
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meteorologia -->
+                <div id="meteorologia" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-cloud-sun"></i> Meteorologia</h2>
+                        <div class="stats-badge">Atualizado agora</div>
+                    </div>
+                    <div class="card-grid">
+                        <div class="card">
+                            <h3><i class="fas fa-map-marker-alt"></i> São Paulo (GRU)</h3>
+                            <div class="weather-info">
+                                <div class="weather-card">
+                                    <div class="weather-temp">28°C</div>
+                                    <div style="margin-bottom: 1rem;">Parcialmente Nublado</div>
+                                    <div class="weather-details">
+                                        <div>Vento: 15 km/h</div>
+                                        <div>Umidade: 65%</div>
+                                        <div>Visibilidade: 10 km</div>
+                                        <div>Pressão: 1013 hPa</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3><i class="fas fa-map-marker-alt"></i> Rio de Janeiro (GIG)</h3>
+                            <div class="weather-info">
+                                <div class="weather-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                    <div class="weather-temp">32°C</div>
+                                    <div style="margin-bottom: 1rem;">Ensolarado</div>
+                                    <div class="weather-details">
+                                        <div>Vento: 12 km/h</div>
+                                        <div>Umidade: 55%</div>
+                                        <div>Visibilidade: 15 km</div>
+                                        <div>Pressão: 1012 hPa</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perfil -->
+                <div id="perfil" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2><i class="fas fa-user"></i> Meu Perfil</h2>
+                        <div class="pilot-badge"><i class="fas fa-id-card"></i> Comandante</div>
+                    </div>
+                    <div class="card-grid">
+                        <div class="card">
+                            <h3><i class="fas fa-info-circle"></i> Informações Pessoais</h3>
+                            <div id="perfilInfo" class="info-container">
+                                <!-- Será preenchido pelo JavaScript -->
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3><i class="fas fa-chart-line"></i> Estatísticas</h3>
+                            <div class="stats-container">
+                                <div class="stat-item">
+                                    <div class="stat-value">1,250</div>
+                                    <div class="stat-label">Horas de Voo</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">45</div>
+                                    <div class="stat-label">Voos/Mês</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">99.8%</div>
+                                    <div class="stat-label">Pontualidade</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">4.9</div>
+                                    <div class="stat-label">Avaliação</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Saída -->
+    <div id="modalSair" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3>Confirmar Saída</h3>
+            <p>Tem certeza que deseja sair do painel?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-outline" onclick="fecharModalSair()">Cancelar</button>
+                <button class="btn btn-primary" onclick="confirmarSaida()">Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let usuarioLogado = null;
+        let voosPiloto = [];
+        let checklistCompleto = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userData = localStorage.getItem('user');
+            if (userData) {
+                usuarioLogado = JSON.parse(userData);
+                console.log('✅ Piloto logado:', usuarioLogado);
+                
+                document.getElementById('userName').textContent = usuarioLogado.nome;
+                document.getElementById('userAvatar').textContent = usuarioLogado.nome.charAt(0).toUpperCase();
+                
+                carregarDadosDoPiloto();
+                carregarPerfil();
+            } else {
+                console.error('❌ Usuário não logado! Redirecionando...');
+                window.location.href = '/login';
+            }
+        });
+
+        async function carregarDadosDoPiloto() {
+            try {
+                const response = await fetch('/api/piloto/meus-voos');
+                
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success && data.voos) {
+                    voosPiloto = data.voos;
+                    console.log('✅ Voos do piloto carregados:', voosPiloto);
+                } else {
+                    console.warn('Nenhum voo retornado pela API.');
+                    voosPiloto = [];
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dados do piloto:', error);
+                voosPiloto = [];
+            }
+            
+            renderizarDashboard();
+            renderizarVoosProgramados();
+        }
+
+        function renderizarDashboard() {
+            const container = document.getElementById('proximoVooInfo');
+            
+            if (voosPiloto.length > 0) {
+                const proximoVoo = voosPiloto[0];
+                const status = getStatusVoo(proximoVoo.data_partida, proximoVoo.hora_partida);
+                
+                document.getElementById('dashAeronave').textContent = proximoVoo.aeronave_modelo || 'A320';
+                
+                container.innerHTML = `
+                    <div class="flight-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Voo</span>
+                            <span class="detail-value">${proximoVoo.codigo}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Rota</span>
+                            <span class="detail-value">${proximoVoo.origem} → ${proximoVoo.destino}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Data</span>
+                            <span class="detail-value">${formatarData(proximoVoo.data_partida)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Horário</span>
+                            <span class="detail-value">${proximoVoo.hora_partida}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Aeronave</span>
+                            <span class="detail-value">${proximoVoo.aeronave_modelo || 'A320'}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value">
+                                <span class="flight-status status-${status}">${getStatusText(status)}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-responsive" onclick="iniciarChecklist(${proximoVoo.id})" style="margin-top: 1rem;">
+                        <i class="fas fa-clipboard-check"></i> Iniciar Checklist
+                    </button>
+                `;
+            } else {
+                document.getElementById('dashAeronave').textContent = "--";
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 2rem;">
+                        <i class="fas fa-plane-slash"></i>
+                        <h3>Nenhum voo próximo</h3>
+                        <p>Não há voos atribuídos a você no momento.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderizarVoosProgramados() {
+            const container = document.getElementById('listaVoosProgramados');
+            document.getElementById('totalVoos').textContent = `${voosPiloto.length} voos`;
+            
+            if (voosPiloto.length > 0) {
+                container.innerHTML = '';
+                
+                voosPiloto.forEach(voo => {
+                    const status = getStatusVoo(voo.data_partida, voo.hora_partida);
+                    const card = document.createElement('div');
+                    card.className = 'flight-card';
+                    card.innerHTML = `
+                        <div class="flight-header">
+                            <div class="flight-route">
+                                <i class="fas fa-plane-departure"></i> ${voo.origem} 
+                                <i class="fas fa-arrow-right" style="margin: 0 1rem;"></i>
+                                <i class="fas fa-plane-arrival"></i> ${voo.destino}
+                            </div>
+                            <span class="flight-status status-${status}">${getStatusText(status)}</span>
+                        </div>
+                        <div class="flight-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Data</span>
+                                <span class="detail-value">${formatarData(voo.data_partida)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Horário</span>
+                                <span class="detail-value">${voo.hora_partida}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Código</span>
+                                <span class="detail-value">${voo.codigo}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Aeronave</span>
+                                <span class="detail-value">${voo.aeronave_modelo || 'A320'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Piloto</span>
+                                <span class="detail-value">${voo.piloto_nome || 'N/A'}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Co-piloto</span>
+                                <span class="detail-value">${voo.co_piloto_nome || 'N/A'}</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-responsive" onclick="iniciarChecklist(${voo.id})" ${status !== 'preflight' ? 'disabled' : ''}>
+                            <i class="fas fa-clipboard-check"></i> ${status === 'preflight' ? 'Iniciar Checklist' : getStatusText(status)}
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-plane-slash"></i>
+                        <h3>Nenhum voo programado</h3>
+                        <p>Não há voos atribuídos a você no momento.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function iniciarChecklist(vooId) {
+            const voo = voosPiloto.find(v => v.id === vooId);
+            if (!voo) return;
+            
+            showScreen('checklist');
+            document.getElementById('checklistTitulo').textContent = `Checklist - Voo ${voo.codigo}`;
+            carregarChecklistItens();
+        }
+
+        function carregarChecklistItens() {
+            const checklist = [
+                { id: 1, item: "Documentação da aeronave verificada", categoria: "Documentação" },
+                { id: 2, item: "Combustível calculado e verificado", categoria: "Combustível" },
+                { id: 3, item: "Sistemas de bordo testados", categoria: "Sistemas" },
+                { id: 4, item: "Plano de voo arquivado", categoria: "Navegação" },
+                { id: 5, item: "Briefing meteorológico revisado", categoria: "Meteorologia" },
+                { id: 6, item: "Checklist de cabine completo", categoria: "Cabine" },
+                { id: 7, item: "Comunicações testadas", categoria: "Comunicações" },
+                { id: 8, item: "Carga e balanceamento verificados", categoria: "Carga" },
+                { id: 9, item: "Checklist de emergência revisado", categoria: "Segurança" },
+                { id: 10, item: "Briefing com tripulação realizado", categoria: "Tripulação" }
+            ];
+
+            const container = document.getElementById('checklistItems');
+            container.innerHTML = '';
+            document.getElementById('checklistFooter').style.display = 'block';
+            
+            let categoriaAtual = '';
+            checklist.forEach((item) => {
+                if (item.categoria !== categoriaAtual) {
+                    categoriaAtual = item.categoria;
+                    const categoriaHeader = document.createElement('div');
+                    categoriaHeader.style.padding = '1rem';
+                    categoriaHeader.style.background = 'var(--gray-light)';
+                    categoriaHeader.style.fontWeight = '600';
+                    categoriaHeader.style.borderRadius = '8px';
+                    categoriaHeader.style.margin = '1rem 0 0.5rem 0';
+                    categoriaHeader.textContent = item.categoria;
+                    container.appendChild(categoriaHeader);
+                }
+                
+                const checklistItem = document.createElement('div');
+                checklistItem.className = 'checklist-item';
+                checklistItem.innerHTML = `
+                    <input type="checkbox" id="check${item.id}" onchange="atualizarProgressoChecklist()">
+                    <label for="check${item.id}">${item.item}</label>
+                `;
+                container.appendChild(checklistItem);
+            });
+
+            atualizarProgressoChecklist();
+        }
+
+        function atualizarProgressoChecklist() {
+            const checkboxes = document.querySelectorAll('#checklistItems input[type="checkbox"]');
+            if (checkboxes.length === 0) {
+                document.getElementById('checklistProgress').textContent = '0%';
+                return;
+            }
+            
+            const marcados = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+            const total = checkboxes.length;
+            const progresso = Math.round((marcados / total) * 100);
+            
+            document.getElementById('checklistProgress').textContent = `${progresso}%`;
+            
+            const btnFinalizar = document.getElementById('btnFinalizarChecklist');
+            if (progresso === 100) {
+                btnFinalizar.disabled = false;
+                btnFinalizar.innerHTML = '<i class="fas fa-check-circle"></i> Checklist Concluído - Voo Liberado';
+                btnFinalizar.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            } else {
+                btnFinalizar.disabled = true;
+                btnFinalizar.innerHTML = `<i class="fas fa-clipboard-check"></i> Finalizar Checklist (${marcados}/${total})`;
+                btnFinalizar.style.background = '';
+            }
+        }
+        
+        function finalizarChecklist() {
+            checklistCompleto = true;
+            alert('✅ Checklist finalizado com sucesso! Voo liberado para partida.');
+            renderizarVoosProgramados();
+            renderizarDashboard();
+            showScreen('voosProgramados');
+        }
+
+        function carregarPerfil() {
+            if (!usuarioLogado) return;
+            document.getElementById('perfilInfo').innerHTML = `
+                <div class="info-line"><span class="info-label">Nome completo</span><span class="info-value">${usuarioLogado.nome}</span></div>
+                <div class="info-line"><span class="info-label">Matrícula</span><span class="info-value">${usuarioLogado.matricula || 'PIL001'}</span></div>
+                <div class="info-line"><span class="info-label">Função</span><span class="info-value">Comandante</span></div>
+                <div class="info-line"><span class="info-label">E-mail</span><span class="info-value">${usuarioLogado.email || 'piloto@voeagora.com'}</span></div>
+                <div class="info-line"><span class="info-label">Data de Admissão</span><span class="info-value">10/01/2020</span></div>
+                <div class="info-line"><span class="info-label">Licença</span><span class="info-value">ATPL</span></div>
+                <div class="info-line"><span class="info-label">Validade Médica</span><span class="info-value">31/12/2024</span></div>
+                <div class="info-line"><span class="info-label">Aeronaves Habilitadas</span><span class="info-value">A320, B737</span></div>
+            `;
+        }
+
+        function showScreen(screenId, element) {
+            document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
+            
+            if (element) {
+                element.classList.add('active');
+            } else {
+                const btnToActivate = document.querySelector(`.nav-tabs button[onclick*="'${screenId}'"]`);
+                if (btnToActivate) {
+                    btnToActivate.classList.add('active');
+                }
+            }
+            
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(screenId).style.display = 'block';
+        }
+
+        function getStatusVoo(data, horario) {
+            const agora = new Date();
+            const dataVoo = new Date(`${data}T${horario}`);
+            const diferenca = dataVoo - agora;
+            const horasParaVoo = diferenca / (1000 * 60 * 60);
+
+            if (horasParaVoo < 0) return 'completed';
+            if (horasParaVoo <= 2) return 'boarding';
+            if (horasParaVoo <= 24) return 'preflight';
+            return 'scheduled';
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'preflight': return 'Pré-voo';
+                case 'boarding': return 'Embarque';
+                case 'completed': return 'Concluído';
+                default: return 'Programado';
+            }
+        }
+        
+        function verPlanoVoo() {
+            alert('🛫 Abrindo plano de voo...\n\nRota: GRU → GIG\nAltitude: 35,000 pés\nTempo estimado: 1h 15min\nCombustível: 8,000 kg');
+        }
+
+        function abrirModalSair() {
+            document.getElementById('modalSair').style.display = 'flex';
+        }
+        
+        function fecharModalSair() {
+            document.getElementById('modalSair').style.display = 'none';
+        }
+
+        function confirmarSaida() {
+            localStorage.removeItem('user');
+            window.location.href = '/';
+        }
+        
+        function formatarData(data) {
+            if (!data) return '-';
+            const [ano, mes, dia] = data.split('T')[0].split('-');
+            return `${dia}/${mes}/${ano}`;
+        }
+    </script>
+</body>
+</html>

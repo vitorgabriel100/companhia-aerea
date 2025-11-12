@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voe Agora Airlines - Sistema de Gestão</title>
+    <link rel="stylesheet" href="/assets/styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 20px;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-demo {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+        }
+
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-light);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .feature-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .demo-info {
+            background: var(--gray-light);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .demo-accounts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .account-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .account-role {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .account-details {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--gray-light);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Voe Agora Airlines</h1>
+                <p>Sistema Integrado de Gestão Aeronáutica</p>
+                <div class="hero-buttons">
+                    <button onclick="window.location.href='/login'" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Fazer Login
+                    </button>
+                    <button onclick="window.location.href='/cadastro'" class="btn btn-secondary">
+                        <i class="fas fa-user-plus"></i> Criar Conta
+                    </button>
+                    <button id="btn-demo" class="btn btn-demo">
+                        <i class="fas fa-rocket"></i> Configurar Demonstração
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Painel do Cliente</h3>
+                <p>Compre passagens, gerencie suas reservas e faça check-in online de forma simples e rápida.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3>Painel do Funcionário</h3>
+                <p>Controle de voos, gestão de passageiros e operações de check-in e embarque.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Painel do Diretor</h3>
+                <p>Dashboard executivo com métricas financeiras, relatórios e gestão estratégica.</p>
+            </div>
+        </section>
+
+        <!-- Demo Information -->
+        <section class="demo-info">
+            <h2 style="color: var(--dark); margin-bottom: 1rem;">
+                <i class="fas fa-info-circle"></i> Sistema de Demonstração
+            </h2>
+            <p style="color: var(--gray); margin-bottom: 1.5rem;">
+                Clique em "Configurar Demonstração" para carregar dados de exemplo e testar todas as funcionalidades do sistema.
+            </p>
+
+            <div class="demo-accounts">
+                <div class="account-card">
+                    <div class="account-role">👤 Cliente</div>
+                    <div class="account-details">
+                        <strong>CPF:</strong> 123.456.789-00<br>
+                        <strong>Senha:</strong> 1234
+                    </div>
+                </div>
+
+                <div class="account-card">
+                    <div class="account-role">👨‍💼 Comissário</div>
+                    <div class="account-details">
+                        <strong>CPF:</strong> 111.222.333-44<br>
+                        <strong>Senha:</strong> 1234
+                    </div>
+                </div>
+
+                <div class="account-card">
+                    <div class="account-role">✈️ Piloto</div>
+                    <div class="account-details">
+                        <strong>CPF:</strong> 555.666.777-88<br>
+                        <strong>Senha:</strong> 1234
+                    </div>
+                </div>
+
+                <div class="account-card">
+                    <div class="account-role">👔 Diretor</div>
+                    <div class="account-details">
+                        <strong>CPF:</strong> 999.888.777-66<br>
+                        <strong>Senha:</strong> 1234
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalVoos">0</div>
+                <div class="stat-label">Voos Cadastrados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalUsuarios">0</div>
+                <div class="stat-label">Usuários Ativos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPassagens">0</div>
+                <div class="stat-label">Passagens Vendidas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="ocupacaoMedia">0%</div>
+                <div class="stat-label">Ocupação Média</div>
+            </div>
+        </div>
+
+        <!-- System Info -->
+        <div style="background: var(--gray-light); padding: 2rem; border-radius: 16px; text-align: center;">
+            <h3 style="color: var(--dark); margin-bottom: 1rem;">
+                <i class="fas fa-cogs"></i> Sistema Automático de Perfis
+            </h3>
+            <p style="color: var(--gray); line-height: 1.6;">
+                O sistema determina automaticamente o tipo de conta baseado no CPF informado.<br>
+                <strong>CPFs especiais</strong> criam contas de funcionários e diretores automaticamente,<br>
+                enquanto <strong>outros CPFs</strong> criam contas de clientes normais.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Carregar estatísticas iniciais
+        async function carregarEstatisticas() {
+            try {
+                const response = await fetch('/api/dashboard/estatisticas');
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('totalVoos').textContent = data.totalVoos || '12';
+                    document.getElementById('totalUsuarios').textContent = data.totalUsuarios || '45';
+                    document.getElementById('totalPassagens').textContent = data.totalPassagens || '128';
+                    document.getElementById('ocupacaoMedia').textContent = data.ocupacaoMedia || '78%';
+                }
+            } catch (error) {
+                console.log('Usando estatísticas padrão para demonstração');
+            }
+        }
+
+        // Sistema de Demonstração
+        document.getElementById('btn-demo').addEventListener('click', async function() {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Configurando...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/demo/setup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('🎉 Demonstração configurada com sucesso!\n\nOs seguintes logins estão disponíveis:\n\n👤 Cliente: 123.456.789-00 / 1234\n👨‍💼 Comissário: 111.222.333-44 / 1234\n✈️ Piloto: 555.666.777-88 / 1234\n👔 Diretor: 999.888.777-66 / 1234\n\n💡 Use estes CPFs para testar os diferentes perfis!');
+                    
+                    // Recarregar estatísticas
+                    carregarEstatisticas();
+                } else {
+                    alert('❌ ' + (data.message || 'Erro ao configurar demonstração'));
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro ao conectar com o servidor. Verifique se o servidor está rodando.');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarEstatisticas();
+            
+            // Animações de entrada
+            const elements = document.querySelectorAll('.feature-card, .stat-card');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
