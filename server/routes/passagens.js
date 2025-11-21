@@ -34,23 +34,23 @@ router.get('/formas-pagamento', (req, res) => {
     });
 });
 
-// Comprar passagem (ATUALIZADA para nova estrutura)
+// Comprar passagem (CORRIGIDA para funcionar com o frontend)
 router.post('/comprar', (req, res) => {
-    const { voo_id, usuario_id, formaPagamento, parcelas = 1, classe = 'economica' } = req.body;
+    const { voo_id, usuario_id, formaPagamento, parcelas = 1, preco_final } = req.body;
 
     console.log('🎫 Tentativa de compra de passagem:', { 
         voo_id, 
         usuario_id, 
         formaPagamento, 
         parcelas,
-        classe
+        preco_final
     });
 
     // Validações básicas
-    if (!voo_id || !usuario_id || !formaPagamento) {
+    if (!voo_id || !usuario_id || !formaPagamento || !preco_final) {
         return res.status(400).json({
             success: false,
-            message: 'Voo, usuário e forma de pagamento são obrigatórios'
+            message: 'Voo, usuário, forma de pagamento e preço são obrigatórios'
         });
     }
 
@@ -127,153 +127,106 @@ router.post('/comprar', (req, res) => {
                     });
                 }
 
-                // Calcular preço base baseado na classe
-                let precoBase = parseFloat(voo.preco_base);
-                let multiplicadorClasse = 1.0;
+                // Gerar número de assento automático (simplificado)
+                const letras = ['A', 'B', 'C', 'D', 'E', 'F'];
+                const numero = Math.floor(Math.random() * 30) + 1;
+                const letra = letras[Math.floor(Math.random() * letras.length)];
+                const assento = numero + letra;
 
-                switch (classe) {
-                    case 'executiva':
-                        multiplicadorClasse = 1.5;
-                        break;
-                    case 'primeira':
-                        multiplicadorClasse = 2.0;
-                        break;
-                    default: // economica
-                        multiplicadorClasse = 1.0;
-                }
-
-                let precoFinal = precoBase * multiplicadorClasse;
-                let descontoAplicado = 0;
-
-                // Aplicar descontos por forma de pagamento
-                if (formaPagamento === 'PIX') {
-                    descontoAplicado = precoFinal * 0.05;
-                    precoFinal = precoFinal - descontoAplicado;
-                } else if (formaPagamento === 'Boleto Bancário' && parcelas === 1) {
-                    descontoAplicado = precoFinal * 0.03;
-                    precoFinal = precoFinal - descontoAplicado;
-                }
-
-                // Gerar número de assento baseado na classe
-                db.get(
-                    `SELECT COUNT(*) as total 
-                     FROM passagens 
-                     WHERE voo_id = ? AND classe = ?`,
-                    [voo_id, classe],
-                    (err, result) => {
+                // Inserir passagem com dados de pagamento (SIMPLIFICADO)
+                db.run(
+                    `INSERT INTO passagens (
+                        voo_id, usuario_id, assento, 
+                        forma_pagamento, parcelas, preco_final,
+                        classe, data_compra, status
+                    ) VALUES (?, ?, ?, ?, ?, ?, 'economica', datetime('now'), 'confirmada')`,
+                    [voo_id, usuario_id, assento, formaPagamento, parcelas, preco_final],
+                    function(err) {
                         if (err) {
-                            console.error('❌ Erro ao contar assentos:', err);
+                            console.error('❌ Erro ao comprar passagem:', err);
                             return res.status(500).json({
                                 success: false,
-                                message: 'Erro interno do servidor'
+                                message: 'Erro ao comprar passagem: ' + err.message
                             });
                         }
 
-                        const assentosOcupados = result.total;
-                        let assento = '';
-                        
-                        // Lógica de assentos por classe
-                        if (classe === 'primeira') {
-                            const fileira = 'P';
-                            const numero = (assentosOcupados % 8) + 1;
-                            assento = `${fileira}${numero}`;
-                        } else if (classe === 'executiva') {
-                            const fileira = String.fromCharCode(69 + Math.floor(assentosOcupados / 6)); // E, F...
-                            const numero = (assentosOcupados % 6) + 1;
-                            assento = `${fileira}${numero}`;
-                        } else { // economica
-                            const fileira = String.fromCharCode(65 + Math.floor(assentosOcupados / 30)); // A, B, C...
-                            const numero = (assentosOcupados % 30) + 1;
-                            assento = `${fileira}${numero}`;
-                        }
+                        const passagemId = this.lastID;
 
-                        // Inserir passagem com dados de pagamento
+                        // Atualizar assentos disponíveis
                         db.run(
-                            `INSERT INTO passagens (
-                                voo_id, usuario_id, assento, 
-                                forma_pagamento, parcelas, preco_final,
-                                classe, data_compra, status
-                            ) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'), 'confirmada')`,
-                            [voo_id, usuario_id, assento, formaPagamento, parcelas, precoFinal, classe],
+                            "UPDATE voos SET assentos_disponiveis = assentos_disponiveis - 1 WHERE id = ?",
+                            [voo_id],
                             function(err) {
                                 if (err) {
-                                    console.error('❌ Erro ao comprar passagem:', err);
-                                    return res.status(500).json({
-                                        success: false,
-                                        message: 'Erro ao comprar passagem'
-                                    });
+                                    console.error('❌ Erro ao atualizar assentos:', err);
+                                    // Continua mesmo com erro na atualização
                                 }
 
-                                const passagemId = this.lastID;
+                                console.log('✅ Passagem comprada com sucesso. ID:', passagemId);
+                                
+                                // Buscar informações completas para resposta
+                                const queryCompleta = `
+                                    SELECT 
+                                        p.*,
+                                        v.codigo, v.origem, v.destino, 
+                                        v.data_partida, v.hora_partida,
+                                        u.nome as usuario_nome,
+                                        a.modelo as aeronave_modelo
+                                    FROM passagens p
+                                    JOIN voos v ON p.voo_id = v.id
+                                    JOIN usuarios u ON p.usuario_id = u.id
+                                    LEFT JOIN aeronaves a ON v.aeronave_id = a.id
+                                    WHERE p.id = ?
+                                `;
 
-                                // Atualizar assentos disponíveis
-                                db.run(
-                                    "UPDATE voos SET assentos_disponiveis = assentos_disponiveis - 1 WHERE id = ?",
-                                    [voo_id],
-                                    function(err) {
-                                        if (err) {
-                                            console.error('❌ Erro ao atualizar assentos:', err);
-                                        }
-
-                                        console.log('✅ Passagem comprada com sucesso. ID:', passagemId);
-                                        
-                                        // Buscar informações completas para resposta
-                                        const queryCompleta = `
-                                            SELECT 
-                                                p.*,
-                                                v.codigo, v.origem, v.destino, 
-                                                v.data_partida, v.hora_partida,
-                                                u.nome as usuario_nome,
-                                                a.modelo as aeronave_modelo
-                                            FROM passagens p
-                                            JOIN voos v ON p.voo_id = v.id
-                                            JOIN usuarios u ON p.usuario_id = u.id
-                                            LEFT JOIN aeronaves a ON v.aeronave_id = a.id
-                                            WHERE p.id = ?
-                                        `;
-
-                                        db.get(queryCompleta, [passagemId], (err, passagemCompleta) => {
-                                            if (err) {
-                                                console.error('❌ Erro ao buscar dados completos:', err);
-                                            }
-
-                                            const resposta = {
-                                                success: true,
-                                                message: 'Passagem comprada com sucesso!',
-                                                passagemId: passagemId,
-                                                assento: assento,
-                                                formaPagamento: formaPagamento,
-                                                parcelas: parcelas,
-                                                classe: classe,
-                                                precoOriginal: parseFloat(precoBase * multiplicadorClasse),
-                                                precoFinal: parseFloat(precoFinal.toFixed(2)),
-                                                descontoAplicado: parseFloat(descontoAplicado.toFixed(2)),
-                                                codigo: `P${passagemId.toString().padStart(6, '0')}`,
-                                                voo: {
-                                                    codigo: passagemCompleta?.codigo || voo.codigo,
-                                                    origem: passagemCompleta?.origem || voo.origem,
-                                                    destino: passagemCompleta?.destino || voo.destino,
-                                                    data_partida: passagemCompleta?.data_partida || voo.data_partida,
-                                                    hora_partida: passagemCompleta?.hora_partida || voo.hora_partida
-                                                }
-                                            };
-
-                                            // Adicionar mensagens específicas por forma de pagamento
-                                            if (formaPagamento === 'PIX') {
-                                                resposta.mensagemPagamento = '💰 Pagamento via PIX - 5% de desconto aplicado!';
-                                            } else if (formaPagamento === 'Boleto Bancário' && parcelas === 1) {
-                                                resposta.mensagemPagamento = '💸 Pagamento via Boleto - 3% de desconto aplicado!';
-                                            } else if (formaPagamento === 'Cartão de Crédito') {
-                                                resposta.mensagemPagamento = `💳 Pagamento em ${parcelas}x no cartão`;
-                                            } else {
-                                                resposta.mensagemPagamento = '✅ Pagamento processado com sucesso!';
-                                            }
-
-                                            console.log('📤 Enviando resposta completa para frontend');
-                                            res.json(resposta);
+                                db.get(queryCompleta, [passagemId], (err, passagemCompleta) => {
+                                    if (err) {
+                                        console.error('❌ Erro ao buscar dados completos:', err);
+                                        // Envia resposta básica mesmo com erro
+                                        return res.json({
+                                            success: true,
+                                            message: 'Passagem comprada com sucesso!',
+                                            passagemId: passagemId,
+                                            assento: assento,
+                                            formaPagamento: formaPagamento,
+                                            parcelas: parcelas,
+                                            precoFinal: preco_final,
+                                            codigo: `P${passagemId.toString().padStart(6, '0')}`
                                         });
                                     }
-                                );
+
+                                    const resposta = {
+                                        success: true,
+                                        message: 'Passagem comprada com sucesso!',
+                                        passagemId: passagemId,
+                                        assento: assento,
+                                        formaPagamento: formaPagamento,
+                                        parcelas: parcelas,
+                                        precoFinal: parseFloat(preco_final),
+                                        codigo: `P${passagemId.toString().padStart(6, '0')}`,
+                                        voo: {
+                                            codigo: passagemCompleta?.codigo || voo.codigo,
+                                            origem: passagemCompleta?.origem || voo.origem,
+                                            destino: passagemCompleta?.destino || voo.destino,
+                                            data_partida: passagemCompleta?.data_partida || voo.data_partida,
+                                            hora_partida: passagemCompleta?.hora_partida || voo.hora_partida
+                                        }
+                                    };
+
+                                    // Adicionar mensagens específicas por forma de pagamento
+                                    if (formaPagamento === 'PIX') {
+                                        resposta.mensagemPagamento = '💰 Pagamento via PIX - 5% de desconto aplicado!';
+                                    } else if (formaPagamento === 'Boleto Bancário' && parcelas === 1) {
+                                        resposta.mensagemPagamento = '💸 Pagamento via Boleto - 3% de desconto aplicado!';
+                                    } else if (formaPagamento === 'Cartão de Crédito') {
+                                        resposta.mensagemPagamento = `💳 Pagamento em ${parcelas}x no cartão`;
+                                    } else {
+                                        resposta.mensagemPagamento = '✅ Pagamento processado com sucesso!';
+                                    }
+
+                                    console.log('📤 Enviando resposta completa para frontend');
+                                    res.json(resposta);
+                                });
                             }
                         );
                     }
@@ -283,7 +236,7 @@ router.post('/comprar', (req, res) => {
     });
 });
 
-// Buscar passagens por usuário (ATUALIZADA)
+// Buscar passagens por usuário
 router.get('/usuario/:id', (req, res) => {
     const { id } = req.params;
 
@@ -315,24 +268,15 @@ router.get('/usuario/:id', (req, res) => {
 
         console.log(`✅ Encontradas ${rows.length} passagens para usuário ID: ${id}`);
         
-        // Calcular economia total (descontos aplicados)
-        const economiaTotal = rows.reduce((total, passagem) => {
-            const precoSemDesconto = passagem.preco_original * 
-                (passagem.classe === 'executiva' ? 1.5 : 
-                 passagem.classe === 'primeira' ? 2.0 : 1.0);
-            return total + (precoSemDesconto - passagem.preco_final);
-        }, 0);
-
         res.json({
             success: true,
             passagens: rows,
-            total: rows.length,
-            economiaTotal: parseFloat(economiaTotal.toFixed(2))
+            total: rows.length
         });
     });
 });
 
-// Buscar todas as passagens (para administração - ATUALIZADA)
+// Buscar todas as passagens (para administração)
 router.get('/', (req, res) => {
     log('🔍 Buscando todas as passagens (admin)');
 
@@ -342,8 +286,7 @@ router.get('/', (req, res) => {
             v.codigo, v.origem, v.destino, v.data_partida, v.hora_partida,
             v.preco_base as preco_original,
             u.nome as usuario_nome, u.cpf as usuario_cpf,
-            a.modelo as aeronave_modelo,
-            (v.preco_base - p.preco_final) as desconto_aplicado
+            a.modelo as aeronave_modelo
         FROM passagens p
         JOIN voos v ON p.voo_id = v.id
         JOIN usuarios u ON p.usuario_id = u.id
@@ -360,50 +303,17 @@ router.get('/', (req, res) => {
             });
         }
 
-        // Estatísticas de pagamento
-        const estatisticas = {
-            totalPassagens: rows.length,
-            totalReceita: parseFloat(rows.reduce((sum, p) => sum + p.preco_final, 0).toFixed(2)),
-            totalDescontos: parseFloat(rows.reduce((sum, p) => sum + p.desconto_aplicado, 0).toFixed(2)),
-            porFormaPagamento: {},
-            porClasse: {
-                economica: 0,
-                executiva: 0,
-                primeira: 0
-            }
-        };
-
-        rows.forEach(passagem => {
-            const forma = passagem.forma_pagamento;
-            const classe = passagem.classe;
-
-            if (!estatisticas.porFormaPagamento[forma]) {
-                estatisticas.porFormaPagamento[forma] = {
-                    quantidade: 0,
-                    total: 0
-                };
-            }
-            estatisticas.porFormaPagamento[forma].quantidade++;
-            estatisticas.porFormaPagamento[forma].total += passagem.preco_final;
-
-            // Contagem por classe
-            if (estatisticas.porClasse[classe] !== undefined) {
-                estatisticas.porClasse[classe]++;
-            }
-        });
-
         log(`✅ Encontradas ${rows.length} passagens no total`);
 
         res.json({
             success: true,
             passagens: rows,
-            total: rows.length,
-            estatisticas: estatisticas
+            total: rows.length
         });
     });
 });
 
-// Cancelar passagem (ATUALIZADA)
+// Cancelar passagem
 router.post('/cancelar/:id', (req, res) => {
     const { id } = req.params;
 
@@ -427,7 +337,7 @@ router.post('/cancelar/:id', (req, res) => {
         if (!passagem) {
             return res.status(404).json({
                 success: false,
-                message: 'Passagem não encontrada'
+                message: 'Passagem não encontrado'
             });
         }
 

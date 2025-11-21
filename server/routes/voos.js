@@ -1,107 +1,6 @@
 const express = require('express');
-const { db } = require('../models/database');
+const { db } = require('../models/database'); // Usa a mesma conexão
 const router = express.Router();
-
-// Importação correta do banco de dados
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
-
-// **CAMINHO CORRETO - mesmo usado no reset-db.js**
-const dbPath = path.join(__dirname, '..', 'database.sqlite'); // Correto!
-console.log('📁 Caminho do banco:', dbPath);
-
-const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-    if (err) {
-        console.error('❌ Erro ao conectar com banco de dados:', err.message);
-    } else {
-        console.log('✅ Conectado ao banco de dados SQLite');
-        
-        // Inserir voos de exemplo automaticamente
-        inserirVoosExemplo();
-    }
-});
-
-// Função para inserir voos de exemplo
-function inserirVoosExemplo() {
-    console.log('🔄 Verificando se precisa inserir voos de exemplo...');
-    
-    // Verificar se já existem voos
-    db.get("SELECT COUNT(*) as count FROM voos", (err, result) => {
-        if (err) {
-            console.error('❌ Erro ao verificar voos:', err);
-            return;
-        }
-        
-        if (result.count === 0) {
-            console.log('📥 Inserindo voos de exemplo...');
-            
-            const voosExemplo = [
-                {
-                    codigo: 'VG1001',
-                    origem: 'São Paulo (GRU)',
-                    destino: 'Rio de Janeiro (GIG)',
-                    data_partida: '2024-12-20',
-                    hora_partida: '08:00',
-                    data_chegada: '2024-12-20',
-                    hora_chegada: '09:30',
-                    aeronave_id: 1,
-                    preco_base: 299.90,
-                    assentos_disponiveis: 186,
-                    status: 'agendado'
-                },
-                {
-                    codigo: 'VG1002',
-                    origem: 'Rio de Janeiro (GIG)',
-                    destino: 'Brasília (BSB)',
-                    data_partida: '2024-12-20',
-                    hora_partida: '10:00',
-                    data_chegada: '2024-12-20',
-                    hora_chegada: '12:00',
-                    aeronave_id: 2,
-                    preco_base: 399.90,
-                    assentos_disponiveis: 180,
-                    status: 'agendado'
-                },
-                {
-                    codigo: 'VG1003',
-                    origem: 'São Paulo (GRU)',
-                    destino: 'Salvador (SSA)',
-                    data_partida: '2024-12-20',
-                    hora_partida: '14:00',
-                    data_chegada: '2024-12-20',
-                    hora_chegada: '16:30',
-                    aeronave_id: 3,
-                    preco_base: 499.90,
-                    assentos_disponiveis: 124,
-                    status: 'agendado'
-                }
-            ];
-
-            const insertQuery = `
-                INSERT INTO voos (codigo, origem, destino, data_partida, hora_partida, data_chegada, hora_chegada, aeronave_id, preco_base, assentos_disponiveis, status)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `;
-
-            voosExemplo.forEach((voo, index) => {
-                db.run(insertQuery, [
-                    voo.codigo, voo.origem, voo.destino, 
-                    voo.data_partida, voo.hora_partida, 
-                    voo.data_chegada, voo.hora_chegada,
-                    voo.aeronave_id, voo.preco_base, 
-                    voo.assentos_disponiveis, voo.status
-                ], function(err) {
-                    if (err) {
-                        console.error(`❌ Erro ao inserir voo ${voo.codigo}:`, err);
-                    } else {
-                        console.log(`✅ Voo ${voo.codigo} inserido (ID: ${this.lastID})`);
-                    }
-                });
-            });
-        } else {
-            console.log(`✅ Já existem ${result.count} voos no banco`);
-        }
-    });
-}
 
 // =========================================
 // ROTAS GERAIS (TABELA VOOS)
@@ -139,6 +38,45 @@ router.get('/', (req, res) => {
       success: true, 
       voos: rows,
       total: rows.length 
+    });
+  });
+});
+
+// Rota para buscar detalhes de um voo específico - **CRÍTICA: ESTAVA FALTANDO**
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+  console.log(`🔍 Buscando voo ID: ${id}`);
+  
+  const query = `
+    SELECT v.*, 
+           a.modelo as aeronave_modelo,
+           a.codigo as aeronave_codigo
+    FROM voos v
+    LEFT JOIN aeronaves a ON v.aeronave_id = a.id
+    WHERE v.id = ?
+  `;
+  
+  db.get(query, [id], (err, row) => {
+    if (err) {
+      console.error('❌ Erro ao buscar voo:', err);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Erro interno do servidor.' 
+      });
+    }
+    
+    if (!row) {
+      console.log(`⚠️ Voo ${id} não encontrado`);
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Voo não encontrado' 
+      });
+    }
+    
+    console.log(`✅ Voo encontrado: ${row.codigo}`);
+    res.json({ 
+      success: true, 
+      voo: row 
     });
   });
 });
@@ -195,7 +133,6 @@ router.get('/debug/tabelas', (req, res) => {
         
         tabelasProcessadas++;
         
-        // Quando todas as tabelas forem processadas, enviar resposta
         if (tabelasProcessadas === tables.length) {
           res.json({ 
             success: true,
@@ -205,6 +142,93 @@ router.get('/debug/tabelas', (req, res) => {
       });
     });
   });
+});
+
+// =========================================
+// ROTAS DE ATRIBUIÇÃO (PAINEL DO DIRETOR)
+// =========================================
+
+// Rota para ATRIBUIR um voo a um piloto (Grava na nova tabela voos_atribuidos)
+router.post('/atribuir', (req, res) => {
+    const { piloto_id, numero_voo, origem, destino, data_partida, horario_partida } = req.body;
+
+    // Validação básica
+    if (!piloto_id || !numero_voo || !origem || !destino || !data_partida || !horario_partida) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Todos os campos são obrigatórios para atribuição." 
+        });
+    }
+
+    const sql = `
+        INSERT INTO voos_atribuidos (piloto_id, numero_voo, origem, destino, data_partida, horario_partida, status) 
+        VALUES (?, ?, ?, ?, ?, ?, 'Agendado')
+    `;
+    
+    db.run(sql, [piloto_id, numero_voo, origem, destino, data_partida, horario_partida], function(err) {
+        if (err) {
+            console.error('❌ Erro ao atribuir voo:', err);
+            return res.status(500).json({ success: false, error: err.message });
+        }
+        
+        console.log(`✅ Voo ${numero_voo} atribuído ao piloto ID ${piloto_id}`);
+        res.json({ 
+            success: true, 
+            id: this.lastID, 
+            message: "Voo atribuído com sucesso ao piloto!" 
+        });
+    });
+});
+
+// =========================================
+// ROTAS DO PILOTO (PAINEL DO PILOTO)
+// =========================================
+
+// Rota para buscar voos ATRIBUÍDOS a um piloto específico
+router.get('/piloto/:id', (req, res) => {
+  const { id } = req.params;
+  
+  // Busca na nova tabela voos_atribuidos
+  const query = `
+    SELECT * FROM voos_atribuidos 
+    WHERE piloto_id = ? 
+    ORDER BY data_partida ASC, horario_partida ASC
+  `;
+  
+  db.all(query, [id], (err, rows) => {
+    if (err) {
+      console.error('❌ Erro ao buscar voos atribuídos:', err);
+      return res.status(500).json({ success: false, message: 'Erro ao buscar escala.' });
+    }
+
+    // Separação lógica para o Frontend
+    const voosAgendados = rows.filter(v => v.status === 'Agendado');
+    const logDeVoos = rows.filter(v => v.status === 'Concluido' || v.status === 'Cancelado');
+    
+    console.log(`🔎 Piloto ${id} consultou escala: ${voosAgendados.length} voos encontrados.`);
+
+    res.json({
+        success: true,
+        voosAgendados: voosAgendados,
+        logDeVoos: logDeVoos
+    });
+  });
+});
+
+// Rota para o piloto alterar status (ex: Iniciar/Concluir voo)
+router.put('/status/:id', (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body; // Ex: 'Em Rota', 'Concluido'
+
+    const sql = `UPDATE voos_atribuidos SET status = ? WHERE id = ?`;
+    
+    db.run(sql, [status, id], function(err) {
+        if (err) {
+            console.error('❌ Erro ao atualizar status:', err);
+            return res.status(500).json({ success: false, error: err.message });
+        }
+        res.json({ success: true, message: "Status do voo atualizado." });
+    });
 });
 
 module.exports = router;

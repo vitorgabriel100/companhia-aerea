@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-// ✅ CORREÇÃO: Importar 'db' por desestruturação
-const { db } = require('./models/database'); 
+// ✅ CORREÇÃO: Importar corretamente
+const { db } = require('./models/database');
 
 // Inicializar app PRIMEIRO
 const app = express();
@@ -23,7 +23,6 @@ const voosRoutes = require('./routes/voos');
 const passagensRoutes = require('./routes/passagens');
 const usuariosRoutes = require('./routes/usuarios');
 const pagamentoRoutes = require('./routes/pagamento');
-// ✅ NOVO: Importar a rota do piloto
 const pilotoRoutes = require('./routes/piloto');
 
 // Usar as rotas
@@ -32,222 +31,99 @@ app.use('/api/voos', voosRoutes);
 app.use('/api/passagens', passagensRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/pagamento', pagamentoRoutes);
-// ✅ NOVO: Usar a rota do piloto
 app.use('/api/piloto', pilotoRoutes);
 
-// ✅ NOVAS ROTAS PARA SISTEMA DE ATRIBUIÇÃO DE VOOS
-
-// Rota para atribuir voo ao piloto (Painel Administrativo)
-app.post('/api/admin/atribuir-voo', async (req, res) => {
-    console.log('🛫 Recebendo solicitação para atribuir voo:', req.body);
+// ✅ ADICIONAR: Inserir voos de exemplo automaticamente ao iniciar
+function inicializarVoosExemplo() {
+  console.log('🔄 Verificando necessidade de voos exemplo...');
+  
+  db.get("SELECT COUNT(*) as count FROM voos", (err, result) => {
+    if (err) {
+      console.error('❌ Erro ao verificar voos:', err);
+      return;
+    }
     
-    try {
-        const { vooId, pilotoCpf, dataVoo, origem, destino, aeronave, horarioPartida, horarioChegada } = req.body;
-        
-        // Validar dados obrigatórios
-        if (!vooId || !pilotoCpf || !dataVoo || !origem || !destino) {
-            return res.status(400).json({
-                success: false,
-                message: 'Todos os campos obrigatórios devem ser preenchidos: vooId, pilotoCpf, dataVoo, origem, destino'
-            });
+    if (result.count === 0) {
+      console.log('📥 Inserindo voos de exemplo...');
+      
+      const voosExemplo = [
+        {
+          codigo: 'VG1001',
+          origem: 'São Paulo (GRU)',
+          destino: 'Rio de Janeiro (GIG)',
+          data_partida: '2024-12-20',
+          hora_partida: '08:00',
+          data_chegada: '2024-12-20',
+          hora_chegada: '09:30',
+          aeronave_id: 1,
+          preco_base: 299.90,
+          assentos_disponiveis: 186,
+          status: 'agendado'
+        },
+        {
+          codigo: 'VG1002',
+          origem: 'Rio de Janeiro (GIG)',
+          destino: 'Brasília (BSB)',
+          data_partida: '2024-12-20',
+          hora_partida: '10:00',
+          data_chegada: '2024-12-20',
+          hora_chegada: '12:00',
+          aeronave_id: 2,
+          preco_base: 399.90,
+          assentos_disponiveis: 180,
+          status: 'agendado'
+        },
+        {
+          codigo: 'VG1003',
+          origem: 'São Paulo (GRU)',
+          destino: 'Salvador (SSA)',
+          data_partida: '2024-12-20',
+          hora_partida: '14:00',
+          data_chegada: '2024-12-20',
+          hora_chegada: '16:30',
+          aeronave_id: 3,
+          preco_base: 499.90,
+          assentos_disponiveis: 124,
+          status: 'agendado'
         }
+      ];
 
-        // Verificar se o piloto existe
-        const piloto = await new Promise((resolve, reject) => {
-            db.get("SELECT * FROM usuarios WHERE cpf = ? AND tipo = 'piloto'", [pilotoCpf], (err, row) => {
-                if (err) reject(err);
-                resolve(row);
-            });
+      const insertQuery = `
+        INSERT INTO voos (codigo, origem, destino, data_partida, hora_partida, data_chegada, hora_chegada, aeronave_id, preco_base, assentos_disponiveis, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      voosExemplo.forEach((voo) => {
+        db.run(insertQuery, [
+          voo.codigo, voo.origem, voo.destino, 
+          voo.data_partida, voo.hora_partida, 
+          voo.data_chegada, voo.hora_chegada,
+          voo.aeronave_id, voo.preco_base, 
+          voo.assentos_disponiveis, voo.status
+        ], function(err) {
+          if (err) {
+            console.error(`❌ Erro ao inserir voo ${voo.codigo}:`, err);
+          } else {
+            console.log(`✅ Voo ${voo.codigo} inserido (ID: ${this.lastID})`);
+          }
         });
-
-        if (!piloto) {
-            return res.status(404).json({
-                success: false,
-                message: 'Piloto não encontrado. Verifique o CPF informado.'
-            });
-        }
-
-        // Verificar se já existe atribuição para este voo
-        const vooExistente = await new Promise((resolve, reject) => {
-            db.get("SELECT * FROM voos_atribuidos WHERE voo_id = ?", [vooId], (err, row) => {
-                if (err) reject(err);
-                resolve(row);
-            });
-        });
-
-        if (vooExistente) {
-            return res.status(409).json({
-                success: false,
-                message: `Já existe uma atribuição para o voo ${vooId}`
-            });
-        }
-
-        // Inserir a atribuição
-        const query = `
-            INSERT INTO voos_atribuidos 
-            (voo_id, piloto_cpf, data_voo, origem, destino, aeronave, horario_partida, horario_chegada, status, data_atribuicao)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'confirmado', datetime('now'))
-        `;
-        
-        const params = [
-            vooId, 
-            pilotoCpf, 
-            dataVoo, 
-            origem, 
-            destino, 
-            aeronave || 'A320',
-            horarioPartida || '08:00',
-            horarioChegada || '09:30'
-        ];
-
-        const result = await new Promise((resolve, reject) => {
-            db.run(query, params, function(err) {
-                if (err) reject(err);
-                resolve(this);
-            });
-        });
-
-        console.log(`✅ Voo ${vooId} atribuído com sucesso ao piloto ${pilotoCpf}`);
-
-        res.json({
-            success: true,
-            message: 'Voo atribuído com sucesso!',
-            atribuicao: {
-                id: result.lastID,
-                vooId,
-                pilotoCpf,
-                pilotoNome: piloto.nome,
-                dataVoo,
-                origem,
-                destino,
-                aeronave: aeronave || 'A320',
-                horarioPartida: horarioPartida || '08:00',
-                horarioChegada: horarioChegada || '09:30',
-                status: 'confirmado'
-            }
-        });
-
-    } catch (error) {
-        console.error('❌ Erro ao atribuir voo:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Erro interno do servidor ao atribuir voo'
-        });
+      });
+    } else {
+      console.log(`✅ Já existem ${result.count} voos no banco`);
     }
-});
+  });
+}
 
-// Rota para listar voos atribuídos (Painel Administrativo)
-app.get('/api/admin/voos-atribuidos', async (req, res) => {
-    try {
-        const query = `
-            SELECT va.*, u.nome as piloto_nome 
-            FROM voos_atribuidos va 
-            LEFT JOIN usuarios u ON va.piloto_cpf = u.cpf 
-            ORDER BY va.data_voo, va.horario_partida
-        `;
+// ✅ CHAMAR a função após conectar ao banco
+setTimeout(() => {
+  inicializarVoosExemplo();
+}, 1000);
 
-        const voosAtribuidos = await new Promise((resolve, reject) => {
-            db.all(query, [], (err, rows) => {
-                if (err) reject(err);
-                resolve(rows || []);
-            });
-        });
-
-        res.json({
-            success: true,
-            voos: voosAtribuidos
-        });
-
-    } catch (error) {
-        console.error('❌ Erro ao buscar voos atribuídos:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Erro interno do servidor'
-        });
-    }
-});
-
-// Rota para o piloto ver seus voos atribuídos
-app.get('/api/piloto/meus-voos/:cpf', async (req, res) => {
-    try {
-        const { cpf } = req.params;
-        
-        console.log(`🛫 Buscando voos para o piloto CPF: ${cpf}`);
-
-        const query = `
-            SELECT * FROM voos_atribuidos 
-            WHERE piloto_cpf = ? 
-            ORDER BY data_voo, horario_partida
-        `;
-
-        const meusVoos = await new Promise((resolve, reject) => {
-            db.all(query, [cpf], (err, rows) => {
-                if (err) reject(err);
-                resolve(rows || []);
-            });
-        });
-
-        console.log(`✅ Encontrados ${meusVoos.length} voos para o piloto ${cpf}`);
-
-        res.json({
-            success: true,
-            voos: meusVoos
-        });
-
-    } catch (error) {
-        console.error('❌ Erro ao buscar voos do piloto:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Erro interno do servidor'
-        });
-    }
-});
-
-// Rota para buscar informações do piloto logado
-app.get('/api/piloto/perfil/:cpf', async (req, res) => {
-    try {
-        const { cpf } = req.params;
-
-        const query = `
-            SELECT nome, cpf, email, matricula, tipo, data_criacao 
-            FROM usuarios 
-            WHERE cpf = ? AND tipo = 'piloto'
-        `;
-
-        const piloto = await new Promise((resolve, reject) => {
-            db.get(query, [cpf], (err, row) => {
-                if (err) reject(err);
-                resolve(row);
-            });
-        });
-
-        if (!piloto) {
-            return res.status(404).json({
-                success: false,
-                message: 'Piloto não encontrado'
-            });
-        }
-
-        res.json({
-            success: true,
-            piloto: piloto
-        });
-
-    } catch (error) {
-        console.error('❌ Erro ao buscar perfil do piloto:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Erro interno do servidor'
-        });
-    }
-});
-
-// Rota demo setup (mantida da versão anterior)
+// Rota demo setup
 app.post('/api/demo/setup', async (req, res) => {
     console.log('🚀 Iniciando configuração de demonstração...');
     
     try {
-        // ... (código anterior mantido igual)
         const usuariosDemo = [
             { nome: 'João Silva', cpf: '12345678900', senha: '1234', tipo: 'cliente', email: 'joao.silva@email.com' },
             { nome: 'Carlos Comissário', cpf: '11122233344', senha: '1234', tipo: 'comissario', matricula: 'COM001', email: 'carlos@companhiaaerea.com' },
@@ -271,8 +147,7 @@ app.post('/api/demo/setup', async (req, res) => {
                 status: 'agendado',
                 piloto_id: 3,
                 co_piloto_id: 6
-            },
-            // ... (outros voos demo)
+            }
         ];
 
         let usuariosCriados = 0;
@@ -327,61 +202,6 @@ app.post('/api/demo/setup', async (req, res) => {
             });
         }
 
-        // ✅ NOVO: Criar algumas atribuições de voo para demonstração
-        console.log('🛫 Criando atribuições de voo para demonstração...');
-        
-        const atribuicoesDemo = [
-            {
-                vooId: 'VG1001',
-                pilotoCpf: '55566677788', // Ana Piloto
-                dataVoo: '2024-12-20',
-                origem: 'São Paulo (GRU)',
-                destino: 'Rio de Janeiro (GIG)',
-                aeronave: 'A320',
-                horarioPartida: '08:00',
-                horarioChegada: '09:30'
-            },
-            {
-                vooId: 'VG1002', 
-                pilotoCpf: '77788899900', // Paulo Piloto
-                dataVoo: '2024-12-20',
-                origem: 'Rio de Janeiro (GIG)',
-                destino: 'São Paulo (GRU)',
-                aeronave: 'B737',
-                horarioPartida: '11:00',
-                horarioChegada: '12:30'
-            }
-        ];
-
-        for (const atribuicao of atribuicoesDemo) {
-            await new Promise((resolve, reject) => {
-                const query = `
-                    INSERT INTO voos_atribuidos 
-                    (voo_id, piloto_cpf, data_voo, origem, destino, aeronave, horario_partida, horario_chegada, status, data_atribuicao)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'confirmado', datetime('now'))
-                `;
-                
-                db.run(query, [
-                    atribuicao.vooId,
-                    atribuicao.pilotoCpf,
-                    atribuicao.dataVoo,
-                    atribuicao.origem,
-                    atribuicao.destino,
-                    atribuicao.aeronave,
-                    atribuicao.horarioPartida,
-                    atribuicao.horarioChegada
-                ], function(err) {
-                    if (err) {
-                        console.log(`ℹ️ Atribuição já existe ou erro: ${atribuicao.vooId}`);
-                        resolve();
-                    } else {
-                        console.log(`✅ Atribuição demo criada: ${atribuicao.vooId} para ${atribuicao.pilotoCpf}`);
-                        resolve();
-                    }
-                });
-            });
-        }
-
         console.log(`🎉 Demonstração configurada: ${usuariosCriados} usuários, ${voosCriados} voos`);
         
         res.json({
@@ -400,7 +220,7 @@ app.post('/api/demo/setup', async (req, res) => {
     }
 });
 
-// Rota dashboard estatísticas (mantida)
+// Rota dashboard estatísticas
 app.get('/api/dashboard/estatisticas', (req, res) => {
     console.log('📊 Buscando estatísticas...');
     
@@ -422,7 +242,7 @@ app.get('/api/dashboard/estatisticas', (req, res) => {
                     return res.status(500).json({ success: false, message: 'Erro interno do servidor' });
                 }
 
-                // ✅ NOVO: Buscar estatísticas de atribuições
+                // Buscar estatísticas de atribuições
                 db.get("SELECT COUNT(*) as totalAtribuicoes FROM voos_atribuidos", (err, atribuicoesRow) => {
                     if (err) {
                         console.error('Erro ao buscar atribuições:', err);
@@ -443,7 +263,7 @@ app.get('/api/dashboard/estatisticas', (req, res) => {
     });
 });
 
-// Rotas para HTML (mantidas)
+// Rotas para HTML
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../index.html'));
 });
@@ -489,12 +309,15 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Iniciar servidor se não for test
-if (process.env.NODE_ENV !== 'test') {
-    app.listen(PORT, () => {
-        console.log(`Servidor rodando na porta ${PORT}`);
-        console.log(`Acesse: http://localhost:${PORT}`);
-    });
-}
+// Rota padrão para API não encontrada
+app.use('/api/*', (req, res) => {
+    res.status(404).json({ success: false, message: 'Endpoint da API não encontrado' });
+});
+
+// Iniciar servidor
+app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Acesse: http://localhost:${PORT}`);
+});
 
 module.exports = app;
