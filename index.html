@@ -54,17 +54,6 @@
             flex-wrap: wrap;
         }
 
-        .btn-demo {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-            color: white;
-            border: none;
-        }
-
-        .btn-demo:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
-        }
-
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -100,38 +89,6 @@
         .feature-icon i {
             font-size: 2rem;
             color: white;
-        }
-
-        .demo-info {
-            background: var(--gray-light);
-            padding: 2rem;
-            border-radius: 16px;
-            margin-bottom: 2rem;
-        }
-
-        .demo-accounts {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .account-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .account-role {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .account-details {
-            font-size: 0.9rem;
-            color: var(--gray);
         }
 
         .stats {
@@ -190,9 +147,6 @@
                     <button onclick="window.location.href='/cadastro'" class="btn btn-secondary">
                         <i class="fas fa-user-plus"></i> Criar Conta
                     </button>
-                    <button id="btn-demo" class="btn btn-demo">
-                        <i class="fas fa-rocket"></i> Configurar Demonstração
-                    </button>
                 </div>
             </div>
         </section>
@@ -219,52 +173,8 @@
                 <div class="feature-icon">
                     <i class="fas fa-chart-line"></i>
                 </div>
-                <h3>Painel do Diretor</h3>
+                <h3>Painel Administrativo</h3>
                 <p>Dashboard executivo com métricas financeiras, relatórios e gestão estratégica.</p>
-            </div>
-        </section>
-
-        <!-- Demo Information -->
-        <section class="demo-info">
-            <h2 style="color: var(--dark); margin-bottom: 1rem;">
-                <i class="fas fa-info-circle"></i> Sistema de Demonstração
-            </h2>
-            <p style="color: var(--gray); margin-bottom: 1.5rem;">
-                Clique em "Configurar Demonstração" para carregar dados de exemplo e testar todas as funcionalidades do sistema.
-            </p>
-
-            <div class="demo-accounts">
-                <div class="account-card">
-                    <div class="account-role">👤 Cliente</div>
-                    <div class="account-details">
-                        <strong>CPF:</strong> 123.456.789-00<br>
-                        <strong>Senha:</strong> 1234
-                    </div>
-                </div>
-
-                <div class="account-card">
-                    <div class="account-role">👨‍💼 Comissário</div>
-                    <div class="account-details">
-                        <strong>CPF:</strong> 111.222.333-44<br>
-                        <strong>Senha:</strong> 1234
-                    </div>
-                </div>
-
-                <div class="account-card">
-                    <div class="account-role">✈️ Piloto</div>
-                    <div class="account-details">
-                        <strong>CPF:</strong> 555.666.777-88<br>
-                        <strong>Senha:</strong> 1234
-                    </div>
-                </div>
-
-                <div class="account-card">
-                    <div class="account-role">👔 Diretor</div>
-                    <div class="account-details">
-                        <strong>CPF:</strong> 999.888.777-66<br>
-                        <strong>Senha:</strong> 1234
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -295,7 +205,7 @@
             </h3>
             <p style="color: var(--gray); line-height: 1.6;">
                 O sistema determina automaticamente o tipo de conta baseado no CPF informado.<br>
-                <strong>CPFs especiais</strong> criam contas de funcionários e diretores automaticamente,<br>
+                <strong>CPFs especiais</strong> criam contas de funcionários e administradores automaticamente,<br>
                 enquanto <strong>outros CPFs</strong> criam contas de clientes normais.
             </p>
         </div>
@@ -318,41 +228,6 @@
                 console.log('Usando estatísticas padrão para demonstração');
             }
         }
-
-        // Sistema de Demonstração
-        document.getElementById('btn-demo').addEventListener('click', async function() {
-            const btn = this;
-            const originalText = btn.innerHTML;
-            
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Configurando...';
-            btn.disabled = true;
-
-            try {
-                const response = await fetch('/api/demo/setup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    alert('🎉 Demonstração configurada com sucesso!\n\nOs seguintes logins estão disponíveis:\n\n👤 Cliente: 123.456.789-00 / 1234\n👨‍💼 Comissário: 111.222.333-44 / 1234\n✈️ Piloto: 555.666.777-88 / 1234\n👔 Diretor: 999.888.777-66 / 1234\n\n💡 Use estes CPFs para testar os diferentes perfis!');
-                    
-                    // Recarregar estatísticas
-                    carregarEstatisticas();
-                } else {
-                    alert('❌ ' + (data.message || 'Erro ao configurar demonstração'));
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('❌ Erro ao conectar com o servidor. Verifique se o servidor está rodando.');
-            } finally {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            }
-        });
 
         // Inicializar
         document.addEventListener('DOMContentLoaded', function() {

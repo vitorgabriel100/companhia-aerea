@@ -664,8 +664,7 @@
             <div class="dashboard-nav">
                 <ul class="nav-tabs">
                     <li><button class="active" onclick="showScreen('dashboard', this)"><i class="fas fa-home"></i> Dashboard</button></li>
-                    <li><button onclick="showScreen('voosProgramados', this)"><i class="fas fa-calendar-alt"></i> Voos Programados</button></li>
-                    <li><button onclick="showScreen('checklist', this)"><i class="fas fa-clipboard-check"></i> Checklist</button></li>
+                    <li><button onclick="showScreen('meusVoos', this)"><i class="fas fa-plane"></i> Meus Voos</button></li>
                     <li><button onclick="showScreen('meteorologia', this)"><i class="fas fa-cloud-sun"></i> Meteorologia</button></li>
                     <li><button onclick="showScreen('perfil', this)"><i class="fas fa-user"></i> Meu Perfil</button></li>
                 </ul>
@@ -688,6 +687,41 @@
                                 <i class="fas fa-plane-slash"></i>
                                 <h3>Nenhum voo próximo</h3>
                                 <p>Não há voos atribuídos a você no momento.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ações Rápidas -->
+                    <div class="card">
+                        <h3><i class="fas fa-bolt"></i> Ações Rápidas</h3>
+                        <div class="quick-actions">
+                            <div class="action-card" onclick="showScreen('meusVoos')">
+                                <div class="action-icon">
+                                    <i class="fas fa-plane"></i>
+                                </div>
+                                <h4>Meus Voos</h4>
+                                <p>Ver todos os voos atribuídos</p>
+                            </div>
+                            <div class="action-card" onclick="showScreen('meteorologia')">
+                                <div class="action-icon">
+                                    <i class="fas fa-cloud-sun"></i>
+                                </div>
+                                <h4>Meteorologia</h4>
+                                <p>Condições climáticas</p>
+                            </div>
+                            <div class="action-card" onclick="verPlanoVoo()">
+                                <div class="action-icon">
+                                    <i class="fas fa-map"></i>
+                                </div>
+                                <h4>Plano de Voo</h4>
+                                <p>Consultar rotas</p>
+                            </div>
+                            <div class="action-card" onclick="showScreen('perfil')">
+                                <div class="action-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h4>Meu Perfil</h4>
+                                <p>Informações pessoais</p>
                             </div>
                         </div>
                     </div>
@@ -716,39 +750,20 @@
                     </div>
                 </div>
 
-                <!-- Voos Programados -->
-                <div id="voosProgramados" class="content-section" style="display: none;">
+                <!-- SEÇÃO: MEUS VOOS ATRIBUÍDOS -->
+                <div id="meusVoos" class="content-section" style="display: none;">
                     <div class="section-header">
-                        <h2><i class="fas fa-calendar-alt"></i> Voos Programados</h2>
-                        <div class="stats-badge" id="totalVoos">0 voos</div>
+                        <h2><i class="fas fa-plane"></i> Meus Voos Atribuídos</h2>
+                        <div class="stats-badge" id="totalVoosAtribuidos">0 voos</div>
                     </div>
-                    <div id="listaVoosProgramados" class="card-grid">
-                        <div class="empty-state">
-                            <i class="fas fa-spinner fa-spin"></i>
-                            <h3>Carregando voos...</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Checklist -->
-                <div id="checklist" class="content-section" style="display: none;">
-                    <div class="section-header">
-                        <h2><i class="fas fa-clipboard-check"></i> Checklist Pré-Voo</h2>
-                        <div class="stats-badge" id="checklistProgress">0%</div>
-                    </div>
+                    
                     <div class="card">
-                        <h3 id="checklistTitulo">Checklist</h3>
-                        <div id="checklistItems">
-                            <div class="empty-state" style="padding: 2rem;">
-                                <i class="fas fa-list-ul"></i>
-                                <h3>Nenhum voo selecionado</h3>
-                                <p>Por favor, vá para "Voos Programados" e selecione "Iniciar Checklist" em um voo.</p>
+                        <h3><i class="fas fa-list-check"></i> Voos Atribuídos</h3>
+                        <div id="listaMeusVoos" class="card-grid">
+                            <div class="empty-state">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <h3>Carregando seus voos...</h3>
                             </div>
-                        </div>
-                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray-light); display: none;" id="checklistFooter">
-                            <button class="btn btn-primary btn-responsive" onclick="finalizarChecklist()" id="btnFinalizarChecklist">
-                                <i class="fas fa-check-circle"></i> Finalizar Checklist
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -778,7 +793,7 @@
                         <div class="card">
                             <h3><i class="fas fa-map-marker-alt"></i> Rio de Janeiro (GIG)</h3>
                             <div class="weather-info">
-                                <div class="weather-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                <div class="weather-card">
                                     <div class="weather-temp">32°C</div>
                                     <div style="margin-bottom: 1rem;">Ensolarado</div>
                                     <div class="weather-details">
@@ -833,6 +848,22 @@
         </div>
     </div>
 
+    <!-- Modal de Checklist -->
+    <div id="modalChecklist" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 600px;">
+            <h3 id="modalChecklistTitulo">Checklist Pré-Voo</h3>
+            <div id="modalChecklistItems" style="max-height: 400px; overflow-y: auto; margin-bottom: 1.5rem;">
+                <!-- Itens do checklist serão inseridos aqui -->
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-outline" onclick="fecharModalChecklist()">Cancelar</button>
+                <button class="btn btn-primary" onclick="finalizarChecklist()" id="btnFinalizarChecklist">
+                    <i class="fas fa-check-circle"></i> Finalizar Checklist
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal de Saída -->
     <div id="modalSair" class="modal-overlay" style="display: none;">
         <div class="modal-content">
@@ -847,8 +878,8 @@
 
     <script>
         let usuarioLogado = null;
-        let voosPiloto = [];
-        let checklistCompleto = false;
+        let meusVoosAtribuidos = [];
+        let vooChecklistAtual = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             const userData = localStorage.getItem('user');
@@ -859,7 +890,7 @@
                 document.getElementById('userName').textContent = usuarioLogado.nome;
                 document.getElementById('userAvatar').textContent = usuarioLogado.nome.charAt(0).toUpperCase();
                 
-                carregarDadosDoPiloto();
+                carregarMeusVoosAtribuidos();
                 carregarPerfil();
             } else {
                 console.error('❌ Usuário não logado! Redirecionando...');
@@ -867,95 +898,84 @@
             }
         });
 
-        async function carregarDadosDoPiloto() {
+        // CARREGAR VOOS ATRIBUÍDOS DO PAINEL ADMINISTRATIVO
+        async function carregarMeusVoosAtribuidos() {
             try {
-                const response = await fetch('/api/piloto/meus-voos');
+                // Simular chamada à API para buscar voos atribuídos
+                const cpfPiloto = usuarioLogado.cpf;
+                console.log('🔄 Buscando voos para o piloto:', cpfPiloto);
                 
-                if (!response.ok) {
-                    throw new Error(`Erro na API: ${response.statusText}`);
-                }
+                // Dados de exemplo - substituir por chamada real à API
+                setTimeout(() => {
+                    meusVoosAtribuidos = [
+                        {
+                            id: 1,
+                            vooId: 'FL101',
+                            pilotoCpf: cpfPiloto,
+                            dataVoo: '2024-12-20',
+                            origem: 'São Paulo (GRU)',
+                            destino: 'Rio de Janeiro (GIG)',
+                            status: 'confirmado',
+                            dataAtribuicao: '2024-01-10',
+                            aeronave: 'Boeing 737-800',
+                            horarioPartida: '08:00',
+                            horarioChegada: '09:30',
+                            precoBase: 299.99
+                        },
+                        {
+                            id: 2,
+                            vooId: 'FL102',
+                            pilotoCpf: cpfPiloto,
+                            dataVoo: '2024-12-20',
+                            origem: 'Rio de Janeiro (GIG)',
+                            destino: 'São Paulo (GRU)',
+                            status: 'confirmado',
+                            dataAtribuicao: '2024-01-10',
+                            aeronave: 'Airbus A320',
+                            horarioPartida: '11:00',
+                            horarioChegada: '12:30',
+                            precoBase: 299.99
+                        },
+                        {
+                            id: 3,
+                            vooId: 'FL201',
+                            pilotoCpf: cpfPiloto,
+                            dataVoo: '2024-12-21',
+                            origem: 'São Paulo (GRU)',
+                            destino: 'Belo Horizonte (CNF)',
+                            status: 'pendente',
+                            dataAtribuicao: '2024-01-11',
+                            aeronave: 'Embraer E195',
+                            horarioPartida: '14:00',
+                            horarioChegada: '15:15',
+                            precoBase: 199.99
+                        }
+                    ];
+                    
+                    console.log('✅ Voos atribuídos carregados:', meusVoosAtribuidos);
+                    renderizarMeusVoosAtribuidos();
+                    renderizarDashboard();
+                }, 1000);
                 
-                const data = await response.json();
-                
-                if (data.success && data.voos) {
-                    voosPiloto = data.voos;
-                    console.log('✅ Voos do piloto carregados:', voosPiloto);
-                } else {
-                    console.warn('Nenhum voo retornado pela API.');
-                    voosPiloto = [];
-                }
             } catch (error) {
-                console.error('Erro ao carregar dados do piloto:', error);
-                voosPiloto = [];
-            }
-            
-            renderizarDashboard();
-            renderizarVoosProgramados();
-        }
-
-        function renderizarDashboard() {
-            const container = document.getElementById('proximoVooInfo');
-            
-            if (voosPiloto.length > 0) {
-                const proximoVoo = voosPiloto[0];
-                const status = getStatusVoo(proximoVoo.data_partida, proximoVoo.hora_partida);
-                
-                document.getElementById('dashAeronave').textContent = proximoVoo.aeronave_modelo || 'A320';
-                
-                container.innerHTML = `
-                    <div class="flight-details">
-                        <div class="detail-item">
-                            <span class="detail-label">Voo</span>
-                            <span class="detail-value">${proximoVoo.codigo}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Rota</span>
-                            <span class="detail-value">${proximoVoo.origem} → ${proximoVoo.destino}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Data</span>
-                            <span class="detail-value">${formatarData(proximoVoo.data_partida)}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Horário</span>
-                            <span class="detail-value">${proximoVoo.hora_partida}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Aeronave</span>
-                            <span class="detail-value">${proximoVoo.aeronave_modelo || 'A320'}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label">Status</span>
-                            <span class="detail-value">
-                                <span class="flight-status status-${status}">${getStatusText(status)}</span>
-                            </span>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary btn-responsive" onclick="iniciarChecklist(${proximoVoo.id})" style="margin-top: 1rem;">
-                        <i class="fas fa-clipboard-check"></i> Iniciar Checklist
-                    </button>
-                `;
-            } else {
-                document.getElementById('dashAeronave').textContent = "--";
-                container.innerHTML = `
-                    <div class="empty-state" style="padding: 2rem;">
-                        <i class="fas fa-plane-slash"></i>
-                        <h3>Nenhum voo próximo</h3>
-                        <p>Não há voos atribuídos a você no momento.</p>
-                    </div>
-                `;
+                console.error('❌ Erro ao carregar voos atribuídos:', error);
+                meusVoosAtribuidos = [];
+                renderizarMeusVoosAtribuidos();
             }
         }
 
-        function renderizarVoosProgramados() {
-            const container = document.getElementById('listaVoosProgramados');
-            document.getElementById('totalVoos').textContent = `${voosPiloto.length} voos`;
+        function renderizarMeusVoosAtribuidos() {
+            const container = document.getElementById('listaMeusVoos');
+            const totalVoos = meusVoosAtribuidos.length;
+            document.getElementById('totalVoosAtribuidos').textContent = `${totalVoos} voos`;
             
-            if (voosPiloto.length > 0) {
+            if (totalVoos > 0) {
                 container.innerHTML = '';
                 
-                voosPiloto.forEach(voo => {
-                    const status = getStatusVoo(voo.data_partida, voo.hora_partida);
+                meusVoosAtribuidos.forEach(voo => {
+                    const status = getStatusVooAtribuido(voo.dataVoo, voo.status);
+                    const podeIniciarChecklist = status === 'preflight' && voo.status === 'confirmado';
+                    
                     const card = document.createElement('div');
                     card.className = 'flight-card';
                     card.innerHTML = `
@@ -969,33 +989,38 @@
                         </div>
                         <div class="flight-details">
                             <div class="detail-item">
+                                <span class="detail-label">Código do Voo</span>
+                                <span class="detail-value">${voo.vooId}</span>
+                            </div>
+                            <div class="detail-item">
                                 <span class="detail-label">Data</span>
-                                <span class="detail-value">${formatarData(voo.data_partida)}</span>
+                                <span class="detail-value">${formatarData(voo.dataVoo)}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Horário</span>
-                                <span class="detail-value">${voo.hora_partida}</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-label">Código</span>
-                                <span class="detail-value">${voo.codigo}</span>
+                                <span class="detail-value">${voo.horarioPartida} - ${voo.horarioChegada}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label">Aeronave</span>
-                                <span class="detail-value">${voo.aeronave_modelo || 'A320'}</span>
+                                <span class="detail-value">${voo.aeronave}</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Piloto</span>
-                                <span class="detail-value">${voo.piloto_nome || 'N/A'}</span>
+                                <span class="detail-label">Atribuído em</span>
+                                <span class="detail-value">${formatarData(voo.dataAtribuicao)}</span>
                             </div>
                             <div class="detail-item">
-                                <span class="detail-label">Co-piloto</span>
-                                <span class="detail-value">${voo.co_piloto_nome || 'N/A'}</span>
+                                <span class="detail-label">Status</span>
+                                <span class="detail-value">${voo.status === 'confirmado' ? 'Confirmado' : 'Pendente'}</span>
                             </div>
                         </div>
-                        <button class="btn btn-primary btn-responsive" onclick="iniciarChecklist(${voo.id})" ${status !== 'preflight' ? 'disabled' : ''}>
-                            <i class="fas fa-clipboard-check"></i> ${status === 'preflight' ? 'Iniciar Checklist' : getStatusText(status)}
-                        </button>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button class="btn btn-primary btn-responsive" onclick="iniciarChecklistAtribuido('${voo.vooId}')" ${!podeIniciarChecklist ? 'disabled' : ''}>
+                                <i class="fas fa-clipboard-check"></i> ${podeIniciarChecklist ? 'Iniciar Checklist' : getStatusText(status)}
+                            </button>
+                            <button class="btn btn-outline btn-responsive" onclick="verDetalhesVoo('${voo.vooId}')">
+                                <i class="fas fa-info-circle"></i> Detalhes
+                            </button>
+                        </div>
                     `;
                     container.appendChild(card);
                 });
@@ -1003,23 +1028,38 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-plane-slash"></i>
-                        <h3>Nenhum voo programado</h3>
-                        <p>Não há voos atribuídos a você no momento.</p>
+                        <h3>Nenhum voo atribuído</h3>
+                        <p>Você ainda não tem voos atribuídos. Os voos aparecerão aqui quando forem atribuídos pelo setor administrativo.</p>
                     </div>
                 `;
             }
         }
 
-        function iniciarChecklist(vooId) {
-            const voo = voosPiloto.find(v => v.id === vooId);
+        function verDetalhesVoo(vooId) {
+            const voo = meusVoosAtribuidos.find(v => v.vooId === vooId);
             if (!voo) return;
             
-            showScreen('checklist');
-            document.getElementById('checklistTitulo').textContent = `Checklist - Voo ${voo.codigo}`;
-            carregarChecklistItens();
+            alert(`🛫 Detalhes do Voo ${vooId}\n\n` +
+                  `Origem: ${voo.origem}\n` +
+                  `Destino: ${voo.destino}\n` +
+                  `Data: ${formatarData(voo.dataVoo)}\n` +
+                  `Horário: ${voo.horarioPartida} - ${voo.horarioChegada}\n` +
+                  `Aeronave: ${voo.aeronave}\n` +
+                  `Status: ${voo.status === 'confirmado' ? 'Confirmado' : 'Pendente'}\n` +
+                  `Atribuído em: ${formatarData(voo.dataAtribuicao)}`);
         }
 
-        function carregarChecklistItens() {
+        function iniciarChecklistAtribuido(vooId) {
+            const voo = meusVoosAtribuidos.find(v => v.vooId === vooId);
+            if (!voo) return;
+            
+            vooChecklistAtual = voo;
+            abrirModalChecklist(voo);
+        }
+
+        function abrirModalChecklist(voo) {
+            document.getElementById('modalChecklistTitulo').textContent = `Checklist Pré-Voo - ${voo.vooId}`;
+            
             const checklist = [
                 { id: 1, item: "Documentação da aeronave verificada", categoria: "Documentação" },
                 { id: 2, item: "Combustível calculado e verificado", categoria: "Combustível" },
@@ -1033,9 +1073,8 @@
                 { id: 10, item: "Briefing com tripulação realizado", categoria: "Tripulação" }
             ];
 
-            const container = document.getElementById('checklistItems');
+            const container = document.getElementById('modalChecklistItems');
             container.innerHTML = '';
-            document.getElementById('checklistFooter').style.display = 'block';
             
             let categoriaAtual = '';
             checklist.forEach((item) => {
@@ -1060,40 +1099,115 @@
                 container.appendChild(checklistItem);
             });
 
-            atualizarProgressoChecklist();
+            document.getElementById('btnFinalizarChecklist').disabled = true;
+            document.getElementById('btnFinalizarChecklist').innerHTML = '<i class="fas fa-clipboard-check"></i> Finalizar Checklist (0/10)';
+            document.getElementById('modalChecklist').style.display = 'flex';
+        }
+
+        function fecharModalChecklist() {
+            document.getElementById('modalChecklist').style.display = 'none';
+            vooChecklistAtual = null;
         }
 
         function atualizarProgressoChecklist() {
-            const checkboxes = document.querySelectorAll('#checklistItems input[type="checkbox"]');
-            if (checkboxes.length === 0) {
-                document.getElementById('checklistProgress').textContent = '0%';
-                return;
-            }
-            
+            const checkboxes = document.querySelectorAll('#modalChecklistItems input[type="checkbox"]');
             const marcados = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
             const total = checkboxes.length;
-            const progresso = Math.round((marcados / total) * 100);
-            
-            document.getElementById('checklistProgress').textContent = `${progresso}%`;
             
             const btnFinalizar = document.getElementById('btnFinalizarChecklist');
-            if (progresso === 100) {
+            btnFinalizar.innerHTML = `<i class="fas fa-clipboard-check"></i> Finalizar Checklist (${marcados}/${total})`;
+            
+            if (marcados === total) {
                 btnFinalizar.disabled = false;
                 btnFinalizar.innerHTML = '<i class="fas fa-check-circle"></i> Checklist Concluído - Voo Liberado';
-                btnFinalizar.style.background = 'linear-gradient(135deg, #10b981, #059669)';
             } else {
                 btnFinalizar.disabled = true;
-                btnFinalizar.innerHTML = `<i class="fas fa-clipboard-check"></i> Finalizar Checklist (${marcados}/${total})`;
-                btnFinalizar.style.background = '';
             }
         }
-        
+
         function finalizarChecklist() {
-            checklistCompleto = true;
-            alert('✅ Checklist finalizado com sucesso! Voo liberado para partida.');
-            renderizarVoosProgramados();
+            if (!vooChecklistAtual) return;
+            
+            alert(`✅ Checklist finalizado com sucesso!\nVoo ${vooChecklistAtual.vooId} liberado para partida.`);
+            
+            // Atualizar status do voo
+            const vooIndex = meusVoosAtribuidos.findIndex(v => v.vooId === vooChecklistAtual.vooId);
+            if (vooIndex !== -1) {
+                meusVoosAtribuidos[vooIndex].checklistConcluido = true;
+            }
+            
+            fecharModalChecklist();
+            renderizarMeusVoosAtribuidos();
             renderizarDashboard();
-            showScreen('voosProgramados');
+        }
+
+        function getStatusVooAtribuido(dataVoo, statusAtribuicao) {
+            if (statusAtribuicao !== 'confirmado') return 'pending';
+            
+            const agora = new Date();
+            const dataVooObj = new Date(dataVoo);
+            const diferenca = dataVooObj - agora;
+            const horasParaVoo = diferenca / (1000 * 60 * 60);
+
+            if (horasParaVoo < 0) return 'completed';
+            if (horasParaVoo <= 2) return 'boarding';
+            if (horasParaVoo <= 24) return 'preflight';
+            return 'confirmed';
+        }
+
+        function renderizarDashboard() {
+            const container = document.getElementById('proximoVooInfo');
+            
+            if (meusVoosAtribuidos.length > 0) {
+                const proximoVoo = meusVoosAtribuidos[0];
+                const status = getStatusVooAtribuido(proximoVoo.dataVoo, proximoVoo.status);
+                const podeIniciarChecklist = status === 'preflight' && proximoVoo.status === 'confirmado';
+                
+                document.getElementById('dashAeronave').textContent = proximoVoo.aeronave.split(' ')[0]; // Mostra apenas o modelo
+                
+                container.innerHTML = `
+                    <div class="flight-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Voo</span>
+                            <span class="detail-value">${proximoVoo.vooId}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Rota</span>
+                            <span class="detail-value">${proximoVoo.origem} → ${proximoVoo.destino}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Data</span>
+                            <span class="detail-value">${formatarData(proximoVoo.dataVoo)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Horário</span>
+                            <span class="detail-value">${proximoVoo.horarioPartida} - ${proximoVoo.horarioChegada}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Aeronave</span>
+                            <span class="detail-value">${proximoVoo.aeronave}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status</span>
+                            <span class="detail-value">
+                                <span class="flight-status status-${status}">${getStatusText(status)}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-responsive" onclick="iniciarChecklistAtribuido('${proximoVoo.vooId}')" ${!podeIniciarChecklist ? 'disabled' : ''} style="margin-top: 1rem;">
+                        <i class="fas fa-clipboard-check"></i> ${podeIniciarChecklist ? 'Iniciar Checklist' : getStatusText(status)}
+                    </button>
+                `;
+            } else {
+                document.getElementById('dashAeronave').textContent = "--";
+                container.innerHTML = `
+                    <div class="empty-state" style="padding: 2rem;">
+                        <i class="fas fa-plane-slash"></i>
+                        <h3>Nenhum voo próximo</h3>
+                        <p>Não há voos atribuídos a você no momento.</p>
+                    </div>
+                `;
+            }
         }
 
         function carregarPerfil() {
@@ -1102,7 +1216,7 @@
                 <div class="info-line"><span class="info-label">Nome completo</span><span class="info-value">${usuarioLogado.nome}</span></div>
                 <div class="info-line"><span class="info-label">Matrícula</span><span class="info-value">${usuarioLogado.matricula || 'PIL001'}</span></div>
                 <div class="info-line"><span class="info-label">Função</span><span class="info-value">Comandante</span></div>
-                <div class="info-line"><span class="info-label">E-mail</span><span class="info-value">${usuarioLogado.email || 'piloto@voeagora.com'}</span></div>
+                <div class="info-line"><span class="info-label">E-mail</span><span class="info-value">${usuarioLogado.email}</span></div>
                 <div class="info-line"><span class="info-label">Data de Admissão</span><span class="info-value">10/01/2020</span></div>
                 <div class="info-line"><span class="info-label">Licença</span><span class="info-value">ATPL</span></div>
                 <div class="info-line"><span class="info-label">Validade Médica</span><span class="info-value">31/12/2024</span></div>
@@ -1128,23 +1242,13 @@
             document.getElementById(screenId).style.display = 'block';
         }
 
-        function getStatusVoo(data, horario) {
-            const agora = new Date();
-            const dataVoo = new Date(`${data}T${horario}`);
-            const diferenca = dataVoo - agora;
-            const horasParaVoo = diferenca / (1000 * 60 * 60);
-
-            if (horasParaVoo < 0) return 'completed';
-            if (horasParaVoo <= 2) return 'boarding';
-            if (horasParaVoo <= 24) return 'preflight';
-            return 'scheduled';
-        }
-
         function getStatusText(status) {
             switch(status) {
                 case 'preflight': return 'Pré-voo';
                 case 'boarding': return 'Embarque';
                 case 'completed': return 'Concluído';
+                case 'confirmed': return 'Confirmado';
+                case 'pending': return 'Pendente';
                 default: return 'Programado';
             }
         }

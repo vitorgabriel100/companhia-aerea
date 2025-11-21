@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        /* Estilos Específicos do Painel */
         .stats-badge {
             background: var(--primary);
             color: white;
@@ -16,37 +17,45 @@
             font-size: 0.8rem;
             font-weight: 600;
         }
+
         .content-section {
             animation: fadeIn 0.5s ease;
         }
+
         .info-container {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
+
         .info-line {
             display: flex;
             justify-content: space-between;
             padding: 0.75rem 0;
             border-bottom: 1px solid var(--gray-light);
         }
+
         .info-line:last-child {
             border-bottom: none;
         }
+
         .info-label {
             color: var(--gray);
             font-weight: 500;
         }
+
         .info-value {
             color: var(--dark);
             font-weight: 600;
         }
+
         .stats-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
             margin-top: 1rem;
         }
+
         .stat-item {
             text-align: center;
             padding: 1.5rem;
@@ -54,19 +63,23 @@
             border-radius: 12px;
             transition: transform 0.2s ease;
         }
+
         .stat-item:hover {
             transform: translateY(-2px);
         }
+
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
         }
+
         .stat-label {
             color: var(--gray);
             font-size: 0.9rem;
         }
+
         .flight-card {
             background: white;
             border-radius: 16px;
@@ -77,6 +90,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .flight-card::before {
             content: '';
             position: absolute;
@@ -86,90 +100,108 @@
             height: 100%;
             background: var(--primary);
         }
+
         .flight-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
+
         .flight-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 1rem;
         }
+
         .flight-route {
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--dark);
         }
+
         .flight-price {
             font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
         }
+
         .flight-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
             margin-bottom: 1.5rem;
         }
+
         .detail-item {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
         }
+
         .detail-label {
             font-size: 0.8rem;
             color: var(--gray);
             font-weight: 500;
         }
+
         .detail-value {
             font-size: 1rem;
             color: var(--dark);
             font-weight: 600;
         }
+
         .status {
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
         }
+
         .status.confirmed {
             background: #d1fae5;
             color: #065f46;
         }
+
         .status.pending {
             background: #fef3c7;
             color: #92400e;
         }
+
         .status.embarque {
             background: #dbeafe;
             color: #1e40af;
         }
+
         .empty-state {
             text-align: center;
             padding: 3rem 2rem;
             color: var(--gray);
         }
+
         .empty-state i {
             font-size: 3rem;
             margin-bottom: 1rem;
             opacity: 0.5;
         }
+
         .empty-state h3 {
             color: var(--gray);
             margin-bottom: 0.5rem;
         }
+
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
             gap: 1.5rem;
         }
+
         .quick-actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
             margin-bottom: 2rem;
         }
+
         .action-card {
             background: white;
             padding: 1.5rem;
@@ -179,27 +211,33 @@
             transition: all 0.3s ease;
             cursor: pointer;
         }
+
         .action-card:hover {
             border-color: var(--primary);
             transform: translateY(-2px);
         }
+
         .action-icon {
             font-size: 2rem;
             color: var(--primary);
             margin-bottom: 1rem;
         }
+
         .checkin-btn {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
             border: none;
         }
+
         .checkin-btn:hover {
             background: linear-gradient(135deg, #059669, #047857);
         }
+
         .checkin-btn:disabled {
             background: var(--gray);
             cursor: not-allowed;
         }
+
         .boarding-pass {
             background: linear-gradient(135deg, #1e40af, #3730a3);
             color: white;
@@ -208,10 +246,12 @@
             margin-top: 1rem;
             display: none;
         }
+
         .boarding-pass.show {
             display: block;
             animation: slideDown 0.5s ease;
         }
+
         .pass-header {
             display: flex;
             justify-content: space-between;
@@ -220,22 +260,27 @@
             border-bottom: 2px dashed rgba(255,255,255,0.3);
             padding-bottom: 1rem;
         }
+
         .pass-details {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
         }
+
         .pass-item {
             margin-bottom: 0.5rem;
         }
+
         .pass-label {
             font-size: 0.8rem;
             opacity: 0.8;
         }
+
         .pass-value {
             font-size: 1.1rem;
             font-weight: 600;
         }
+
         .form-select {
             padding: 0.75rem;
             border: 2px solid var(--gray-light);
@@ -243,18 +288,22 @@
             font-size: 0.9rem;
             background: white;
         }
+
         .form-select:focus {
             outline: none;
             border-color: var(--primary);
         }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         @media (max-width: 768px) {
             .card-grid {
                 grid-template-columns: 1fr;
@@ -282,6 +331,7 @@
 <body>
     <div class="container">
         <div class="dashboard fade-in">
+            <!-- Header -->
             <div class="dashboard-header">
                 <div>
                     <h1><i class="fas fa-plane"></i> Voe Agora Airlines</h1>
@@ -299,6 +349,7 @@
                 </div>
             </div>
 
+            <!-- Navigation -->
             <div class="dashboard-nav">
                 <ul class="nav-tabs">
                     <li><button class="active" onclick="showScreen('meusVoos')"><i class="fas fa-ticket-alt"></i> Meus Voos</button></li>
@@ -307,13 +358,16 @@
                 </ul>
             </div>
 
+            <!-- Content -->
             <div class="dashboard-content">
+                <!-- Meus Voos -->
                 <div id="meusVoos" class="content-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                         <h2 style="color: var(--dark);"><i class="fas fa-ticket-alt"></i> Minhas Passagens</h2>
                         <div class="stats-badge" id="totalPassagens">0 passagens</div>
                     </div>
 
+                    <!-- Ações Rápidas -->
                     <div class="quick-actions">
                         <div class="action-card" onclick="showScreen('voosDisponiveis')">
                             <div class="action-icon">
@@ -341,12 +395,14 @@
                     <div id="minhasPassagens" class="card-grid"></div>
                 </div>
 
+                <!-- Voos Disponíveis -->
                 <div id="voosDisponiveis" class="content-section" style="display: none;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                         <h2 style="color: var(--dark);"><i class="fas fa-plane-departure"></i> Voos Disponíveis</h2>
                         <div class="stats-badge" id="totalVoos">0 voos</div>
                     </div>
 
+                    <!-- Filtros -->
                     <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
                         <select id="filtroOrigem" class="form-select" onchange="filtrarVoos()">
                             <option value="">Todos os origens</option>
@@ -363,6 +419,7 @@
                     <div id="listaVoos" class="card-grid"></div>
                 </div>
 
+                <!-- Perfil -->
                 <div id="perfil" class="content-section" style="display: none;">
                     <h2 style="color: var(--dark); margin-bottom: 2rem;"><i class="fas fa-user"></i> Meu Perfil</h2>
                     <div class="card-grid">
@@ -409,13 +466,13 @@
         </div>
     </div>
 
+    <!-- SCRIPT CORRIGIDO E ROBUSTO -->
     <script>
         let usuarioLogado = null;
         let todasPassagens = [];
         let todosVoos = [];
         let voosFiltrados = [];
 
-        // 1. Funções de inicialização e autenticação
         document.addEventListener('DOMContentLoaded', function() {
             const userData = localStorage.getItem('user');
             if (userData) {
@@ -429,8 +486,8 @@
                     document.getElementById('userName').textContent = usuarioLogado.nome;
                     document.getElementById('userAvatar').textContent = usuarioLogado.nome.charAt(0).toUpperCase();
                     
-                    // Carrega os dados da aba ativa ("Meus Voos" é o padrão)
-                    showScreen('meusVoos'); 
+                    // Carregar dados da aba padrão
+                    showScreen('meusVoos');
                 } catch (error) {
                     console.error("Erro ao carregar dados do usuário:", error);
                     localStorage.removeItem('user');
@@ -451,7 +508,6 @@
             }
         }
 
-        // 2. Funções de navegação
         function showScreen(screenId) {
             // Atualizar navegação
             document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
@@ -474,16 +530,21 @@
             }
         }
 
-        // 3. Funções da aba "Voos Disponíveis"
+        // --- Funções da Aba Voos Disponíveis ---
+
         async function carregarVoosDisponiveis() {
             const container = document.getElementById('listaVoos');
             try {
                 console.log('🔄 Carregando voos disponíveis...');
                 const response = await fetch('/api/voos');
+                
                 if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
                 
-                const voosArray = await response.json();
-                console.log('📦 Dados recebidos da API (Voos):', voosArray);
+                const data = await response.json();
+                console.log('📦 Dados recebidos da API (Voos):', data);
+                
+                // Verifica se data é um array ou um objeto com propriedade voos
+                const voosArray = Array.isArray(data) ? data : (data.voos || []);
                 
                 document.getElementById('totalVoos').textContent = `${voosArray.length} voos`;
                 
@@ -501,7 +562,7 @@
                     <div class="empty-state">
                         <i class="fas fa-exclamation-triangle"></i>
                         <h3>Erro ao carregar voos</h3>
-                        <p>Não foi possível conectar ao servidor (porta 9000).</p>
+                        <p>Não foi possível conectar ao servidor.</p>
                         <button class="btn btn-outline" onclick="carregarVoosDisponiveis()" style="margin-top: 1rem;">
                             <i class="fas fa-redo"></i> Tentar Novamente
                         </button>
@@ -510,19 +571,14 @@
         }
 
         function carregarFiltros() {
-            // ✅ CORREÇÃO: Esta função agora é chamada DEPOIS que os voos são carregados,
-            // então 'todosVoos' existe.
-            const origens = [...new Set(todosVoos.map(voo => voo.origem))];
-            const destinos = [...new Set(todosVoos.map(voo => voo.destino))];
-            
+            // Só executa se os elementos existirem
             const filtroOrigem = document.getElementById('filtroOrigem');
             const filtroDestino = document.getElementById('filtroDestino');
             
-            // Garante que os elementos existem antes de tentar usá-los
-            if (!filtroOrigem || !filtroDestino) {
-                console.error("Erro fatal: Elementos de filtro 'filtroOrigem' ou 'filtroDestino' não encontrados no HTML.");
-                return;
-            }
+            if (!filtroOrigem || !filtroDestino) return;
+
+            const origens = [...new Set(todosVoos.map(voo => voo.origem))];
+            const destinos = [...new Set(todosVoos.map(voo => voo.destino))];
             
             filtroOrigem.innerHTML = '<option value="">Todos os origens</option>';
             filtroDestino.innerHTML = '<option value="">Todos os destinos</option>';
@@ -566,23 +622,31 @@
                     const card = document.createElement('div');
                     card.className = 'flight-card';
                     
+                    // Fallback seguro para propriedades
+                    const preco = voo.preco_base || 0;
+                    const assentos = voo.assentos_disponiveis || 0;
+                    const origem = voo.origem || 'N/A';
+                    const destino = voo.destino || 'N/A';
+                    const data = voo.data_partida || 'N/A';
+                    const hora = voo.hora_partida || 'N/A';
+                    
                     card.innerHTML = `
                         <div class="flight-header">
                             <div class="flight-route">
-                                <i class="fas fa-plane-departure"></i> ${voo.origem} 
+                                <i class="fas fa-plane-departure"></i> ${origem} 
                                 <i class="fas fa-arrow-right" style="margin: 0 1rem;"></i>
-                                <i class="fas fa-plane-arrival"></i> ${voo.destino}
+                                <i class="fas fa-plane-arrival"></i> ${destino}
                             </div>
-                            <div class="flight-price">R$ ${voo.preco_base.toFixed(2)}</div>
+                            <div class="flight-price">R$ ${preco.toFixed(2)}</div>
                         </div>
                         <div class="flight-details">
                             <div class="detail-item">
                                 <span class="detail-label"><i class="far fa-calendar"></i> Data</span>
-                                <span class="detail-value">${formatarData(voo.data_partida)}</span>
+                                <span class="detail-value">${formatarData(data)}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label"><i class="far fa-clock"></i> Horário</span>
-                                <span class="detail-value">${voo.hora_partida}</span>
+                                <span class="detail-value">${hora}</span>
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label"><i class="fas fa-code"></i> Código</span>
@@ -590,11 +654,11 @@
                             </div>
                             <div class="detail-item">
                                 <span class="detail-label"><i class="fas fa-chair"></i> Assentos</span>
-                                <span class="detail-value">${voo.assentos_disponiveis} disponíveis</span>
+                                <span class="detail-value">${assentos} disponíveis</span>
                             </div>
                         </div>
-                        <button class="btn btn-primary" onclick="comprarPassagem(${voo.id})" style="width: 100%;" ${voo.assentos_disponiveis <= 0 ? 'disabled' : ''}>
-                            <i class="fas fa-shopping-cart"></i> ${voo.assentos_disponiveis <= 0 ? 'Esgotado' : 'Comprar Passagem'}
+                        <button class="btn btn-primary" onclick="comprarPassagem(${voo.id})" style="width: 100%;" ${assentos <= 0 ? 'disabled' : ''}>
+                            <i class="fas fa-shopping-cart"></i> ${assentos <= 0 ? 'Esgotado' : 'Comprar Passagem'}
                         </button>
                     `;
                     container.appendChild(card);
@@ -604,7 +668,8 @@
             }
         }
 
-        // 4. Funções da aba "Meus Voos"
+        // --- Funções da Aba Minhas Passagens ---
+
         async function carregarMinhasPassagens() {
             if (!usuarioLogado) return;
             
@@ -655,12 +720,12 @@
                                     <span class="detail-value">${passagem.assento}</span>
                                 </div>
                                 <div class="detail-item">
-                                    <span class="detail-label">Comprado em</span>
-                                    <span class="detail-value">${new Date(passagem.data_compra).toLocaleDateString('pt-BR')}</span>
+                                    <span class="detail-label">Classe</span>
+                                    <span class="detail-value" style="text-transform: capitalize;">${passagem.classe}</span>
                                 </div>
                             </div>
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-light);">
-                                <span class="detail-label">Status: <strong>${passagem.status}</strong></span>
+                                <span class="detail-label">Comprado em: ${new Date(passagem.data_compra).toLocaleDateString('pt-BR')}</span>
                                 <span class="flight-price">R$ ${passagem.preco_final.toFixed(2)}</span>
                             </div>
                             <button class="btn checkin-btn" onclick="fazerCheckin(${passagem.id})" style="width: 100%; margin-top: 1rem;">
@@ -687,7 +752,6 @@
             }
         }
 
-        // 5. Funções da aba "Meu Perfil"
         async function carregarPerfil() {
             if (!usuarioLogado) return;
             
@@ -710,11 +774,10 @@
                 </div>
                 <div class="info-line">
                     <span class="info-label">Data de cadastro</span>
-                    <span class="info-value">${formatarData(usuarioLogado.data_cadastro.split(' ')[0])}</span>
+                    <span class="info-value">${formatarData(usuarioLogado.data_cadastro ? usuarioLogado.data_cadastro.split(' ')[0] : '')}</span>
                 </div>
             `;
 
-            // Calcular estatísticas (baseado em 'todasPassagens' já carregado)
             const estatisticas = await calcularEstatisticas();
             document.getElementById('statVoos').textContent = estatisticas.totalVoos;
             document.getElementById('statGasto').textContent = `R$ ${estatisticas.totalGasto.toFixed(2)}`;
@@ -731,7 +794,8 @@
             };
         }
         
-        // 6. Funções de Ação
+        // --- Ações de Compra e Checkin ---
+
         async function comprarPassagem(vooId) {
             if (!usuarioLogado) {
                 alert('❌ Faça login para comprar passagens!');
@@ -749,11 +813,11 @@
                         carregarVoosDisponiveis();
                         return;
                     }
-                    
-                    // ✅ CORREÇÃO: Salvar o usuário logado junto com o voo para o pagamento
+
+                    // Salvar voo selecionado na sessão
                     const vooSelecionado = {
                         ...voo,
-                        usuario_id: usuarioLogado.id // Adiciona o ID do usuário
+                        usuario_id: usuarioLogado.id
                     };
 
                     sessionStorage.setItem('vooSelecionado', JSON.stringify(vooSelecionado));
@@ -769,7 +833,7 @@
 
         async function fazerCheckin(passagemId) {
             try {
-                alert('✅ Check-in realizado com sucesso! (Simulação)');
+                alert('✅ Check-in realizado com sucesso!');
                 const passagem = todasPassagens.find(p => p.id === passagemId);
                 const boardingPass = document.getElementById(`boarding-${passagemId}`);
                 boardingPass.innerHTML = `
@@ -786,6 +850,10 @@
                             <div class="pass-label">Assento</div>
                             <div class="pass-value">${passagem.assento}</div>
                         </div>
+                        <div class="pass-item">
+                            <div class="pass-label">Classe</div>
+                            <div class="pass-value" style="text-transform: capitalize">${passagem.classe}</div>
+                        </div>
                     </div>`;
                 boardingPass.classList.add('show');
             } catch (error) {
@@ -798,12 +866,18 @@
         function editarPerfil() { alert('Em desenvolvimento!'); }
         function exportarDados() { alert('Em desenvolvimento!'); }
 
-        // 7. Funções Utilitárias
+        // --- Utilitários ---
+
         function formatarData(data) {
-            if (!data || !data.includes('-')) return data;
-            const [ano, mes, dia] = data.split('T')[0].split('-');
-            return `${dia}/${mes}/${ano}`;
+            if (!data) return '-';
+            // Tenta tratar YYYY-MM-DD
+            if (data.includes('-')) {
+                const parts = data.split('T')[0].split('-');
+                if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return data;
         }
+
         function formatarCPF(cpf) {
             if (!cpf) return '-';
             return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
