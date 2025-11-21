@@ -1,4 +1,5 @@
 const express = require('express');
+const { db } = require('../models/database');
 const router = express.Router();
 
 // Importação correta do banco de dados
