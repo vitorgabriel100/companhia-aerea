@@ -653,4 +653,4 @@ window.Formatadores = Formatadores;
 window.GerenciadorEstado = GerenciadorEstado;
 window.InterfaceUtils = InterfaceUtils;
 
-console.log('✅ Utils carregados: ApiService, Formatadores, GerenciadorEstado, InterfaceUtils');
+console.log('Utils carregados: ApiService, Formatadores, GerenciadorEstado, InterfaceUtils');

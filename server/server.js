@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-// ✅ CORREÇÃO: Importar corretamente
+// CORREÇÃO: Importar corretamente
 const { db } = require('./models/database');
 
 // Inicializar app PRIMEIRO
@@ -24,6 +24,7 @@ const passagensRoutes = require('./routes/passagens');
 const usuariosRoutes = require('./routes/usuarios');
 const pagamentoRoutes = require('./routes/pagamento');
 const pilotoRoutes = require('./routes/piloto');
+const diretorRoutes = require('./routes/diretor');
 
 // Usar as rotas
 app.use('/api/auth', authRoutes);
@@ -33,18 +34,18 @@ app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/pagamento', pagamentoRoutes);
 app.use('/api/piloto', pilotoRoutes);
 
-// ✅ ADICIONAR: Inserir voos de exemplo automaticamente ao iniciar
+// ADICIONAR: Inserir voos de exemplo automaticamente ao iniciar
 function inicializarVoosExemplo() {
-  console.log('🔄 Verificando necessidade de voos exemplo...');
+  console.log('Verificando necessidade de voos exemplo...');
   
   db.get("SELECT COUNT(*) as count FROM voos", (err, result) => {
     if (err) {
-      console.error('❌ Erro ao verificar voos:', err);
+      console.error('Erro ao verificar voos:', err);
       return;
     }
     
     if (result.count === 0) {
-      console.log('📥 Inserindo voos de exemplo...');
+      console.log('Inserindo voos de exemplo...');
       
       const voosExemplo = [
         {
@@ -102,26 +103,26 @@ function inicializarVoosExemplo() {
           voo.assentos_disponiveis, voo.status
         ], function(err) {
           if (err) {
-            console.error(`❌ Erro ao inserir voo ${voo.codigo}:`, err);
+            console.error(`Erro ao inserir voo ${voo.codigo}:`, err);
           } else {
-            console.log(`✅ Voo ${voo.codigo} inserido (ID: ${this.lastID})`);
+            console.log(`Voo ${voo.codigo} inserido (ID: ${this.lastID})`);
           }
         });
       });
     } else {
-      console.log(`✅ Já existem ${result.count} voos no banco`);
+      console.log(`Já existem ${result.count} voos no banco`);
     }
   });
 }
 
-// ✅ CHAMAR a função após conectar ao banco
+// CHAMAR a função após conectar ao banco
 setTimeout(() => {
   inicializarVoosExemplo();
 }, 1000);
 
 // Rota demo setup
 app.post('/api/demo/setup', async (req, res) => {
-    console.log('🚀 Iniciando configuração de demonstração...');
+    console.log('Iniciando configuração de demonstração...');
     
     try {
         const usuariosDemo = [
@@ -166,11 +167,11 @@ app.post('/api/demo/setup', async (req, res) => {
                         db.run(query, params, function(err) {
                             if (err) return reject(err);
                             usuariosCriados++;
-                            console.log(`✅ Usuário demo criado: ${usuario.nome}`);
+                            console.log(`Usuário demo criado: ${usuario.nome}`);
                             resolve();
                         });
                     } else {
-                        console.log(`ℹ️ Usuário já existe: ${usuario.nome}`);
+                        console.log(`ℹUsuário já existe: ${usuario.nome}`);
                         resolve();
                     }
                 });
@@ -190,19 +191,19 @@ app.post('/api/demo/setup', async (req, res) => {
                             function(err) {
                                 if (err) return reject(err);
                                 voosCriados++;
-                                console.log(`✅ Voo demo criado: ${voo.codigo}`);
+                                console.log(`Voo demo criado: ${voo.codigo}`);
                                 resolve();
                             }
                         );
                     } else {
-                        console.log(`ℹ️ Voo já existe: ${voo.codigo}`);
+                        console.log(`ℹVoo já existe: ${voo.codigo}`);
                         resolve();
                     }
                 });
             });
         }
 
-        console.log(`🎉 Demonstração configurada: ${usuariosCriados} usuários, ${voosCriados} voos`);
+        console.log(`Demonstração configurada: ${usuariosCriados} usuários, ${voosCriados} voos`);
         
         res.json({
             success: true,
@@ -212,7 +213,7 @@ app.post('/api/demo/setup', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('❌ Erro na configuração da demo:', error);
+        console.error('Erro na configuração da demo:', error);
         res.status(500).json({
             success: false,
             message: 'Erro ao configurar demonstração: ' + error.message
@@ -222,7 +223,7 @@ app.post('/api/demo/setup', async (req, res) => {
 
 // Rota dashboard estatísticas
 app.get('/api/dashboard/estatisticas', (req, res) => {
-    console.log('📊 Buscando estatísticas...');
+    console.log('Buscando estatísticas...');
     
     db.get("SELECT COUNT(*) as totalVoos FROM voos", (err, voosRow) => {
         if (err) {

@@ -11,7 +11,7 @@ const log = (mensagem) => {
 router.post('/login', (req, res) => {
     const { cpf, senha } = req.body;
 
-    log('📥 Tentativa de login:', { cpf });
+    log('Tentativa de login:', { cpf });
 
     if (!cpf || !senha) {
         return res.json({ 
@@ -31,7 +31,7 @@ router.post('/login', (req, res) => {
 
     db.get(query, [cpf, senha], (err, row) => {
         if (err) {
-            console.error('❌ Erro no banco de dados:', err);
+            console.error('Erro no banco de dados:', err);
             return res.json({ 
                 success: false, 
                 message: 'Erro interno do servidor' 
@@ -39,7 +39,7 @@ router.post('/login', (req, res) => {
         }
 
         if (row) {
-            log(`✅ Login bem-sucedido para: ${row.nome} (${row.tipo})`);
+            log(`Login bem-sucedido para: ${row.nome} (${row.tipo})`);
             
             // Determinar página de redirecionamento baseada no tipo
             let redirectPage = '';
@@ -71,20 +71,20 @@ router.post('/login', (req, res) => {
             db.get("SELECT * FROM usuarios WHERE cpf = ?", [cpf], (err, userExists) => {
                 if (userExists) {
                     if (userExists.status === 'inativo') {
-                        log('❌ Login falhou - Usuário inativo');
+                        log('Login falhou - Usuário inativo');
                         res.json({ 
                             success: false, 
                             message: 'Usuário inativo. Entre em contato com o administrador.' 
                         });
                     } else {
-                        log('❌ Login falhou - Senha incorreta');
+                        log('Login falhou - Senha incorreta');
                         res.json({ 
                             success: false, 
                             message: 'Senha incorreta' 
                         });
                     }
                 } else {
-                    log('❌ Login falhou - CPF não cadastrado');
+                    log('Login falhou - CPF não cadastrado');
                     res.json({ 
                         success: false, 
                         message: 'CPF não cadastrado' 
@@ -102,7 +102,7 @@ router.post('/cadastro', (req, res) => {
         endereco, data_nascimento, data_admissao, salario 
     } = req.body;
 
-    log('📥 Tentativa de cadastro:', { nome, cpf, tipo, matricula });
+    log('Tentativa de cadastro:', { nome, cpf, tipo, matricula });
 
     // Validações básicas
     if (!nome || !cpf || !senha || !tipo) {
@@ -164,7 +164,7 @@ router.post('/cadastro', (req, res) => {
     // Verificar se CPF já existe
     db.get("SELECT * FROM usuarios WHERE cpf = ?", [cpf], (err, row) => {
         if (err) {
-            console.error('❌ Erro ao verificar CPF:', err);
+            console.error('Erro ao verificar CPF:', err);
             return res.json({ 
                 success: false, 
                 message: 'Erro interno do servidor' 
@@ -182,7 +182,7 @@ router.post('/cadastro', (req, res) => {
         if (tipo !== 'cliente') {
             db.get("SELECT * FROM usuarios WHERE matricula = ?", [matricula], (err, matriculaRow) => {
                 if (err) {
-                    console.error('❌ Erro ao verificar matrícula:', err);
+                    console.error('Erro ao verificar matrícula:', err);
                     return res.json({ 
                         success: false, 
                         message: 'Erro interno do servidor' 
@@ -221,14 +221,14 @@ router.post('/cadastro', (req, res) => {
 
             db.run(query, params, function(err) {
                 if (err) {
-                    console.error('❌ Erro ao cadastrar usuário:', err);
+                    console.error('Erro ao cadastrar usuário:', err);
                     return res.json({ 
                         success: false, 
                         message: 'Erro ao cadastrar usuário' 
                     });
                 }
 
-                log(`✅ Usuário cadastrado com sucesso. ID: ${this.lastID}`);
+                log(`Usuário cadastrado com sucesso. ID: ${this.lastID}`);
                 
                 // Buscar usuário recém-criado
                 const selectQuery = `
@@ -241,7 +241,7 @@ router.post('/cadastro', (req, res) => {
                 
                 db.get(selectQuery, [this.lastID], (err, newUser) => {
                     if (err) {
-                        console.error('❌ Erro ao buscar usuário criado:', err);
+                        console.error('Erro ao buscar usuário criado:', err);
                         return res.json({ 
                             success: false, 
                             message: 'Usuário criado, mas erro ao buscar dados' 
@@ -295,7 +295,7 @@ router.get('/sessao/:userId', (req, res) => {
 
     db.get(query, [userId], (err, row) => {
         if (err) {
-            console.error('❌ Erro ao verificar sessão:', err);
+            console.error('Erro ao verificar sessão:', err);
             return res.json({ 
                 success: false, 
                 message: 'Erro interno do servidor' 
@@ -303,13 +303,13 @@ router.get('/sessao/:userId', (req, res) => {
         }
 
         if (row) {
-            log(`✅ Sessão válida para: ${row.nome}`);
+            log(`Sessão válida para: ${row.nome}`);
             res.json({
                 success: true,
                 user: row
             });
         } else {
-            log('❌ Sessão inválida - usuário não encontrado ou inativo');
+            log('Sessão inválida - usuário não encontrado ou inativo');
             res.json({ 
                 success: false, 
                 message: 'Sessão expirada ou usuário inativo' 
@@ -323,7 +323,7 @@ router.put('/perfil/:userId', (req, res) => {
     const { userId } = req.params;
     const { nome, email, telefone, endereco, data_nascimento } = req.body;
 
-    log(`✏️ Atualizando perfil do usuário ID: ${userId}`);
+    log(`Atualizando perfil do usuário ID: ${userId}`);
 
     const query = `
         UPDATE usuarios 
@@ -333,7 +333,7 @@ router.put('/perfil/:userId', (req, res) => {
 
     db.run(query, [nome, email, telefone, endereco, data_nascimento, userId], function(err) {
         if (err) {
-            console.error('❌ Erro ao atualizar perfil:', err);
+            console.error('Erro ao atualizar perfil:', err);
             return res.json({ 
                 success: false, 
                 message: 'Erro ao atualizar perfil' 
@@ -347,7 +347,7 @@ router.put('/perfil/:userId', (req, res) => {
             });
         }
 
-        log(`✅ Perfil atualizado com sucesso`);
+        log(`Perfil atualizado com sucesso`);
         
         // Buscar usuário atualizado
         const selectQuery = `
@@ -360,7 +360,7 @@ router.put('/perfil/:userId', (req, res) => {
 
         db.get(selectQuery, [userId], (err, updatedUser) => {
             if (err) {
-                console.error('❌ Erro ao buscar usuário atualizado:', err);
+                console.error('Erro ao buscar usuário atualizado:', err);
                 return res.json({ 
                     success: false, 
                     message: 'Perfil atualizado, mas erro ao buscar dados' 
@@ -381,7 +381,7 @@ router.put('/senha/:userId', (req, res) => {
     const { userId } = req.params;
     const { senha_atual, nova_senha } = req.body;
 
-    log(`🔒 Alterando senha do usuário ID: ${userId}`);
+    log(`Alterando senha do usuário ID: ${userId}`);
 
     if (!senha_atual || !nova_senha) {
         return res.json({ 
@@ -400,7 +400,7 @@ router.put('/senha/:userId', (req, res) => {
     // Verificar senha atual
     db.get("SELECT * FROM usuarios WHERE id = ? AND senha = ?", [userId, senha_atual], (err, row) => {
         if (err) {
-            console.error('❌ Erro ao verificar senha:', err);
+            console.error('Erro ao verificar senha:', err);
             return res.json({ 
                 success: false, 
                 message: 'Erro interno do servidor' 
@@ -417,14 +417,14 @@ router.put('/senha/:userId', (req, res) => {
         // Atualizar senha
         db.run("UPDATE usuarios SET senha = ? WHERE id = ?", [nova_senha, userId], function(err) {
             if (err) {
-                console.error('❌ Erro ao alterar senha:', err);
+                console.error('Erro ao alterar senha:', err);
                 return res.json({ 
                     success: false, 
                     message: 'Erro ao alterar senha' 
                 });
             }
 
-            log(`✅ Senha alterada com sucesso`);
+            log(`Senha alterada com sucesso`);
             
             res.json({
                 success: true,

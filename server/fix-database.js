@@ -2,18 +2,18 @@
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./database.sqlite');
 
-console.log('🔄 Corrigindo estrutura do banco de dados...');
+console.log('Corrigindo estrutura do banco de dados...');
 
 db.serialize(() => {
     // 1. Corrigir tabela usuarios
-    console.log('📋 Corrigindo tabela usuarios...');
+    console.log('Corrigindo tabela usuarios...');
     
     // Adicionar coluna telefone se não existir
     db.run(`ALTER TABLE usuarios ADD COLUMN telefone TEXT`, (err) => {
         if (err && !err.message.includes('duplicate column name')) {
-            console.log('⚠️  Telefone:', err.message);
+            console.log('Telefone:', err.message);
         } else {
-            console.log('✅ Coluna telefone verificada');
+            console.log('Coluna telefone verificada');
         }
     });
 
@@ -43,11 +43,11 @@ db.serialize(() => {
         // Renomear tabela temporária
         db.run(`ALTER TABLE usuarios_temp RENAME TO usuarios`);
 
-        console.log('✅ Tabela usuarios atualizada com novos tipos');
+        console.log('Tabela usuarios atualizada com novos tipos');
     });
 
     // 2. Corrigir/Recriar tabela aeronaves
-    console.log('✈️  Verificando tabela aeronaves...');
+    console.log('Verificando tabela aeronaves...');
     
     db.run(`CREATE TABLE IF NOT EXISTS aeronaves (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -59,14 +59,14 @@ db.serialize(() => {
         data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
     )`, (err) => {
         if (err) {
-            console.log('⚠️  Aeronaves:', err.message);
+            console.log('Aeronaves:', err.message);
         } else {
-            console.log('✅ Tabela aeronaves verificada');
+            console.log('Tabela aeronaves verificada');
         }
     });
 
     // 3. Corrigir/Recriar tabela voos
-    console.log('🛫 Corrigindo tabela voos...');
+    console.log('Corrigindo tabela voos...');
     
     db.run(`CREATE TABLE IF NOT EXISTS voos_temp (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -111,7 +111,7 @@ db.serialize(() => {
         }
 
         db.run(`ALTER TABLE voos_temp RENAME TO voos`);
-        console.log('✅ Tabela voos corrigida');
+        console.log('Tabela voos corrigida');
     });
 
     // 4. Criar tabela tripulacao_voos se não existir
@@ -128,14 +128,14 @@ db.serialize(() => {
         UNIQUE(voo_id, usuario_id)
     )`, (err) => {
         if (err) {
-            console.log('⚠️  Tripulação:', err.message);
+            console.log('Tripulação:', err.message);
         } else {
-            console.log('✅ Tabela tripulacao_voos verificada');
+            console.log('Tabela tripulacao_voos verificada');
         }
     });
 
     // 5. Inserir dados de exemplo
-    console.log('📝 Inserindo dados de exemplo...');
+    console.log('Inserindo dados de exemplo...');
     
     // Inserir aeronaves de exemplo
     const aeronaves = [
@@ -188,7 +188,7 @@ db.serialize(() => {
     });
 
     // 6. Atualizar tipos de usuário existentes
-    console.log('🔄 Atualizando tipos de usuário...');
+    console.log('Atualizando tipos de usuário...');
     
     db.run(`UPDATE usuarios SET tipo = 'comissario' WHERE nome LIKE '%Comissari%' AND tipo = 'funcionario'`);
     db.run(`UPDATE usuarios SET tipo = 'piloto' WHERE nome LIKE '%Pilot%' AND tipo = 'funcionario'`);
@@ -198,7 +198,7 @@ db.serialize(() => {
 });
 
 db.close(() => {
-    console.log('📊 Banco de dados fechado');
-    console.log('\n✅ PRONTO! Agora execute os testes novamente:');
+    console.log('Banco de dados fechado');
+    console.log('\nPRONTO! Agora execute os testes novamente:');
     console.log('   npm test -- auth.test.js');
 });

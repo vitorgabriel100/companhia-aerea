@@ -535,13 +535,13 @@
         async function carregarVoosDisponiveis() {
             const container = document.getElementById('listaVoos');
             try {
-                console.log('🔄 Carregando voos disponíveis...');
+                console.log('Carregando voos disponíveis...');
                 const response = await fetch('/api/voos');
                 
                 if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
                 
                 const data = await response.json();
-                console.log('📦 Dados recebidos da API (Voos):', data);
+                console.log('Dados recebidos da API (Voos):', data);
                 
                 // Verifica se data é um array ou um objeto com propriedade voos
                 const voosArray = Array.isArray(data) ? data : (data.voos || []);
@@ -798,7 +798,7 @@
 
         async function comprarPassagem(vooId) {
             if (!usuarioLogado) {
-                alert('❌ Faça login para comprar passagens!');
+                alert('Faça login para comprar passagens!');
                 return;
             }
 
@@ -809,7 +809,7 @@
                 if (data.success) {
                     const voo = data.voo;
                     if (voo.assentos_disponiveis <= 0) {
-                        alert('❌ Este voo está esgotado!');
+                        alert('Este voo está esgotado!');
                         carregarVoosDisponiveis();
                         return;
                     }
@@ -833,7 +833,7 @@
 
         async function fazerCheckin(passagemId) {
             try {
-                alert('✅ Check-in realizado com sucesso!');
+                alert('Check-in realizado com sucesso!');
                 const passagem = todasPassagens.find(p => p.id === passagemId);
                 const boardingPass = document.getElementById(`boarding-${passagemId}`);
                 boardingPass.innerHTML = `
@@ -857,7 +857,7 @@
                     </div>`;
                 boardingPass.classList.add('show');
             } catch (error) {
-                alert('❌ Erro ao fazer check-in. Tente novamente.');
+                alert('Erro ao fazer check-in. Tente novamente.');
             }
         }
         

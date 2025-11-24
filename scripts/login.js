@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cpfInput = document.getElementById('cpf');
     const senhaInput = document.getElementById('senha');
 
-    console.log('✅ Login script externo carregado!');
+    console.log('Login script externo carregado!');
 
     // Formatação automática do CPF
     if (cpfInput) {
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (user) {
             try {
                 const userData = JSON.parse(user);
-                console.log('🔍 Usuário encontrado no localStorage:', userData);
+                console.log('Usuário encontrado no localStorage:', userData);
                 
                 fetch(`/api/auth/sessao/${userData.id}`)
                     .then(response => response.json())
@@ -57,22 +57,22 @@ document.addEventListener('DOMContentLoaded', function() {
                                 throw new Error("Dados de usuário inválidos do servidor");
                             }
 
-                            console.log('✅ Sessão válida, redirecionando...');
+                            console.log('Sessão válida, redirecionando...');
                             showMessage(`Bem-vindo de volta, ${userFromServer.nome}! Redirecionando...`, 'success');
                             setTimeout(() => {
                                 redirectByUserType(userFromServer);
                             }, 1000);
                         } else {
                             localStorage.removeItem('user');
-                            console.log('❌ Sessão expirada, localStorage limpo');
+                            console.log('Sessão expirada, localStorage limpo');
                         }
                     })
                     .catch(error => {
-                        console.error('❌ Erro ao verificar sessão:', error);
+                        console.error('Erro ao verificar sessão:', error);
                         localStorage.removeItem('user');
                     });
             } catch (error) {
-                console.error('❌ Erro ao parsear usuário do localStorage:', error);
+                console.error('Erro ao parsear usuário do localStorage:', error);
                 localStorage.removeItem('user');
             }
         }
@@ -81,12 +81,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (form) {
         form.addEventListener("submit", async function(e) {
             e.preventDefault();
-            console.log('📝 Formulário de login submetido');
+            console.log('Formulário de login submetido');
             
             const cpfLimpo = cpfInput.value.replace(/\D/g, '');
             const senha = senhaInput.value.trim();
 
-            console.log('🔐 Tentando login com:', { cpf: cpfLimpo });
+            console.log('Tentando login com:', { cpf: cpfLimpo });
             hideMessage();
 
             if (cpfLimpo.length !== 11) {
@@ -109,20 +109,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({ cpf: cpfLimpo, senha: senha })
                 });
 
-                console.log('📡 Resposta do servidor:', response.status);
+                console.log('Resposta do servidor:', response.status);
 
                 const data = await response.json();
-                console.log('📊 Dados da resposta:', data);
+                console.log('Dados da resposta:', data);
 
                 if (data.success && data.usuario) { // <-- Verificação extra
                     // ✅ ***** CORREÇÃO *****
                     // O backend envia 'data.usuario', não 'data.user'
                     const user = data.usuario;
                     
-                    showMessage(`✅ Login realizado com sucesso! Bem-vindo, ${user.nome}!`, "success");
+                    showMessage(`Login realizado com sucesso! Bem-vindo, ${user.nome}!`, "success");
                     
                     localStorage.setItem('user', JSON.stringify(user));
-                    console.log('💾 Usuário salvo no localStorage:', user);
+                    console.log('Usuário salvo no localStorage:', user);
                     
                     addSuccessAnimation();
                     
@@ -140,8 +140,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     addErrorAnimation();
                 }
             } catch (error) {
-                console.error('❌ Erro no login:', error);
-                showMessage("❌ Erro de conexão. Verifique sua internet e tente novamente.", "error");
+                console.error('Erro no login:', error);
+                showMessage("Erro de conexão. Verifique sua internet e tente novamente.", "error");
                 showLoading(false); 
                 addErrorAnimation();
             }
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
             messageDiv.className = `message ${type}`;
             messageDiv.style.display = 'block';
             messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            console.log('💬 Mensagem:', message, 'Tipo:', type);
+            console.log('Mensagem:', message, 'Tipo:', type);
             if (type === 'success') setTimeout(hideMessage, 5000);
         }
     }
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = '/cliente'; // Fallback
             return;
         }
-        console.log('🔄 Redirecionando para:', user.tipo);
+        console.log('Redirecionando para:', user.tipo);
         
         let redirectUrl = '/';
         switch (user.tipo) {

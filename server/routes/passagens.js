@@ -9,7 +9,7 @@ const log = (mensagem) => {
 
 // Rota para obter formas de pagamento disponíveis
 router.get('/formas-pagamento', (req, res) => {
-    log('🔍 Buscando formas de pagamento disponíveis');
+    log('Buscando formas de pagamento disponíveis');
 
     db.all(`
         SELECT id, nome, parcelas_maximas 
@@ -18,14 +18,14 @@ router.get('/formas-pagamento', (req, res) => {
         ORDER BY id
     `, [], (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar formas de pagamento:', err);
+            console.error('Erro ao buscar formas de pagamento:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro interno do servidor'
             });
         }
 
-        log(`✅ Formas de pagamento encontradas: ${rows.length}`);
+        log(`Formas de pagamento encontradas: ${rows.length}`);
         
         res.json({
             success: true,
@@ -38,7 +38,7 @@ router.get('/formas-pagamento', (req, res) => {
 router.post('/comprar', (req, res) => {
     const { voo_id, usuario_id, formaPagamento, parcelas = 1, preco_final } = req.body;
 
-    console.log('🎫 Tentativa de compra de passagem:', { 
+    console.log('Tentativa de compra de passagem:', { 
         voo_id, 
         usuario_id, 
         formaPagamento, 
@@ -57,7 +57,7 @@ router.post('/comprar', (req, res) => {
     // Primeiro, verificar forma de pagamento válida
     db.get("SELECT * FROM formas_pagamento WHERE nome = ? AND ativo = 1", [formaPagamento], (err, formaPagamentoValida) => {
         if (err) {
-            console.error('❌ Erro ao verificar forma de pagamento:', err);
+            console.error('Erro ao verificar forma de pagamento:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro interno do servidor'
@@ -89,7 +89,7 @@ router.post('/comprar', (req, res) => {
 
         db.get(queryVoo, [voo_id], (err, voo) => {
             if (err) {
-                console.error('❌ Erro ao buscar voo:', err);
+                console.error('Erro ao buscar voo:', err);
                 return res.status(500).json({
                     success: false,
                     message: 'Erro interno do servidor'
@@ -113,7 +113,7 @@ router.post('/comprar', (req, res) => {
             // Verificar se usuário existe
             db.get("SELECT * FROM usuarios WHERE id = ?", [usuario_id], (err, usuario) => {
                 if (err) {
-                    console.error('❌ Erro ao buscar usuário:', err);
+                    console.error('Erro ao buscar usuário:', err);
                     return res.status(500).json({
                         success: false,
                         message: 'Erro interno do servidor'
@@ -143,7 +143,7 @@ router.post('/comprar', (req, res) => {
                     [voo_id, usuario_id, assento, formaPagamento, parcelas, preco_final],
                     function(err) {
                         if (err) {
-                            console.error('❌ Erro ao comprar passagem:', err);
+                            console.error('Erro ao comprar passagem:', err);
                             return res.status(500).json({
                                 success: false,
                                 message: 'Erro ao comprar passagem: ' + err.message
@@ -158,11 +158,11 @@ router.post('/comprar', (req, res) => {
                             [voo_id],
                             function(err) {
                                 if (err) {
-                                    console.error('❌ Erro ao atualizar assentos:', err);
+                                    console.error('Erro ao atualizar assentos:', err);
                                     // Continua mesmo com erro na atualização
                                 }
 
-                                console.log('✅ Passagem comprada com sucesso. ID:', passagemId);
+                                console.log('Passagem comprada com sucesso. ID:', passagemId);
                                 
                                 // Buscar informações completas para resposta
                                 const queryCompleta = `
@@ -181,7 +181,7 @@ router.post('/comprar', (req, res) => {
 
                                 db.get(queryCompleta, [passagemId], (err, passagemCompleta) => {
                                     if (err) {
-                                        console.error('❌ Erro ao buscar dados completos:', err);
+                                        console.error('Erro ao buscar dados completos:', err);
                                         // Envia resposta básica mesmo com erro
                                         return res.json({
                                             success: true,
@@ -215,16 +215,16 @@ router.post('/comprar', (req, res) => {
 
                                     // Adicionar mensagens específicas por forma de pagamento
                                     if (formaPagamento === 'PIX') {
-                                        resposta.mensagemPagamento = '💰 Pagamento via PIX - 5% de desconto aplicado!';
+                                        resposta.mensagemPagamento = 'Pagamento via PIX - 5% de desconto aplicado!';
                                     } else if (formaPagamento === 'Boleto Bancário' && parcelas === 1) {
-                                        resposta.mensagemPagamento = '💸 Pagamento via Boleto - 3% de desconto aplicado!';
+                                        resposta.mensagemPagamento = 'Pagamento via Boleto - 3% de desconto aplicado!';
                                     } else if (formaPagamento === 'Cartão de Crédito') {
-                                        resposta.mensagemPagamento = `💳 Pagamento em ${parcelas}x no cartão`;
+                                        resposta.mensagemPagamento = `Pagamento em ${parcelas}x no boleto`;
                                     } else {
-                                        resposta.mensagemPagamento = '✅ Pagamento processado com sucesso!';
+                                        resposta.mensagemPagamento = 'Pagamento processado com sucesso!';
                                     }
 
-                                    console.log('📤 Enviando resposta completa para frontend');
+                                    console.log('Enviando resposta completa para frontend');
                                     res.json(resposta);
                                 });
                             }
@@ -240,7 +240,7 @@ router.post('/comprar', (req, res) => {
 router.get('/usuario/:id', (req, res) => {
     const { id } = req.params;
 
-    console.log('🔍 Buscando passagens para usuário ID:', id);
+    console.log('Buscando passagens para usuário ID:', id);
 
     const query = `
         SELECT 
@@ -259,14 +259,14 @@ router.get('/usuario/:id', (req, res) => {
 
     db.all(query, [id], (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar passagens:', err);
+            console.error('Erro ao buscar passagens:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao buscar passagens'
             });
         }
 
-        console.log(`✅ Encontradas ${rows.length} passagens para usuário ID: ${id}`);
+        console.log(`Encontradas ${rows.length} passagens para usuário ID: ${id}`);
         
         res.json({
             success: true,
@@ -296,14 +296,14 @@ router.get('/', (req, res) => {
 
     db.all(query, (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar passagens:', err);
+            console.error('Erro ao buscar passagens:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao buscar passagens'
             });
         }
 
-        log(`✅ Encontradas ${rows.length} passagens no total`);
+        log(`Encontradas ${rows.length} passagens no total`);
 
         res.json({
             success: true,
@@ -317,7 +317,7 @@ router.get('/', (req, res) => {
 router.post('/cancelar/:id', (req, res) => {
     const { id } = req.params;
 
-    log(`❌ Tentativa de cancelamento da passagem ID: ${id}`);
+    log(`Tentativa de cancelamento da passagem ID: ${id}`);
 
     // Buscar passagem para obter o voo_id
     db.get(`
@@ -327,7 +327,7 @@ router.post('/cancelar/:id', (req, res) => {
         WHERE p.id = ?
     `, [id], (err, passagem) => {
         if (err) {
-            console.error('❌ Erro ao buscar passagem:', err);
+            console.error('Erro ao buscar passagem:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro interno do servidor'
@@ -356,7 +356,7 @@ router.post('/cancelar/:id', (req, res) => {
         // Deletar passagem
         db.run("DELETE FROM passagens WHERE id = ?", [id], function(err) {
             if (err) {
-                console.error('❌ Erro ao cancelar passagem:', err);
+                console.error('Erro ao cancelar passagem:', err);
                 return res.status(500).json({
                     success: false,
                     message: 'Erro ao cancelar passagem'
@@ -369,10 +369,10 @@ router.post('/cancelar/:id', (req, res) => {
                 [passagem.voo_id],
                 function(err) {
                     if (err) {
-                        console.error('❌ Erro ao atualizar assentos:', err);
+                        console.error('Erro ao atualizar assentos:', err);
                     }
 
-                    log(`✅ Passagem ${id} cancelada com sucesso`);
+                    log(`Passagem ${id} cancelada com sucesso`);
                     
                     res.json({
                         success: true,
@@ -390,12 +390,12 @@ router.post('/checkin/:id', (req, res) => {
     const { id } = req.params;
     const { bagagens = 0 } = req.body;
 
-    log(`🎫 Tentativa de check-in para passagem ID: ${id}`);
+    log(`Tentativa de check-in para passagem ID: ${id}`);
 
     // Verificar se passagem existe
     db.get("SELECT * FROM passagens WHERE id = ?", [id], (err, passagem) => {
         if (err) {
-            console.error('❌ Erro ao buscar passagem:', err);
+            console.error('Erro ao buscar passagem:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro interno do servidor'
@@ -412,7 +412,7 @@ router.post('/checkin/:id', (req, res) => {
         // Verificar se já fez check-in
         db.get("SELECT * FROM checkins WHERE passagem_id = ?", [id], (err, checkinExistente) => {
             if (err) {
-                console.error('❌ Erro ao verificar check-in:', err);
+                console.error('Erro ao verificar check-in:', err);
                 return res.status(500).json({
                     success: false,
                     message: 'Erro interno do servidor'
@@ -432,14 +432,14 @@ router.post('/checkin/:id', (req, res) => {
                 [id, bagagens],
                 function(err) {
                     if (err) {
-                        console.error('❌ Erro ao fazer check-in:', err);
+                        console.error('Erro ao fazer check-in:', err);
                         return res.status(500).json({
                             success: false,
                             message: 'Erro ao fazer check-in'
                         });
                     }
 
-                    log(`✅ Check-in realizado com sucesso para passagem ${id}`);
+                    log(`Check-in realizado com sucesso para passagem ${id}`);
                     
                     res.json({
                         success: true,
@@ -455,7 +455,7 @@ router.post('/checkin/:id', (req, res) => {
 
 // Estatísticas de vendas por forma de pagamento
 router.get('/estatisticas/pagamento', (req, res) => {
-    log('📊 Buscando estatísticas de pagamento');
+    log('Buscando estatísticas de pagamento');
 
     db.all(`
         SELECT 
@@ -468,7 +468,7 @@ router.get('/estatisticas/pagamento', (req, res) => {
         ORDER BY total_vendido DESC
     `, [], (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar estatísticas:', err);
+            console.error('Erro ao buscar estatísticas:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro interno do servidor'
@@ -486,7 +486,7 @@ router.get('/estatisticas/pagamento', (req, res) => {
 router.get('/checkins/voo/:vooId', (req, res) => {
     const { vooId } = req.params;
 
-    log(`🔍 Buscando check-ins para voo ID: ${vooId}`);
+    log(`Buscando check-ins para voo ID: ${vooId}`);
 
     const query = `
         SELECT 
@@ -504,7 +504,7 @@ router.get('/checkins/voo/:vooId', (req, res) => {
 
     db.all(query, [vooId], (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar check-ins:', err);
+            console.error('Erro ao buscar check-ins:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao buscar check-ins'

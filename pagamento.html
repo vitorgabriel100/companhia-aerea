@@ -178,7 +178,7 @@
                 <div class="info-box success">
                     <div class="info-title"><i class="fas fa-bolt"></i> Pagamento Instantâneo</div>
                     <div class="info-text">Você receberá um QR Code para pagamento via PIX</div>
-                    <div class="discount-text">🎉 5% de desconto aplicado automaticamente!</div>
+                    <div class="discount-text">5% de desconto aplicado automaticamente!</div>
                 </div>
             </div>
 
@@ -201,7 +201,7 @@
                 <div class="info-box">
                     <div class="info-title"><i class="fas fa-file-invoice"></i> Boleto Bancário</div>
                     <div class="info-text">O boleto será gerado após a confirmação do pedido</div>
-                    <div class="discount-text">💸 3% de desconto no pagamento à vista!</div>
+                    <div class="discount-text">3% de desconto no pagamento à vista!</div>
                 </div>
             </div>
 
@@ -339,7 +339,7 @@
                 updateTotalPrice(); // Calcular total inicial
             } else {
                 console.error("Nenhum voo selecionado!");
-                alert("❌ Nenhum voo selecionado! Você será redirecionado.");
+                alert("Nenhum voo selecionado! Você será redirecionado.");
                 window.location.href = '/cliente';
             }
 
@@ -350,7 +350,7 @@
                 console.log("Usuário logado:", usuarioLogado);
             } else {
                 console.error("Nenhum usuário logado!");
-                alert("❌ Sua sessão expirou! Faça login novamente.");
+                alert("Sua sessão expirou! Faça login novamente.");
                 window.location.href = '/login';
             }
         }
@@ -449,71 +449,71 @@
             discountEl.style.display = (percent > 0) ? 'flex' : 'none';
         }
 
-        // Finalizar pagamento
-        btnFinalizar.addEventListener('click', async function() {
-            const formaSelecionada = document.querySelector('input[name="forma-pagamento"]:checked');
-            
-            if (!formaSelecionada) {
-                showMessage('Por favor, selecione uma forma de pagamento', 'error');
-                return;
-            }
+            // Finalizar pagamento - VERSÃO CORRIGIDA
+btnFinalizar.addEventListener('click', async function() {
+    const formaSelecionada = document.querySelector('input[name="forma-pagamento"]:checked');
+    
+    if (!formaSelecionada) {
+        showMessage('error', 'Por favor, selecione uma forma de pagamento');
+        return;
+    }
 
-            const formaPagamento = formaSelecionada.value;
-            const classe = classeSelect.value;
-            let parcelas = 1;
+    const formaPagamento = formaSelecionada.value;
+    const classe = classeSelect.value;
+    let parcelas = 1;
 
-            if (formaPagamento === 'Cartão de Crédito') {
-                parcelas = parseInt(document.getElementById('parcelas').value);
-            } else if (formaPagamento === 'Boleto Bancário') {
-                parcelas = parseInt(document.getElementById('parcelas-boleto').value);
-            }
+    if (formaPagamento === 'Cartão de Crédito') {
+        parcelas = parseInt(document.getElementById('parcelas').value);
+    } else if (formaPagamento === 'Boleto Bancário') {
+        parcelas = parseInt(document.getElementById('parcelas-boleto').value);
+    }
 
-            if (!usuarioLogado || !vooSelecionado) {
-                showMessage('error', '❌ Erro ao carregar dados. Tente recarregar a página.');
-                return;
-            }
+    if (!usuarioLogado || !vooSelecionado) {
+        showMessage('error', 'Erro ao carregar dados. Tente recarregar a página.');
+        return;
+    }
 
-            // ***** ✅ CORREÇÃO 2 (Obrigatórios) *****
-            // O backend (passagens.js) espera 'voo_id' e 'usuario_id'
-            const dadosCompra = {
-                voo_id: vooSelecionado.id, 
-                usuario_id: usuarioLogado.id, 
-                formaPagamento: formaPagamento,
-                parcelas: parcelas,
-                classe: classe // <-- Envia a classe selecionada
-            };
+    // ✅ PAYLOAD CORRETO para /api/pagamento/processar
+    const dadosCompra = {
+        voo_id: vooSelecionado.id,
+        usuario_id: usuarioLogado.id,
+        forma_pagamento: formaPagamento, // snake_case
+        parcelas: parcelas,
+        classe: classe, // ✅ Inclui classe
+        preco_final: parseFloat(document.getElementById('total-price').textContent.replace('R$ ', '').replace(',', '.'))
+    };
 
-            console.log("Enviando dados da compra:", dadosCompra);
+    console.log("Enviando dados da compra:", dadosCompra);
 
-            showLoading(true);
+    showLoading(true);
 
-            try {
-                const response = await fetch('/api/passagens/comprar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(dadosCompra)
-                });
-
-                const data = await response.json();
-                console.log("Resposta do back-end:", data);
-
-                if (data.success) {
-                    showMessage('success', `✅ ${data.message}\n\nSua passagem foi emitida com sucesso! Redirecionando...`);
-                    sessionStorage.removeItem('vooSelecionado');
-                    setTimeout(() => {
-                        window.location.href = '/cliente';
-                    }, 3000);
-                    
-                } else {
-                    showMessage('error', `❌ ${data.message}`);
-                    showLoading(false);
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                showMessage('error', '❌ Erro ao processar pagamento. Tente novamente.');
-                showLoading(false);
-            }
+    try {
+        // ✅ ENDPOINT CORRETO
+        const response = await fetch('/api/pagamento/processar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosCompra)
         });
+
+        const data = await response.json();
+        console.log("Resposta do back-end:", data);
+
+        if (data.success) {
+            showMessage('success', `${data.message}\n\nSua passagem foi emitida com sucesso! Redirecionando...`);
+            sessionStorage.removeItem('vooSelecionado');
+            setTimeout(() => {
+                window.location.href = '/cliente';
+            }, 3000);
+        } else {
+            showMessage('error', data.message || 'Erro ao processar compra');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showMessage('error', 'Erro ao processar pagamento. Tente novamente.');
+    } finally {
+        showLoading(false);
+    }
+});
 
         function showLoading(show) {
             if (show) {

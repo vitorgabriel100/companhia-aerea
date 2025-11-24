@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const senhaInput = document.getElementById('senha');
     const confirmarSenhaInput = document.getElementById('confirmarSenha');
 
-    console.log('✅ Cadastro script carregado!');
+    console.log('Cadastro script carregado!');
 
     // (Todas as funções de formatação de CPF, data, etc. permanecem as mesmas)
     if (cpfInput) {
@@ -52,13 +52,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (form) {
         form.addEventListener("submit", async function(e) {
             e.preventDefault();
-            console.log('📝 Formulário de cadastro submetido');
+            console.log('Formulário de cadastro submetido');
             
             const formData = new FormData(form);
             const dados = {};
             formData.forEach((value, key) => { dados[key] = value.trim(); });
 
-            console.log('👤 Dados do cadastro:', dados);
+            console.log('Dados do cadastro:', dados);
             hideMessage();
 
             // Validações
@@ -106,16 +106,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify(dadosEnvio)
                 });
 
-                console.log('📡 Resposta do servidor:', response.status);
+                console.log('Resposta do servidor:', response.status);
                 const data = await response.json();
-                console.log('📊 Dados da resposta:', data);
+                console.log('Dados da resposta:', data);
 
                 if (data.success && data.usuario) { // <-- Verificação extra
-                    // ***** ✅ CORREÇÃO AQUI *****
+                    // ***** CORREÇÃO AQUI *****
                     // O backend envia 'data.usuario', não 'data.user'
                     const user = data.usuario; 
 
-                    showMessage("✅ Cadastro realizado com sucesso! Redirecionando...", "success");
+                    showMessage("Cadastro realizado com sucesso! Redirecionando...", "success");
                     
                     localStorage.setItem('user', JSON.stringify(user)); 
                     
@@ -132,8 +132,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     showLoading(false);
                 }
             } catch (error) {
-                console.error('❌ Erro no cadastro:', error);
-                showMessage("❌ Erro de conexão. Verifique sua internet e tente novamente.", "error");
+                console.error('Erro no cadastro:', error);
+                showMessage("Erro de conexão. Verifique sua internet e tente novamente.", "error");
                 showLoading(false);
             }
         });
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = '/cliente'; // Fallback
             return;
         }
-        console.log('🔄 Redirecionando para:', user.tipo);
+        console.log('Redirecionando para:', user.tipo);
         
         let redirectUrl = '/';
         switch (user.tipo) {

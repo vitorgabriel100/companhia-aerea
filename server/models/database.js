@@ -5,23 +5,23 @@ const fs = require('fs');
 // ✅ CORREÇÃO: Caminho correto para o banco de dados
 const dbPath = path.join(__dirname, '..', 'database.sqlite');
 
-console.log('📁 Caminho do banco:', dbPath);
+console.log('Caminho do banco:', dbPath);
 
 // Verificar se o diretório existe, se não, criar
 const dbDir = path.dirname(dbPath);
 if (!fs.existsSync(dbDir)) {
-    console.log('📂 Criando diretório para banco de dados...');
+    console.log('Criando diretório para banco de dados...');
     fs.mkdirSync(dbDir, { recursive: true });
 }
 
 // Criar conexão com o banco de dados
 const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
     if (err) {
-        console.error('❌ Erro ao conectar com o banco de dados:', err.message);
-        console.error('📁 Caminho tentado:', dbPath);
+        console.error('Erro ao conectar com o banco de dados:', err.message);
+        console.error('Caminho tentado:', dbPath);
     } else {
-        console.log('✅ Conectado ao banco de dados SQLite com sucesso!');
-        console.log('📍 Local:', dbPath);
+        console.log('Conectado ao banco de dados SQLite com sucesso!');
+        console.log('Local:', dbPath);
         
         // Verificar se as tabelas principais existem
         verificarEstruturaBanco();
@@ -33,7 +33,7 @@ db.configure("busyTimeout", 5000);
 
 // Função para verificar e criar estrutura do banco se necessário
 function verificarEstruturaBanco() {
-    console.log('🔍 Verificando estrutura do banco de dados...');
+    console.log('Verificando estrutura do banco de dados...');
     
     const tabelasNecessarias = [
         'usuarios',
@@ -47,21 +47,21 @@ function verificarEstruturaBanco() {
 
     db.all("SELECT name FROM sqlite_master WHERE type='table'", (err, tables) => {
         if (err) {
-            console.error('❌ Erro ao verificar tabelas:', err);
+            console.error('Erro ao verificar tabelas:', err);
             return;
         }
 
         const tabelasExistentes = tables.map(t => t.name);
-        console.log('📋 Tabelas existentes:', tabelasExistentes);
+        console.log('Tabelas existentes:', tabelasExistentes);
 
         // Verificar se tabelas críticas existem
         const tabelasFaltantes = tabelasNecessarias.filter(t => !tabelasExistentes.includes(t));
         
         if (tabelasFaltantes.length > 0) {
-            console.warn('⚠️  Tabelas faltantes:', tabelasFaltantes);
-            console.log('💡 Execute o script reset-db.js para criar a estrutura completa.');
+            console.warn('Tabelas faltantes:', tabelasFaltantes);
+            console.log('Execute o script reset-db.js para criar a estrutura completa.');
         } else {
-            console.log('✅ Estrutura do banco verificada com sucesso!');
+            console.log('Estrutura do banco verificada com sucesso!');
         }
 
         // Verificar dados mínimos
@@ -74,12 +74,12 @@ function verificarDadosMinimos() {
     // Verificar formas de pagamento
     db.get("SELECT COUNT(*) as count FROM formas_pagamento", (err, result) => {
         if (err) {
-            console.error('❌ Erro ao verificar formas de pagamento:', err);
+            console.error('Erro ao verificar formas de pagamento:', err);
             return;
         }
 
         if (result.count === 0) {
-            console.log('💡 Inserindo formas de pagamento padrão...');
+            console.log('Inserindo formas de pagamento padrão...');
             const formasPagamento = [
                 { nome: 'Cartão de Crédito', parcelas_maximas: 18 },
                 { nome: 'PIX', parcelas_maximas: 1 },
@@ -98,12 +98,12 @@ function verificarDadosMinimos() {
     // Verificar aeronaves
     db.get("SELECT COUNT(*) as count FROM aeronaves", (err, result) => {
         if (err) {
-            console.error('❌ Erro ao verificar aeronaves:', err);
+            console.error('Erro ao verificar aeronaves:', err);
             return;
         }
 
         if (result.count === 0) {
-            console.log('💡 Inserindo aeronaves padrão...');
+            console.log('Inserindo aeronaves padrão...');
             const aeronaves = [
                 {
                     modelo: 'Boeing 737-800',
@@ -189,7 +189,7 @@ function close() {
             if (err) {
                 reject(err);
             } else {
-                console.log('✅ Conexão com o banco de dados fechada.');
+                console.log('Conexão com o banco de dados fechada.');
                 resolve();
             }
         });
@@ -198,29 +198,29 @@ function close() {
 
 // Eventos do banco
 db.on('trace', (sql) => {
-    // console.log('📝 SQL:', sql); // Descomente para debug de queries
+    // console.log('SQL:', sql); // Descomente para debug de queries
 });
 
 db.on('profile', (sql, time) => {
     if (time > 100) { // Log apenas queries lentas (>100ms)
-        console.log(`🐌 Query lenta (${time}ms):`, sql);
+        console.log(`Query lenta (${time}ms):`, sql);
     }
 });
 
 // Fechar conexão graciosamente ao encerrar a aplicação
 process.on('SIGINT', async () => {
-    console.log('\n🔄 Fechando conexão com o banco de dados...');
+    console.log('\nFechando conexão com o banco de dados...');
     try {
         await close();
         process.exit(0);
     } catch (err) {
-        console.error('❌ Erro ao fechar banco:', err);
+        console.error('Erro ao fechar banco:', err);
         process.exit(1);
     }
 });
 
 process.on('exit', () => {
-    console.log('👋 Encerrando aplicação...');
+    console.log('Encerrando aplicação...');
 });
 
 // Exportar a conexão e funções utilitárias

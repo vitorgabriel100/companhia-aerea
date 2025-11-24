@@ -13,7 +13,7 @@ db.all(`
     ORDER BY tipo, nome
 `, (err, rows) => {
     if (err) {
-        console.error('❌ Erro:', err);
+        console.error('Erro:', err);
         db.close();
         return;
     }
@@ -40,6 +40,6 @@ db.all(`
         }
     });
     
-    console.log(`📊 Total: ${rows.length} usuários`);
+    console.log(`Total: ${rows.length} usuários`);
     db.close();
 });

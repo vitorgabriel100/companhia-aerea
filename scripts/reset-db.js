@@ -5,14 +5,14 @@ const fs = require('fs');
 // Em scripts/reset-db.js
 const dbPath = path.join(__dirname, '..', 'server', 'database.sqlite');
 
-console.log('🔄 REINICIANDO BANCO DE DADOS (LIMPO)...');
+console.log('REINICIANDO BANCO DE DADOS (LIMPO)...');
 
 // Remove o arquivo do banco se existir
 if (fs.existsSync(dbPath)) {
   fs.unlinkSync(dbPath);
-  console.log('✅ Banco de dados anterior removido');
+  console.log('Banco de dados anterior removido');
 } else {
-  console.log('ℹ️  Nenhum banco anterior encontrado, criando novo...');
+  console.log('ℹNenhum banco anterior encontrado, criando novo...');
 }
 
 // Cria novo banco
@@ -22,7 +22,7 @@ const db = new sqlite3.Database(dbPath);
 db.configure("busyTimeout", 3000);
 
 db.serialize(() => {
-  console.log('\n📊 CRIANDO ESTRUTURA DAS TABELAS...');
+  console.log('\nCRIANDO ESTRUTURA DAS TABELAS...');
 
   // ========== TABELA DE USUÁRIOS ==========
   db.run(`CREATE TABLE IF NOT EXISTS usuarios (
@@ -41,7 +41,7 @@ db.serialize(() => {
     status TEXT DEFAULT 'ativo',
     data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
-  console.log('✅ Tabela USUARIOS criada');
+  console.log('Tabela USUARIOS criada');
 
   // ========== TABELA DE AERONAVES ==========
   db.run(`CREATE TABLE IF NOT EXISTS aeronaves (
@@ -54,7 +54,7 @@ db.serialize(() => {
     status TEXT DEFAULT 'disponivel',
     data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
-  console.log('✅ Tabela AERONAVES criada');
+  console.log('Tabela AERONAVES criada');
 
   // ========== TABELA DE VOOS ==========
   db.run(`CREATE TABLE IF NOT EXISTS voos (
@@ -77,7 +77,7 @@ db.serialize(() => {
     FOREIGN KEY (piloto_id) REFERENCES usuarios (id),
     FOREIGN KEY (co_piloto_id) REFERENCES usuarios (id)
   )`);
-  console.log('✅ Tabela VOOS criada');
+  console.log('Tabela VOOS criada');
 
   // ========== TABELA DE VOOS ATRIBUÍDOS (NOVA) ==========
   db.run(`CREATE TABLE IF NOT EXISTS voos_atribuidos (
@@ -92,7 +92,7 @@ db.serialize(() => {
     data_atribuicao DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (piloto_id) REFERENCES usuarios(id)
   )`);
-  console.log('✅ Tabela VOOS_ATRIBUIDOS criada');
+  console.log('Tabela VOOS_ATRIBUIDOS criada');
 
   // ========== TABELA DE TRIPULAÇÃO DE VOO ==========
   db.run(`CREATE TABLE IF NOT EXISTS tripulacao_voo (
@@ -104,7 +104,7 @@ db.serialize(() => {
     FOREIGN KEY (voo_id) REFERENCES voos (id),
     FOREIGN KEY (comissario_id) REFERENCES usuarios (id)
   )`);
-  console.log('✅ Tabela TRIPULACAO_VOO criada');
+  console.log('Tabela TRIPULACAO_VOO criada');
 
   // ========== TABELA DE FORMAS DE PAGAMENTO ==========
   db.run(`CREATE TABLE IF NOT EXISTS formas_pagamento (
@@ -114,7 +114,7 @@ db.serialize(() => {
     ativo BOOLEAN DEFAULT 1,
     data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
-  console.log('✅ Tabela FORMAS_PAGAMENTO criada');
+  console.log('Tabela FORMAS_PAGAMENTO criada');
 
   // ========== TABELA DE PASSAGENS ==========
   db.run(`CREATE TABLE IF NOT EXISTS passagens (
@@ -131,7 +131,7 @@ db.serialize(() => {
     FOREIGN KEY (voo_id) REFERENCES voos (id),
     FOREIGN KEY (usuario_id) REFERENCES usuarios (id)
   )`);
-  console.log('✅ Tabela PASSAGENS criada');
+  console.log('Tabela PASSAGENS criada');
 
   // ========== TABELA DE CHECK-IN ==========
   db.run(`CREATE TABLE IF NOT EXISTS checkins (
@@ -143,7 +143,7 @@ db.serialize(() => {
     observacoes TEXT,
     FOREIGN KEY (passagem_id) REFERENCES passagens (id)
   )`);
-  console.log('✅ Tabela CHECKINS criada');
+  console.log('Tabela CHECKINS criada');
 
   // ========== TABELA DE ESCALAS ==========
   db.run(`CREATE TABLE IF NOT EXISTS escalas (
@@ -157,9 +157,9 @@ db.serialize(() => {
     FOREIGN KEY (funcionario_id) REFERENCES usuarios (id),
     FOREIGN KEY (voo_id) REFERENCES voos (id)
   )`);
-  console.log('✅ Tabela ESCALAS criada');
+  console.log('Tabela ESCALAS criada');
 
-  console.log('\n📥 INSERINDO DADOS DE CONFIGURAÇÃO (SEM USUÁRIOS)...');
+  console.log('\nINSERINDO DADOS DE CONFIGURAÇÃO (SEM USUÁRIOS)...');
 
   // ========== FORMAS DE PAGAMENTO ==========
   const formasPagamento = [
@@ -174,7 +174,7 @@ db.serialize(() => {
       [forma.nome, forma.parcelas_maximas]
     );
   });
-  console.log('✅ Formas de pagamento inseridas');
+  console.log('Formas de pagamento inseridas');
 
   // ========== AERONAVES ==========
   const aeronaves = [
@@ -222,7 +222,7 @@ db.serialize(() => {
 
 // Tratamento de erros
 db.on('error', (err) => {
-  console.error('❌ Erro no banco de dados:', err);
+  console.error('Erro no banco de dados:', err);
 });
 
 process.on('exit', () => {

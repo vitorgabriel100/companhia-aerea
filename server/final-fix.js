@@ -2,7 +2,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./database.sqlite');
 
-console.log('🔧 APLICANDO CORREÇÕES FINAIS...');
+console.log('APLICANDO CORREÇÕES FINAIS...');
 
 db.serialize(() => {
     // 1. Adicionar colunas faltantes na tabela usuarios
@@ -20,9 +20,9 @@ db.serialize(() => {
         const [colName] = column.split(' ');
         db.run(`ALTER TABLE usuarios ADD COLUMN ${column}`, (err) => {
             if (err && !err.message.includes('duplicate column name')) {
-                console.log(`   ⚠️  ${colName}: ${err.message}`);
+                console.log(`${colName}: ${err.message}`);
             } else {
-                console.log(`   ✅ ${colName} verificado`);
+                console.log(`${colName} verificado`);
             }
         });
     });
@@ -45,9 +45,9 @@ db.serialize(() => {
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
     )`, (err) => {
         if (err) {
-            console.log('   ⚠️  Passagens:', err.message);
+            console.log('Passagens:', err.message);
         } else {
-            console.log('   ✅ Tabela passagens criada');
+            console.log('Tabela passagens criada');
         }
     });
 
@@ -57,7 +57,7 @@ db.serialize(() => {
     // Verificar qual nome de tabela existe
     db.get("SELECT name FROM sqlite_master WHERE type='table' AND (name='tripulacao_voos' OR name='tripulacao_voo')", (err, row) => {
         if (err) {
-            console.log('   ⚠️  Erro ao verificar tripulação:', err.message);
+            console.log('Erro ao verificar tripulação:', err.message);
             return;
         }
 
@@ -74,22 +74,22 @@ db.serialize(() => {
                 UNIQUE(voo_id, usuario_id)
             )`, (err) => {
                 if (err) {
-                    console.log('   ⚠️  Tripulação:', err.message);
+                    console.log('Tripulação:', err.message);
                 } else {
-                    console.log('   ✅ Tabela tripulacao_voos criada');
+                    console.log('Tabela tripulacao_voos criada');
                 }
             });
         } else if (row.name === 'tripulacao_voo') {
             // Renomear se estiver com nome antigo
             db.run(`ALTER TABLE tripulacao_voo RENAME TO tripulacao_voos`, (err) => {
                 if (err) {
-                    console.log('   ⚠️  Erro ao renomear:', err.message);
+                    console.log('Erro ao renomear:', err.message);
                 } else {
-                    console.log('   ✅ Tabela renomeada para tripulacao_voos');
+                    console.log('Tabela renomeada para tripulacao_voos');
                 }
             });
         } else {
-            console.log('   ✅ Tabela tripulacao_voos já existe');
+            console.log('Tabela tripulacao_voos já existe');
         }
     });
 
@@ -99,7 +99,7 @@ db.serialize(() => {
     // Inserir uma passagem de exemplo
     db.get("SELECT COUNT(*) as count FROM passagens", (err, row) => {
         if (err) {
-            console.log('   ⚠️  Erro ao verificar passagens:', err.message);
+            console.log('Erro ao verificar passagens:', err.message);
             return;
         }
 
@@ -114,9 +114,9 @@ db.serialize(() => {
                                 [voo.id, usuario.id, '12A', 'Cartão de Crédito', 350.00],
                                 (err) => {
                                     if (err) {
-                                        console.log('   ⚠️  Erro ao inserir passagem:', err.message);
+                                        console.log('Erro ao inserir passagem:', err.message);
                                     } else {
-                                        console.log('   ✅ Passagem de exemplo inserida');
+                                        console.log('Passagem de exemplo inserida');
                                     }
                                 }
                             );
@@ -127,7 +127,7 @@ db.serialize(() => {
         }
     });
 
-    console.log('🎉 CORREÇÕES APLICADAS!');
+    console.log('CORREÇÕES APLICADAS!');
 });
 
 db.close();

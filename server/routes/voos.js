@@ -8,7 +8,7 @@ const router = express.Router();
 
 // Rota para listar todos os voos gerais (Status 'agendado')
 router.get('/', (req, res) => {
-  console.log('📡 Recebida requisição para buscar voos...');
+  console.log('Recebida requisição para buscar voos...');
   
   const query = `
     SELECT v.*, 
@@ -20,11 +20,11 @@ router.get('/', (req, res) => {
     ORDER BY v.data_partida, v.hora_partida
   `;
   
-  console.log('🔍 Executando query de voos...');
+  console.log('Executando query de voos...');
   
   db.all(query, [], (err, rows) => {
     if (err) {
-      console.error('❌ Erro ao buscar voos:', err);
+      console.error('Erro ao buscar voos:', err);
       return res.status(500).json({ 
         success: false, 
         message: 'Erro interno do servidor.',
@@ -32,7 +32,7 @@ router.get('/', (req, res) => {
       });
     }
     
-    console.log(`✅ ${rows.length} voos encontrados`);
+    console.log(`${rows.length} voos encontrados`);
     
     res.json({ 
       success: true, 
@@ -45,7 +45,7 @@ router.get('/', (req, res) => {
 // Rota para buscar detalhes de um voo específico - **CRÍTICA: ESTAVA FALTANDO**
 router.get('/:id', (req, res) => {
   const { id } = req.params;
-  console.log(`🔍 Buscando voo ID: ${id}`);
+  console.log(`Buscando voo ID: ${id}`);
   
   const query = `
     SELECT v.*, 
@@ -58,7 +58,7 @@ router.get('/:id', (req, res) => {
   
   db.get(query, [id], (err, row) => {
     if (err) {
-      console.error('❌ Erro ao buscar voo:', err);
+      console.error('Erro ao buscar voo:', err);
       return res.status(500).json({ 
         success: false, 
         message: 'Erro interno do servidor.' 
@@ -66,14 +66,14 @@ router.get('/:id', (req, res) => {
     }
     
     if (!row) {
-      console.log(`⚠️ Voo ${id} não encontrado`);
+      console.log(`Voo ${id} não encontrado`);
       return res.status(404).json({ 
         success: false, 
         message: 'Voo não encontrado' 
       });
     }
     
-    console.log(`✅ Voo encontrado: ${row.codigo}`);
+    console.log(`Voo encontrado: ${row.codigo}`);
     res.json({ 
       success: true, 
       voo: row 
@@ -83,13 +83,13 @@ router.get('/:id', (req, res) => {
 
 // Rota SIMPLES para testar - busca TODOS os voos
 router.get('/teste', (req, res) => {
-  console.log('🧪 Rota de teste chamada');
+  console.log('Rota de teste chamada');
   
   const query = "SELECT * FROM voos ORDER BY data_partida, hora_partida";
   
   db.all(query, [], (err, rows) => {
     if (err) {
-      console.error('❌ Erro na rota de teste:', err);
+      console.error('Erro na rota de teste:', err);
       return res.status(500).json({ 
         success: false, 
         message: 'Erro no teste',
@@ -97,7 +97,7 @@ router.get('/teste', (req, res) => {
       });
     }
     
-    console.log(`🧪 ${rows.length} voos na rota de teste`);
+    console.log(`${rows.length} voos na rota de teste`);
     res.json({ 
       success: true, 
       voos: rows,
@@ -167,11 +167,11 @@ router.post('/atribuir', (req, res) => {
     
     db.run(sql, [piloto_id, numero_voo, origem, destino, data_partida, horario_partida], function(err) {
         if (err) {
-            console.error('❌ Erro ao atribuir voo:', err);
+            console.error('Erro ao atribuir voo:', err);
             return res.status(500).json({ success: false, error: err.message });
         }
         
-        console.log(`✅ Voo ${numero_voo} atribuído ao piloto ID ${piloto_id}`);
+        console.log(`Voo ${numero_voo} atribuído ao piloto ID ${piloto_id}`);
         res.json({ 
             success: true, 
             id: this.lastID, 
@@ -197,7 +197,7 @@ router.get('/piloto/:id', (req, res) => {
   
   db.all(query, [id], (err, rows) => {
     if (err) {
-      console.error('❌ Erro ao buscar voos atribuídos:', err);
+      console.error('Erro ao buscar voos atribuídos:', err);
       return res.status(500).json({ success: false, message: 'Erro ao buscar escala.' });
     }
 
@@ -205,7 +205,7 @@ router.get('/piloto/:id', (req, res) => {
     const voosAgendados = rows.filter(v => v.status === 'Agendado');
     const logDeVoos = rows.filter(v => v.status === 'Concluido' || v.status === 'Cancelado');
     
-    console.log(`🔎 Piloto ${id} consultou escala: ${voosAgendados.length} voos encontrados.`);
+    console.log(`Piloto ${id} consultou escala: ${voosAgendados.length} voos encontrados.`);
 
     res.json({
         success: true,
@@ -224,7 +224,7 @@ router.put('/status/:id', (req, res) => {
     
     db.run(sql, [status, id], function(err) {
         if (err) {
-            console.error('❌ Erro ao atualizar status:', err);
+            console.error('Erro ao atualizar status:', err);
             return res.status(500).json({ success: false, error: err.message });
         }
         res.json({ success: true, message: "Status do voo atualizado." });

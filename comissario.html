@@ -522,7 +522,7 @@
             const userData = localStorage.getItem('user');
             if (userData) {
                 usuarioLogado = JSON.parse(userData);
-                console.log('✅ Comissário logado:', usuarioLogado);
+                console.log('Comissário logado:', usuarioLogado);
                 
                 document.getElementById('userName').textContent = usuarioLogado.nome;
                 document.getElementById('userAvatar').textContent = usuarioLogado.nome.charAt(0).toUpperCase();
@@ -531,7 +531,7 @@
                 carregarPerfil();
                 carregarServicosBordo();
             } else {
-                alert('❌ Usuário não logado!');
+                alert('Usuário não logado!');
                 window.location.href = '/login';
             }
         });

@@ -2,7 +2,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./database.sqlite');
 
-console.log('🔧 Corrigindo CHECK constraint da tabela usuarios...');
+console.log('Corrigindo CHECK constraint da tabela usuarios...');
 
 db.serialize(() => {
     // 1. Desativar foreign keys temporariamente
@@ -32,11 +32,11 @@ db.serialize(() => {
     // 5. Renomear tabela temporária
     db.run('ALTER TABLE usuarios_temp RENAME TO usuarios');
     
-    console.log('✅ CHECK constraint removida com sucesso!');
-    console.log('✅ Agora a tabela aceita os tipos: cliente, comissario, piloto, diretor');
+    console.log('CHECK constraint removida com sucesso!');
+    console.log('Agora a tabela aceita os tipos: cliente, comissario, piloto, diretor');
 });
 
 db.close(() => {
-    console.log('📊 Banco de dados fechado');
-    console.log('\n🚀 Execute os testes novamente: npm test -- auth.test.js');
+    console.log('Banco de dados fechado');
+    console.log('\nExecute os testes novamente: npm test -- auth.test.js');
 });
