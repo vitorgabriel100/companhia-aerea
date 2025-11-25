@@ -5,27 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - Voe Agora Airlines</title>
     <link rel="stylesheet" href="/assets/styles/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .auth-container {
+        :root {
+            --primary: #1a4b8c;
+            --primary-dark: #0d2b5a;
+            --primary-light: #2d6bc4;
+            --secondary: #e63946;
+            --accent: #00a8e8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --dark: #212529;
+            --light: #f8fafc;
+            --gray: #6c757d;
+            --gray-light: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 2rem 1rem;
+            padding: 1rem;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 500px;
         }
 
         .auth-card {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            padding: 2.5rem;
             width: 100%;
-            max-width: 480px;
             position: relative;
             overflow: hidden;
+            border: 1px solid var(--gray-light);
         }
 
         .auth-card::before {
@@ -35,12 +64,12 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
 
         .auth-header {
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
         .auth-logo {
@@ -53,25 +82,25 @@
 
         .auth-logo i {
             font-size: 2rem;
-            color: #667eea;
+            color: var(--primary);
         }
 
         .auth-logo h1 {
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--primary);
             margin: 0;
         }
 
         .auth-subtitle {
-            color: #718096;
+            color: var(--gray);
             font-size: 1rem;
             margin: 0;
         }
 
         .info-card {
             background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
-            border: 1px solid #2196f3;
+            border: 1px solid var(--primary-light);
             border-radius: 12px;
             padding: 1.25rem;
             margin-bottom: 2rem;
@@ -80,21 +109,23 @@
         }
 
         .info-card i {
-            color: #2196f3;
+            color: var(--primary);
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
         }
 
         .info-card strong {
-            color: #1976d2;
+            color: var(--primary-dark);
             display: block;
             margin-bottom: 0.25rem;
+            font-size: 0.95rem;
         }
 
         .info-card p {
-            color: #455a64;
+            color: var(--gray);
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            line-height: 1.4;
         }
 
         .form-group {
@@ -106,19 +137,20 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: #2d3748;
+            color: var(--dark);
             font-size: 0.9rem;
         }
 
         .form-input, .form-select {
             width: 100%;
             padding: 1rem 1rem 1rem 3rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
             font-size: 1rem;
             transition: all 0.3s ease;
             background: white;
             appearance: none;
+            min-height: 50px;
         }
 
         .form-select {
@@ -131,12 +163,12 @@
 
         .form-input:focus, .form-select:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 75, 140, 0.1);
         }
 
         .form-input::placeholder {
-            color: #a0aec0;
+            color: var(--gray);
         }
 
         .input-icon {
@@ -144,13 +176,13 @@
             left: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #a0aec0;
+            color: var(--gray);
             transition: color 0.3s ease;
             z-index: 2;
         }
 
         .form-input:focus + .input-icon, .form-select:focus + .input-icon {
-            color: #667eea;
+            color: var(--primary);
         }
 
         .password-toggle {
@@ -160,19 +192,20 @@
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: #a0aec0;
+            color: var(--gray);
             cursor: pointer;
             transition: color 0.3s ease;
             z-index: 2;
+            padding: 0.5rem;
         }
 
         .password-toggle:hover {
-            color: #667eea;
+            color: var(--primary);
         }
 
         .form-requirements {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
+            background: var(--light);
+            border: 1px solid var(--gray-light);
             border-radius: 8px;
             padding: 1rem;
             margin-top: 1rem;
@@ -180,7 +213,7 @@
 
         .requirements-title {
             font-weight: 600;
-            color: #2d3748;
+            color: var(--dark);
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
         }
@@ -190,43 +223,49 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.8rem;
-            color: #718096;
+            color: var(--gray);
             margin-bottom: 0.25rem;
         }
 
         .requirement.valid {
-            color: #38a169;
+            color: var(--success);
         }
 
         .requirement.invalid {
-            color: #e53e3e;
+            color: var(--error);
         }
 
         .requirement i {
             font-size: 0.7rem;
         }
 
-        .btn-primary {
+        .btn {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
-        .btn-primary:hover {
+        .btn:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: var(--shadow-lg);
         }
 
-        .btn-primary:active {
+        .btn:active {
             transform: translateY(0);
         }
 
@@ -253,23 +292,23 @@
             text-align: center;
             margin-top: 2rem;
             padding-top: 2rem;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid var(--gray-light);
         }
 
         .auth-footer a {
-            color: #667eea;
+            color: var(--primary);
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s ease;
         }
 
         .auth-footer a:hover {
-            color: #764ba2;
+            color: var(--primary-dark);
         }
 
         .type-badge {
             display: inline-block;
-            background: #667eea;
+            background: var(--primary);
             color: white;
             padding: 0.25rem 0.75rem;
             border-radius: 20px;
@@ -284,12 +323,12 @@
 
         .matricula-info {
             font-size: 0.8rem;
-            color: #718096;
+            color: var(--gray);
             margin-top: 0.25rem;
             font-style: italic;
         }
 
-        /* Novos estilos para validações */
+        /* Validações */
         .validation-feedback {
             font-size: 0.8rem;
             margin-top: 0.25rem;
@@ -299,18 +338,18 @@
         }
 
         .validation-valid {
-            color: #38a169;
+            color: var(--success);
         }
 
         .validation-invalid {
-            color: #e53e3e;
+            color: var(--error);
         }
 
         .password-strength {
             margin-top: 0.5rem;
             height: 4px;
             border-radius: 2px;
-            background: #e2e8f0;
+            background: var(--gray-light);
             overflow: hidden;
         }
 
@@ -320,9 +359,9 @@
             width: 0%;
         }
 
-        .strength-weak { background: #e53e3e; width: 25%; }
-        .strength-medium { background: #d69e2e; width: 50%; }
-        .strength-strong { background: #38a169; width: 75%; }
+        .strength-weak { background: var(--error); width: 25%; }
+        .strength-medium { background: var(--warning); width: 50%; }
+        .strength-strong { background: var(--success); width: 75%; }
         .strength-very-strong { background: #25855a; width: 100%; }
 
         .strength-text {
@@ -331,9 +370,9 @@
             font-weight: 600;
         }
 
-        .strength-weak-text { color: #e53e3e; }
-        .strength-medium-text { color: #d69e2e; }
-        .strength-strong-text { color: #38a169; }
+        .strength-weak-text { color: var(--error); }
+        .strength-medium-text { color: var(--warning); }
+        .strength-strong-text { color: var(--success); }
         .strength-very-strong-text { color: #25855a; }
 
         @keyframes spin {
@@ -350,14 +389,35 @@
             animation: fadeIn 0.6s ease;
         }
 
+        /* Mensagens */
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
         /* Responsividade */
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             .auth-card {
                 padding: 2rem 1.5rem;
             }
             
             .auth-logo h1 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
             
             .form-input, .form-select {
@@ -366,6 +426,81 @@
             
             .input-icon {
                 left: 0.875rem;
+            }
+            
+            .info-card {
+                padding: 1rem;
+            }
+            
+            .info-card strong {
+                font-size: 0.9rem;
+            }
+            
+            .info-card p {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0.5rem;
+            }
+            
+            .auth-card {
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+            
+            .auth-logo {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .auth-logo h1 {
+                font-size: 1.3rem;
+            }
+            
+            .auth-subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .form-input, .form-select {
+                padding: 0.75rem 0.75rem 0.75rem 2.25rem;
+                font-size: 0.9rem;
+                min-height: 45px;
+            }
+            
+            .input-icon {
+                left: 0.75rem;
+            }
+            
+            .btn {
+                padding: 0.875rem;
+                font-size: 0.9rem;
+                min-height: 45px;
+            }
+            
+            .form-requirements {
+                padding: 0.75rem;
+            }
+        }
+
+        /* Acessibilidade */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* High contrast support */
+        @media (prefers-contrast: high) {
+            :root {
+                --primary: #000080;
+                --primary-dark: #000050;
+                --gray: #333333;
+                --gray-light: #cccccc;
             }
         }
     </style>
@@ -387,7 +522,7 @@
                 <p>Escolha o tipo de conta. Funcionários receberão uma matrícula.</p>
             </div>
 
-             <div class="message" id="cadastroMessage" style="display: none;"></div>
+            <div class="message" id="cadastroMessage" style="display: none;"></div>
 
             <form id="cadastroForm">
                 <div class="form-group">
@@ -420,7 +555,7 @@
                         <i class="fas fa-user-tag input-icon"></i>
                         Tipo de Conta *
                     </label>
-                    <select id="tipo" name="tipo" class="form-select" required>
+                    <select id="tipo" name="tipo" class="form-select" required onchange="toggleFuncionarioFields()">
                         <option value="">Selecione o tipo de conta</option>
                         <option value="cliente">Cliente</option>
                         <option value="comissario">Comissário de Bordo</option>
@@ -501,6 +636,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary" id="cadastroBtn">
+                    <i class="fas fa-user-plus"></i>
                     <span id="btnText">Criar Conta</span>
                 </button>
             </form>
@@ -511,9 +647,33 @@
         </div>
     </div>
 
-    <script src="/scripts/cadastro.js"></script>
-    
     <script>
+        // Toggle campos de funcionário
+        function toggleFuncionarioFields() {
+            const tipo = document.getElementById('tipo').value;
+            const matriculaGroup = document.getElementById('matriculaGroup');
+            const funcionarioFields = document.getElementById('funcionarioFields');
+            
+            if (tipo === 'cliente' || tipo === '') {
+                matriculaGroup.style.display = 'none';
+                funcionarioFields.style.display = 'none';
+            } else {
+                matriculaGroup.style.display = 'block';
+                funcionarioFields.style.display = 'block';
+                
+                // Gerar matrícula automática baseada no tipo
+                const prefixos = {
+                    'comissario': 'COM',
+                    'piloto': 'PIL',
+                    'diretor': 'DIR'
+                };
+                
+                const prefixo = prefixos[tipo] || 'FUN';
+                const numero = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+                document.getElementById('matricula').value = prefixo + numero;
+            }
+        }
+
         function togglePassword(fieldId) {
             const field = document.getElementById(fieldId);
             const toggle = field.parentNode.querySelector('.password-toggle');
@@ -692,19 +852,22 @@
 
         // Validar formulário antes do envio
         document.getElementById('cadastroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
             const cpf = document.getElementById('cpf').value;
             const senha = document.getElementById('senha').value;
             const confirmacao = document.getElementById('confirmarSenha').value;
+            const tipo = document.getElementById('tipo').value;
             
+            // Validar CPF
             if (!validarCPF(cpf)) {
-                e.preventDefault();
-                alert('Por favor, corrija o CPF antes de enviar.');
+                showMessage('Por favor, corrija o CPF antes de enviar.', 'error');
                 return;
             }
             
+            // Validar confirmação de senha
             if (senha !== confirmacao) {
-                e.preventDefault();
-                alert('As senhas não coincidem. Por favor, verifique.');
+                showMessage('As senhas não coincidem. Por favor, verifique.', 'error');
                 return;
             }
             
@@ -719,10 +882,52 @@
             const pontos = Object.values(criterios).filter(Boolean).length;
             
             if (pontos < 3) {
-                e.preventDefault();
-                alert('A senha é muito fraca. Por favor, escolha uma senha mais segura.');
+                showMessage('A senha é muito fraca. Por favor, escolha uma senha mais segura.', 'error');
                 return;
             }
+            
+            // Simular envio bem-sucedido
+            const btn = document.getElementById('cadastroBtn');
+            const btnText = document.getElementById('btnText');
+            
+            btn.classList.add('btn-loading');
+            btnText.textContent = 'Criando conta...';
+            
+            setTimeout(() => {
+                btn.classList.remove('btn-loading');
+                btnText.textContent = 'Criar Conta';
+                showMessage('Conta criada com sucesso! Redirecionando...', 'success');
+                
+                // Redirecionar após sucesso
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+            }, 2000);
+        });
+
+        function showMessage(message, type) {
+            const messageEl = document.getElementById('cadastroMessage');
+            messageEl.textContent = message;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = 'block';
+            
+            // Scroll para a mensagem
+            messageEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Adicionar validação em tempo real para todos os campos
+            const inputs = document.querySelectorAll('input[required]');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (!this.value) {
+                        this.style.borderColor = 'var(--error)';
+                    } else {
+                        this.style.borderColor = 'var(--gray-light)';
+                    }
+                });
+            });
         });
     </script>
 </body>

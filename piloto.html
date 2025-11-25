@@ -4,28 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel do Piloto - Voe Agora Airlines</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* ===== VARIÁVEIS CSS ===== */
         :root {
-            --primary: #2563eb;
-            --primary-light: #3b82f6;
-            --secondary: #8b5cf6;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --dark: #1e293b;
-            --gray: #64748b;
-            --gray-light: #f1f5f9;
-            --white: #ffffff;
+            --primary: #1a4b8c;
+            --primary-dark: #0d2b5a;
+            --primary-light: #2d6bc4;
+            --secondary: #e63946;
+            --accent: #00a8e8;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             --radius: 8px;
             --radius-lg: 16px;
         }
 
-        /* ===== RESET E ESTILOS BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -33,43 +33,90 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
             color: var(--dark);
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .container {
-            width: 100%;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 1rem;
+            padding: 0 20px;
         }
 
-        /* ===== COMPONENTES BASE ===== */
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 0.5rem;
             padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: var(--radius);
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
             text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
         }
 
         .btn-primary {
             background: var(--primary);
-            color: var(--white);
+            color: white;
         }
 
         .btn-primary:hover {
-            background: var(--primary-light);
+            background: var(--primary-dark);
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 75, 140, 0.3);
         }
 
         .btn-outline {
@@ -80,7 +127,7 @@
 
         .btn-outline:hover {
             background: var(--primary);
-            color: var(--white);
+            color: white;
         }
 
         .btn-sm {
@@ -88,58 +135,31 @@
             font-size: 0.8rem;
         }
 
-        .card {
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--gray-light);
-            margin-bottom: 1.5rem;
-        }
-
-        /* ===== LAYOUT DO DASHBOARD ===== */
+        /* Dashboard Layout */
         .dashboard {
             min-height: 100vh;
-            padding: 1rem 0;
+            padding: 2rem 0;
         }
 
         .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem 0;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: 2rem;
         }
 
         .dashboard-header h1 {
-            font-size: 1.75rem;
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            color: var(--primary);
         }
 
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+        .dashboard-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
         }
 
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary);
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.25rem;
-        }
-
-        /* ===== NAVEGAÇÃO ===== */
+        /* Navigation */
         .dashboard-nav {
             margin-bottom: 2rem;
         }
@@ -174,14 +194,10 @@
 
         .nav-tabs button.active {
             background: var(--primary);
-            color: var(--white);
+            color: white;
         }
 
-        /* ===== CONTEÚDO PRINCIPAL ===== */
-        .dashboard-content {
-            margin-bottom: 2rem;
-        }
-
+        /* Content Sections */
         .content-section {
             animation: fadeIn 0.5s ease;
         }
@@ -191,30 +207,27 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
         }
 
         .section-header h2 {
             font-size: 1.5rem;
+            color: var(--primary);
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--dark);
         }
 
         .stats-badge {
             background: var(--primary);
-            color: var(--white);
+            color: white;
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
         }
 
-        /* ===== COMPONENTES ESPECÍFICOS DO PILOTO ===== */
         .pilot-badge {
-            background: linear-gradient(135deg, #1e40af, #3730a3);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 20px;
@@ -225,6 +238,25 @@
             gap: 0.5rem;
         }
 
+        /* Cards */
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Flight Cards */
         .flight-card {
             background: white;
             border-radius: var(--radius-lg);
@@ -323,6 +355,72 @@
             color: #374151;
         }
 
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--gray-light);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .action-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Grid Layout */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Flight Instruments */
+        .flight-instruments {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .instrument {
+            background: var(--dark);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        .instrument-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #10b981;
+        }
+
+        .instrument-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        /* Checklist */
         .checklist-item {
             display: flex;
             align-items: center;
@@ -350,17 +448,7 @@
             cursor: pointer;
         }
 
-        .btn-responsive {
-            padding: 0.75rem 1.5rem;
-            font-size: 0.9rem;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            width: 100%;
-        }
-
+        /* Info Containers */
         .info-container {
             display: flex;
             flex-direction: column;
@@ -388,6 +476,7 @@
             font-weight: 600;
         }
 
+        /* Stats */
         .stats-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -419,40 +508,7 @@
             font-size: 0.9rem;
         }
 
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .action-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            text-align: center;
-            border: 2px solid var(--gray-light);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .action-card:hover {
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .action-icon {
-            font-size: 2rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
+        /* Empty States */
         .empty-state {
             text-align: center;
             padding: 3rem 2rem;
@@ -471,35 +527,26 @@
             margin-bottom: 0.5rem;
         }
 
-        .flight-instruments {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-
-        .instrument {
-            background: var(--dark);
-            color: white;
-            padding: 1rem;
-            border-radius: 8px;
+        /* Weather */
+        .weather-info {
             text-align: center;
-            font-family: 'Courier New', monospace;
         }
 
-        .instrument-value {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #10b981;
+        .weather-temp {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
         }
 
-        .instrument-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
-            margin-top: 0.5rem;
+        .weather-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: left;
         }
 
-        /* ===== MODAL ===== */
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -514,11 +561,11 @@
         }
 
         .modal-content {
-            background: var(--white);
+            background: white;
             padding: 2rem;
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-lg);
-            max-width: 400px;
+            max-width: 600px;
             width: 90%;
             text-align: center;
         }
@@ -543,26 +590,33 @@
             flex: 1;
         }
 
-        /* ===== ANIMAÇÕES ===== */
+        /* Responsive */
+        .btn-responsive {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== RESPONSIVIDADE ===== */
+        /* Responsive */
         @media (max-width: 768px) {
             .container {
-                padding: 0 0.5rem;
+                padding: 0 15px;
             }
             
-            .dashboard-header {
+            .navbar {
                 flex-direction: column;
                 gap: 1rem;
-                text-align: center;
-            }
-            
-            .user-info {
-                justify-content: center;
             }
             
             .nav-tabs {
@@ -578,6 +632,7 @@
             .section-header {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 1rem;
             }
             
             .card-grid {
@@ -640,13 +695,13 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="dashboard fade-in">
-            <!-- Header -->
-            <div class="dashboard-header">
-                <div>
-                    <h1><i class="fas fa-plane"></i> Voe Agora Airlines</h1>
-                    <p style="opacity: 0.9; margin-top: 0.5rem;">Painel do Comandante</p>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-plane"></i>
+                    <span>Voe Agora</span>
                 </div>
                 <div class="user-info">
                     <div class="user-avatar" id="userAvatar">P</div>
@@ -658,6 +713,15 @@
                         <i class="fas fa-sign-out-alt"></i> Sair
                     </button>
                 </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h1><i class="fas fa-plane"></i> Painel do Comandante</h1>
+                <p>Bem-vindo ao seu centro de controle de voo</p>
             </div>
 
             <!-- Navigation -->
@@ -750,7 +814,7 @@
                     </div>
                 </div>
 
-                <!-- SEÇÃO: MEUS VOOS ATRIBUÍDOS -->
+                <!-- Meus Voos -->
                 <div id="meusVoos" class="content-section" style="display: none;">
                     <div class="section-header">
                         <h2><i class="fas fa-plane"></i> Meus Voos Atribuídos</h2>
@@ -778,30 +842,26 @@
                         <div class="card">
                             <h3><i class="fas fa-map-marker-alt"></i> São Paulo (GRU)</h3>
                             <div class="weather-info">
-                                <div class="weather-card">
-                                    <div class="weather-temp">28°C</div>
-                                    <div style="margin-bottom: 1rem;">Parcialmente Nublado</div>
-                                    <div class="weather-details">
-                                        <div>Vento: 15 km/h</div>
-                                        <div>Umidade: 65%</div>
-                                        <div>Visibilidade: 10 km</div>
-                                        <div>Pressão: 1013 hPa</div>
-                                    </div>
+                                <div class="weather-temp">28°C</div>
+                                <div style="margin-bottom: 1rem;">Parcialmente Nublado</div>
+                                <div class="weather-details">
+                                    <div>Vento: 15 km/h</div>
+                                    <div>Umidade: 65%</div>
+                                    <div>Visibilidade: 10 km</div>
+                                    <div>Pressão: 1013 hPa</div>
                                 </div>
                             </div>
                         </div>
                         <div class="card">
                             <h3><i class="fas fa-map-marker-alt"></i> Rio de Janeiro (GIG)</h3>
                             <div class="weather-info">
-                                <div class="weather-card">
-                                    <div class="weather-temp">32°C</div>
-                                    <div style="margin-bottom: 1rem;">Ensolarado</div>
-                                    <div class="weather-details">
-                                        <div>Vento: 12 km/h</div>
-                                        <div>Umidade: 55%</div>
-                                        <div>Visibilidade: 15 km</div>
-                                        <div>Pressão: 1012 hPa</div>
-                                    </div>
+                                <div class="weather-temp">32°C</div>
+                                <div style="margin-bottom: 1rem;">Ensolarado</div>
+                                <div class="weather-details">
+                                    <div>Vento: 12 km/h</div>
+                                    <div>Umidade: 55%</div>
+                                    <div>Visibilidade: 15 km</div>
+                                    <div>Pressão: 1012 hPa</div>
                                 </div>
                             </div>
                         </div>
@@ -901,11 +961,9 @@
         // CARREGAR VOOS ATRIBUÍDOS DO PAINEL ADMINISTRATIVO
         async function carregarMeusVoosAtribuidos() {
             try {
-                // Simular chamada à API para buscar voos atribuídos
                 const cpfPiloto = usuarioLogado.cpf;
                 console.log('🔄 Buscando voos para o piloto:', cpfPiloto);
                 
-                // Dados de exemplo - substituir por chamada real à API
                 setTimeout(() => {
                     meusVoosAtribuidos = [
                         {
@@ -1130,7 +1188,6 @@
             
             alert(`✅ Checklist finalizado com sucesso!\nVoo ${vooChecklistAtual.vooId} liberado para partida.`);
             
-            // Atualizar status do voo
             const vooIndex = meusVoosAtribuidos.findIndex(v => v.vooId === vooChecklistAtual.vooId);
             if (vooIndex !== -1) {
                 meusVoosAtribuidos[vooIndex].checklistConcluido = true;
@@ -1163,7 +1220,7 @@
                 const status = getStatusVooAtribuido(proximoVoo.dataVoo, proximoVoo.status);
                 const podeIniciarChecklist = status === 'preflight' && proximoVoo.status === 'confirmado';
                 
-                document.getElementById('dashAeronave').textContent = proximoVoo.aeronave.split(' ')[0]; // Mostra apenas o modelo
+                document.getElementById('dashAeronave').textContent = proximoVoo.aeronave.split(' ')[0];
                 
                 container.innerHTML = `
                     <div class="flight-details">

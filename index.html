@@ -5,46 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voe Agora Airlines - Sistema de Gestão</title>
     <link rel="stylesheet" href="/assets/styles/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        .hero {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
-            border-radius: 20px;
-            margin-bottom: 3rem;
-            position: relative;
-            overflow: hidden;
+        :root {
+            --primary: #1a4b8c;
+            --primary-dark: #0d2b5a;
+            --primary-light: #2d6bc4;
+            --secondary: #e63946;
+            --accent: #00a8e8;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-            opacity: 0.3;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(13, 43, 90, 0.85), rgba(13, 43, 90, 0.9)), 
+                        url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            border-radius: 0 0 30px 30px;
         }
 
         .hero-content {
-            position: relative;
-            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
             font-weight: 700;
+            line-height: 1.2;
         }
 
         .hero p {
             font-size: 1.25rem;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             opacity: 0.9;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero-buttons {
@@ -54,31 +133,99 @@
             flex-wrap: wrap;
         }
 
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 75, 140, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-accent:hover {
+            background: #0095d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 168, 232, 0.3);
+        }
+
+        /* Features Section */
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
 
         .feature-card {
             background: white;
-            padding: 2rem;
+            padding: 2.5rem 2rem;
             border-radius: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--gray-light);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             text-align: center;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--gray-light);
         }
 
         .feature-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
         .feature-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             border-radius: 20px;
             display: flex;
             align-items: center;
@@ -91,23 +238,41 @@
             color: white;
         }
 
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* Statistics */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
+            gap: 1.5rem;
+            margin: 3rem 0;
         }
 
         .stat-card {
             background: white;
-            padding: 1.5rem;
+            padding: 2rem;
             border-radius: 12px;
             text-align: center;
             border: 1px solid var(--gray-light);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
         }
 
         .stat-number {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 0.5rem;
@@ -116,100 +281,313 @@
         .stat-label {
             color: var(--gray);
             font-size: 0.9rem;
+            font-weight: 500;
         }
 
+        /* System Info */
+        .system-info {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            text-align: center;
+            margin: 4rem 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--accent);
+        }
+
+        .system-info h3 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .system-info p {
+            color: var(--gray);
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-column h4::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
             }
-            
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .hero {
+                padding: 4rem 1rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
             .hero-buttons {
                 flex-direction: column;
+                align-items: center;
             }
-            
+
             .features {
                 grid-template-columns: 1fr;
             }
+
+            .system-info {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-4 {
+            animation-delay: 0.4s;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Voe Agora Airlines</h1>
-                <p>Sistema Integrado de Gestão Aeronáutica</p>
-                <div class="hero-buttons">
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-plane"></i>
+                    <span>Voe Agora</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#">Início</a>
+                    <a href="#">Voos</a>
+                    <a href="#">Destinos</a>
+                    <a href="#">Serviços</a>
+                    <a href="#">Sobre Nós</a>
+                </div>
+                <div class="nav-actions">
                     <button onclick="window.location.href='/login'" class="btn btn-primary">
-                        <i class="fas fa-sign-in-alt"></i> Fazer Login
+                        <i class="fas fa-sign-in-alt"></i> Login
                     </button>
                     <button onclick="window.location.href='/cadastro'" class="btn btn-secondary">
-                        <i class="fas fa-user-plus"></i> Criar Conta
+                        <i class="fas fa-user-plus"></i> Cadastre-se
                     </button>
                 </div>
-            </div>
-        </section>
+            </nav>
+        </div>
+    </header>
 
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="fade-in">Voe Agora Airlines</h1>
+            <p class="fade-in delay-1">Sistema Integrado de Gestão Aeronáutica</p>
+            <div class="hero-buttons fade-in delay-2">
+                <button onclick="window.location.href='/login'" class="btn btn-accent">
+                    <i class="fas fa-sign-in-alt"></i> Fazer Login
+                </button>
+                <button onclick="window.location.href='/cadastro'" class="btn btn-secondary">
+                    <i class="fas fa-user-plus"></i> Criar Conta
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
         <!-- Features Section -->
-        <section class="features">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3>Painel do Cliente</h3>
-                <p>Compre passagens, gerencie suas reservas e faça check-in online de forma simples e rápida.</p>
+        <section>
+            <div class="section-title fade-in">
+                <h2>Nossos Sistemas</h2>
+                <p>Plataformas especializadas para cada perfil de usuário</p>
             </div>
-
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-user-tie"></i>
+            
+            <div class="features">
+                <div class="feature-card fade-in delay-1">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Painel do Cliente</h3>
+                    <p>Compre passagens, gerencie suas reservas e faça check-in online de forma simples e rápida.</p>
                 </div>
-                <h3>Painel do Funcionário</h3>
-                <p>Controle de voos, gestão de passageiros e operações de check-in e embarque.</p>
-            </div>
 
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-chart-line"></i>
+                <div class="feature-card fade-in delay-2">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Painel do Funcionário</h3>
+                    <p>Controle de voos, gestão de passageiros e operações de check-in e embarque.</p>
                 </div>
-                <h3>Painel Administrativo</h3>
-                <p>Dashboard executivo com métricas financeiras, relatórios e gestão estratégica.</p>
+
+                <div class="feature-card fade-in delay-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Painel Administrativo</h3>
+                    <p>Dashboard executivo com métricas financeiras, relatórios e gestão estratégica.</p>
+                </div>
             </div>
         </section>
 
         <!-- Statistics -->
         <div class="stats">
-            <div class="stat-card">
+            <div class="stat-card fade-in delay-1">
                 <div class="stat-number" id="totalVoos">0</div>
                 <div class="stat-label">Voos Cadastrados</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card fade-in delay-2">
                 <div class="stat-number" id="totalUsuarios">0</div>
                 <div class="stat-label">Usuários Ativos</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card fade-in delay-3">
                 <div class="stat-number" id="totalPassagens">0</div>
                 <div class="stat-label">Passagens Vendidas</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card fade-in delay-4">
                 <div class="stat-number" id="ocupacaoMedia">0%</div>
                 <div class="stat-label">Ocupação Média</div>
             </div>
         </div>
 
         <!-- System Info -->
-        <div style="background: var(--gray-light); padding: 2rem; border-radius: 16px; text-align: center;">
-            <h3 style="color: var(--dark); margin-bottom: 1rem;">
+        <div class="system-info fade-in">
+            <h3>
                 <i class="fas fa-cogs"></i> Sistema Automático de Perfis
             </h3>
-            <p style="color: var(--gray); line-height: 1.6;">
+            <p>
                 O sistema determina automaticamente o tipo de conta baseado no CPF informado.<br>
                 <strong>CPFs especiais</strong> criam contas de funcionários e administradores automaticamente,<br>
                 enquanto <strong>outros CPFs</strong> criam contas de clientes normais.
             </p>
         </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>Voe Agora Airlines</h4>
+                    <p>Conectando pessoas e destinos com segurança, conforto e eficiência.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Links Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Sobre Nós</a></li>
+                        <li><a href="#">Nossa Frota</a></li>
+                        <li><a href="#">Carreiras</a></li>
+                        <li><a href="#">Notícias</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Serviços</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Reservas</a></li>
+                        <li><a href="#">Check-in Online</a></li>
+                        <li><a href="#">Bagagem</a></li>
+                        <li><a href="#">Assistência Especial</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contato</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Central de Ajuda</a></li>
+                        <li><a href="#">Telefone: (11) 3456-7890</a></li>
+                        <li><a href="#">E-mail: contato@voeagora.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Voe Agora Airlines. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         // Carregar estatísticas iniciais
@@ -226,20 +604,52 @@
                 }
             } catch (error) {
                 console.log('Usando estatísticas padrão para demonstração');
+                // Animar contadores
+                animateCounter('totalVoos', 12);
+                animateCounter('totalUsuarios', 45);
+                animateCounter('totalPassagens', 128);
+                document.getElementById('ocupacaoMedia').textContent = '78%';
             }
+        }
+
+        // Animação de contador
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            let currentValue = 0;
+            const increment = targetValue / 50;
+            const timer = setInterval(() => {
+                currentValue += increment;
+                if (currentValue >= targetValue) {
+                    element.textContent = targetValue;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(currentValue);
+                }
+            }, 30);
         }
 
         // Inicializar
         document.addEventListener('DOMContentLoaded', function() {
             carregarEstatisticas();
             
-            // Animações de entrada
-            const elements = document.querySelectorAll('.feature-card, .stat-card');
-            elements.forEach((el, index) => {
-                setTimeout(() => {
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0)';
-                }, index * 100);
+            // Adicionar classe de animação aos elementos
+            const elements = document.querySelectorAll('.fade-in');
+            elements.forEach(el => {
+                el.style.opacity = '0';
+            });
+            
+            // Observador de interseção para animações
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            elements.forEach(el => {
+                observer.observe(el);
             });
         });
     </script>
