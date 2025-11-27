@@ -525,6 +525,9 @@
             <div class="message" id="cadastroMessage" style="display: none;"></div>
 
             <form id="cadastroForm">
+                <!-- Campo hidden para CPF limpo -->
+                <input type="hidden" id="cpfLimpo" name="cpfLimpo">
+
                 <div class="form-group">
                     <label for="nome" class="form-label">
                         <i class="fas fa-user input-icon"></i>
@@ -647,8 +650,11 @@
         </div>
     </div>
 
+    <!-- REMOVA TODO O SCRIPT ANTIGO E USE APENAS ESTE: -->
+    <script src="/scripts/cadastro.js"></script>
+
     <script>
-        // Toggle campos de funcionário
+        // Mantenha apenas as funções de UI (formatação visual)
         function toggleFuncionarioFields() {
             const tipo = document.getElementById('tipo').value;
             const matriculaGroup = document.getElementById('matriculaGroup');
@@ -690,9 +696,12 @@
             }
         }
 
-        // Formatar CPF
+        // Formatar CPF (apenas visual)
         function formatarCPF(input) {
             let cpf = input.value.replace(/\D/g, '');
+            
+            // Atualizar campo hidden com CPF limpo
+            document.getElementById('cpfLimpo').value = cpf;
             
             if (cpf.length > 11) {
                 cpf = cpf.substring(0, 11);
@@ -710,7 +719,7 @@
             validarCPF(cpf);
         }
 
-        // Validar CPF
+        // Validar CPF (apenas visual)
         function validarCPF(cpf) {
             const feedback = document.getElementById('cpfFeedback');
             cpf = cpf.replace(/\D/g, '');
@@ -728,40 +737,12 @@
                 return false;
             }
             
-            // Validar primeiro dígito verificador
-            let soma = 0;
-            for (let i = 0; i < 9; i++) {
-                soma += parseInt(cpf.charAt(i)) * (10 - i);
-            }
-            let resto = soma % 11;
-            let digito1 = resto < 2 ? 0 : 11 - resto;
-            
-            if (digito1 !== parseInt(cpf.charAt(9))) {
-                feedback.innerHTML = '<i class="fas fa-times-circle validation-invalid"></i> CPF inválido';
-                feedback.className = 'validation-feedback validation-invalid';
-                return false;
-            }
-            
-            // Validar segundo dígito verificador
-            soma = 0;
-            for (let i = 0; i < 10; i++) {
-                soma += parseInt(cpf.charAt(i)) * (11 - i);
-            }
-            resto = soma % 11;
-            let digito2 = resto < 2 ? 0 : 11 - resto;
-            
-            if (digito2 !== parseInt(cpf.charAt(10))) {
-                feedback.innerHTML = '<i class="fas fa-times-circle validation-invalid"></i> CPF inválido';
-                feedback.className = 'validation-feedback validation-invalid';
-                return false;
-            }
-            
             feedback.innerHTML = '<i class="fas fa-check-circle validation-valid"></i> CPF válido';
             feedback.className = 'validation-feedback validation-valid';
             return true;
         }
 
-        // Validar força da senha
+        // Validar força da senha (apenas visual)
         function validarForcaSenha(senha) {
             const criterios = {
                 comprimento: senha.length >= 8,
@@ -829,7 +810,7 @@
             }
         }
 
-        // Validar confirmação de senha
+        // Validar confirmação de senha (apenas visual)
         function validarConfirmacaoSenha() {
             const senha = document.getElementById('senha').value;
             const confirmacao = document.getElementById('confirmarSenha').value;
@@ -850,74 +831,8 @@
             }
         }
 
-        // Validar formulário antes do envio
-        document.getElementById('cadastroForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const cpf = document.getElementById('cpf').value;
-            const senha = document.getElementById('senha').value;
-            const confirmacao = document.getElementById('confirmarSenha').value;
-            const tipo = document.getElementById('tipo').value;
-            
-            // Validar CPF
-            if (!validarCPF(cpf)) {
-                showMessage('Por favor, corrija o CPF antes de enviar.', 'error');
-                return;
-            }
-            
-            // Validar confirmação de senha
-            if (senha !== confirmacao) {
-                showMessage('As senhas não coincidem. Por favor, verifique.', 'error');
-                return;
-            }
-            
-            // Verificar força mínima da senha
-            const criterios = {
-                comprimento: senha.length >= 8,
-                maiuscula: /[A-Z]/.test(senha),
-                minuscula: /[a-z]/.test(senha),
-                numero: /[0-9]/.test(senha)
-            };
-            
-            const pontos = Object.values(criterios).filter(Boolean).length;
-            
-            if (pontos < 3) {
-                showMessage('A senha é muito fraca. Por favor, escolha uma senha mais segura.', 'error');
-                return;
-            }
-            
-            // Simular envio bem-sucedido
-            const btn = document.getElementById('cadastroBtn');
-            const btnText = document.getElementById('btnText');
-            
-            btn.classList.add('btn-loading');
-            btnText.textContent = 'Criando conta...';
-            
-            setTimeout(() => {
-                btn.classList.remove('btn-loading');
-                btnText.textContent = 'Criar Conta';
-                showMessage('Conta criada com sucesso! Redirecionando...', 'success');
-                
-                // Redirecionar após sucesso
-                setTimeout(() => {
-                    window.location.href = '/login';
-                }, 2000);
-            }, 2000);
-        });
-
-        function showMessage(message, type) {
-            const messageEl = document.getElementById('cadastroMessage');
-            messageEl.textContent = message;
-            messageEl.className = `message ${type}`;
-            messageEl.style.display = 'block';
-            
-            // Scroll para a mensagem
-            messageEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-
-        // Inicializar
+        // Inicializar validações visuais
         document.addEventListener('DOMContentLoaded', function() {
-            // Adicionar validação em tempo real para todos os campos
             const inputs = document.querySelectorAll('input[required]');
             inputs.forEach(input => {
                 input.addEventListener('blur', function() {
