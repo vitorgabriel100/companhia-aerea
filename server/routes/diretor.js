@@ -9,7 +9,7 @@ const log = (mensagem) => {
 
 // Rota para obter estatísticas gerais do sistema
 router.get('/estatisticas', (req, res) => {
-    log('📊 Buscando estatísticas gerais para diretor...');
+    log('Buscando estatísticas gerais para diretor...');
 
     const queries = {
         totalVoos: "SELECT COUNT(*) as total FROM voos",
@@ -33,7 +33,7 @@ router.get('/estatisticas', (req, res) => {
     Object.keys(queries).forEach(key => {
         db.get(queries[key], [], (err, row) => {
             if (err) {
-                console.error(`❌ Erro ao buscar ${key}:`, err);
+                console.error(`Erro ao buscar ${key}:`, err);
                 resultados[key] = 0;
             } else {
                 resultados[key] = row.total || 0;
@@ -54,7 +54,7 @@ router.get('/estatisticas', (req, res) => {
                     ocupacaoMedia: resultados.ocupacaoMedia ? parseFloat(resultados.ocupacaoMedia).toFixed(1) + '%' : '0%'
                 };
 
-                log(`✅ Estatísticas geradas: ${estatisticas.totalVoos} voos, R$ ${estatisticas.receitaTotal} receita`);
+                log(`Estatísticas geradas: ${estatisticas.totalVoos} voos, R$ ${estatisticas.receitaTotal} receita`);
                 
                 res.json({
                     success: true,
@@ -68,7 +68,7 @@ router.get('/estatisticas', (req, res) => {
 // Rota para obter relatório detalhado de voos
 router.get('/relatorio-voos', (req, res) => {
     const { periodo = 'mes' } = req.query;
-    log(`📈 Gerando relatório de voos para período: ${periodo}`);
+    log(`Gerando relatório de voos para período: ${periodo}`);
 
     let whereClause = '';
     switch (periodo) {
@@ -114,7 +114,7 @@ router.get('/relatorio-voos', (req, res) => {
 
     db.all(query, [], (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao gerar relatório de voos:', err);
+            console.error('Erro ao gerar relatório de voos:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao gerar relatório de voos'
@@ -130,7 +130,7 @@ router.get('/relatorio-voos', (req, res) => {
                 (rows.reduce((sum, voo) => sum + parseFloat(voo.taxa_ocupacao || 0), 0) / rows.length).toFixed(1) + '%' : '0%'
         };
 
-        log(`✅ Relatório de voos gerado: ${rows.length} voos no período`);
+        log(`Relatório de voos gerado: ${rows.length} voos no período`);
         
         res.json({
             success: true,
@@ -143,7 +143,7 @@ router.get('/relatorio-voos', (req, res) => {
 
 // Rota para obter relatório de vendas por forma de pagamento
 router.get('/relatorio-vendas', (req, res) => {
-    log('💰 Gerando relatório de vendas...');
+    log('Gerando relatório de vendas...');
 
     const query = `
         SELECT 
@@ -159,7 +159,7 @@ router.get('/relatorio-vendas', (req, res) => {
 
     db.all(query, [], (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao gerar relatório de vendas:', err);
+            console.error('Erro ao gerar relatório de vendas:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao gerar relatório de vendas'
@@ -171,7 +171,7 @@ router.get('/relatorio-vendas', (req, res) => {
             totalReceita: rows.reduce((sum, venda) => sum + parseFloat(venda.total_receita), 0)
         };
 
-        log(`✅ Relatório de vendas gerado: ${rows.length} formas de pagamento`);
+        log(`Relatório de vendas gerado: ${rows.length} formas de pagamento`);
         
         res.json({
             success: true,
@@ -183,7 +183,7 @@ router.get('/relatorio-vendas', (req, res) => {
 
 // Rota para obter relatório de desempenho de rotas
 router.get('/relatorio-rotas', (req, res) => {
-    log('🛣️ Gerando relatório de rotas...');
+    log('Gerando relatório de rotas...');
 
     const query = `
         SELECT 

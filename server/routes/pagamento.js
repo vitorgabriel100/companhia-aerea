@@ -207,7 +207,7 @@ router.post('/processar', async (req, res) => {
             );
         });
 
-        log(`✅ Pagamento processado com sucesso. Passagem ID: ${passagemId}`);
+        log(`Pagamento processado com sucesso. Passagem ID: ${passagemId}`);
 
         // Buscar informações completas para resposta
         const passagemCompleta = await new Promise((resolve, reject) => {
@@ -260,17 +260,17 @@ router.post('/processar', async (req, res) => {
 
         // Adicionar mensagem específica por forma de pagamento
         if (forma_pagamento === 'PIX') {
-            resposta.mensagemPagamento = '💰 Pagamento via PIX - 5% de desconto aplicado!';
+            resposta.mensagemPagamento = 'Pagamento via PIX - 5% de desconto aplicado!';
         } else if (forma_pagamento === 'Boleto Bancário' && parcelas === 1) {
-            resposta.mensagemPagamento = '💸 Pagamento via Boleto - 3% de desconto aplicado!';
+            resposta.mensagemPagamento = 'Pagamento via Boleto - 3% de desconto aplicado!';
         } else if (forma_pagamento === 'Cartão de Crédito') {
-            resposta.mensagemPagamento = `💳 Pagamento em ${parcelas}x no cartão processado com sucesso!`;
+            resposta.mensagemPagamento = `Pagamento em ${parcelas}x no cartão processado com sucesso!`;
         }
 
         res.json(resposta);
 
     } catch (error) {
-        console.error('❌ Erro no processamento do pagamento:', error);
+        console.error('Erro no processamento do pagamento:', error);
         res.json({ 
             success: false, 
             message: 'Erro ao processar pagamento',
@@ -281,7 +281,7 @@ router.post('/processar', async (req, res) => {
 
 // Simular processamento de pagamento (NOVO)
 async function simularProcessamentoPagamento(dados) {
-    log(`🔐 Simulando processamento de ${dados.forma_pagamento}`);
+    log(`Simulando processamento de ${dados.forma_pagamento}`);
     
     // Simular delay de processamento
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -371,7 +371,7 @@ router.get('/status/:passagemId', (req, res) => {
 
     db.get(query, [passagemId], (err, passagem) => {
         if (err) {
-            console.error('❌ Erro ao buscar passagem:', err);
+            console.error('Erro ao buscar passagem:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao buscar informações do pagamento'
@@ -414,7 +414,7 @@ router.get('/status/:passagemId', (req, res) => {
 
 // Obter formas de pagamento disponíveis (NOVO)
 router.get('/formas-disponiveis', (req, res) => {
-    log('🔍 Buscando formas de pagamento disponíveis');
+    log('Buscando formas de pagamento disponíveis');
 
     db.all(`
         SELECT id, nome, parcelas_maximas, 
@@ -428,14 +428,14 @@ router.get('/formas-disponiveis', (req, res) => {
         ORDER BY id
     `, [], (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar formas de pagamento:', err);
+            console.error('Erro ao buscar formas de pagamento:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro interno do servidor'
             });
         }
 
-        log(`✅ Formas de pagamento encontradas: ${rows.length}`);
+        log(`Formas de pagamento encontradas: ${rows.length}`);
         
         res.json({
             success: true,

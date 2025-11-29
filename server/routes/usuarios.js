@@ -20,14 +20,14 @@ router.get('/', (req, res) => {
         ORDER BY tipo, nome
     `, (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar usuários:', err);
+            console.error('Erro ao buscar usuários:', err);
             return res.status(500).json({ 
                 success: false, 
                 message: 'Erro ao buscar usuários' 
             });
         }
 
-        log(`✅ Encontrados ${rows.length} usuários`);
+        log(`Encontrados ${rows.length} usuários`);
         
         // Calcular estatísticas
         const estatisticas = {
@@ -50,7 +50,7 @@ router.get('/', (req, res) => {
 router.get('/tipo/:tipo', (req, res) => {
     const { tipo } = req.params;
 
-    log(`🔍 Buscando usuários do tipo: ${tipo}`);
+    log(`Buscando usuários do tipo: ${tipo}`);
 
     // Validar tipo
     const tiposValidos = ['cliente', 'comissario', 'piloto', 'diretor'];
@@ -71,14 +71,14 @@ router.get('/tipo/:tipo', (req, res) => {
 
     db.all(query, [tipo], (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar usuários:', err);
+            console.error('Erro ao buscar usuários:', err);
             return res.status(500).json({ 
                 success: false, 
                 message: 'Erro ao buscar usuários' 
             });
         }
 
-        log(`✅ Encontrados ${rows.length} usuários do tipo ${tipo}`);
+        log(`Encontrados ${rows.length} usuários do tipo ${tipo}`);
         
         res.json({ 
             success: true, 
@@ -92,7 +92,7 @@ router.get('/tipo/:tipo', (req, res) => {
 router.get('/:id', (req, res) => {
     const { id } = req.params;
 
-    log(`🔍 Buscando usuário ID: ${id}`);
+    log(`Buscando usuário ID: ${id}`);
 
     // Verificar se ID é válido
     if (isNaN(id)) {
@@ -111,7 +111,7 @@ router.get('/:id', (req, res) => {
 
     db.get(query, [id], (err, row) => {
         if (err) {
-            console.error('❌ Erro ao buscar usuário:', err);
+            console.error('Erro ao buscar usuário:', err);
             return res.status(500).json({ 
                 success: false, 
                 message: 'Erro ao buscar usuário' 
@@ -119,13 +119,13 @@ router.get('/:id', (req, res) => {
         }
 
         if (row) {
-            log(`✅ Usuário encontrado: ${row.nome}`);
+            log(`Usuário encontrado: ${row.nome}`);
             res.json({ 
                 success: true, 
                 usuario: row
             });
         } else {
-            log('❌ Usuário não encontrado');
+            log('Usuário não encontrado');
             res.json({ 
                 success: false, 
                 message: 'Usuário não encontrado' 
@@ -139,7 +139,7 @@ router.get('/cpf/:cpf', (req, res) => {
     const { cpf } = req.params;
     const cpfLimpo = cpf.replace(/\D/g, '');
 
-    log(`🔍 Verificando CPF: ${cpfLimpo}`);
+    log(`Verificando CPF: ${cpfLimpo}`);
 
     if (cpfLimpo.length !== 11) {
         return res.json({
@@ -153,7 +153,7 @@ router.get('/cpf/:cpf', (req, res) => {
         FROM usuarios WHERE cpf = ?
     `, [cpfLimpo], (err, row) => {
         if (err) {
-            console.error('❌ Erro ao buscar usuário:', err);
+            console.error('Erro ao buscar usuário:', err);
             return res.status(500).json({ 
                 success: false, 
                 message: 'Erro ao buscar usuário' 
@@ -174,7 +174,7 @@ router.post('/', (req, res) => {
         nome, cpf, senha, tipo, matricula, email, telefone
     } = req.body;
 
-    log(`👤 Criando novo usuário: ${nome} (${tipo})`);
+    log(`Criando novo usuário: ${nome} (${tipo})`);
 
     // Validações básicas
     if (!nome || !cpf || !senha || !tipo) {
@@ -206,7 +206,7 @@ router.post('/', (req, res) => {
     // Verificar se CPF já existe
     db.get("SELECT * FROM usuarios WHERE cpf = ?", [cpfLimpo], (err, existingUser) => {
         if (err) {
-            console.error('❌ Erro ao verificar CPF:', err);
+            console.error('Erro ao verificar CPF:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro interno do servidor'
@@ -224,7 +224,7 @@ router.post('/', (req, res) => {
         if (matricula && tipo !== 'cliente') {
             db.get("SELECT * FROM usuarios WHERE matricula = ?", [matricula], (err, existingMatricula) => {
                 if (err) {
-                    console.error('❌ Erro ao verificar matrícula:', err);
+                    console.error('Erro ao verificar matrícula:', err);
                     return res.status(500).json({
                         success: false,
                         message: 'Erro interno do servidor'
@@ -264,14 +264,14 @@ router.post('/', (req, res) => {
 
             db.run(query, params, function(err) {
                 if (err) {
-                    console.error('❌ Erro ao criar usuário:', err);
+                    console.error('Erro ao criar usuário:', err);
                     return res.status(500).json({
                         success: false,
                         message: 'Erro ao criar usuário: ' + err.message
                     });
                 }
 
-                log(`✅ Usuário criado com sucesso. ID: ${this.lastID}`);
+                log(`Usuário criado com sucesso. ID: ${this.lastID}`);
                 
                 // Buscar usuário criado para retornar dados completos
                 db.get(
@@ -305,7 +305,7 @@ router.put('/:id', (req, res) => {
         nome, email, telefone
     } = req.body;
 
-    log(`✏️ Atualizando usuário ID: ${id}`);
+    log(`Atualizando usuário ID: ${id}`);
 
     if (!nome) {
         return res.json({
@@ -322,7 +322,7 @@ router.put('/:id', (req, res) => {
 
     db.run(query, [nome, email, telefone, id], function(err) {
         if (err) {
-            console.error('❌ Erro ao atualizar usuário:', err);
+            console.error('Erro ao atualizar usuário:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao atualizar usuário: ' + err.message
@@ -336,7 +336,7 @@ router.put('/:id', (req, res) => {
             });
         }
 
-        log(`✅ Usuário atualizado com sucesso`);
+        log(`Usuário atualizado com sucesso`);
         
         // Buscar usuário atualizado
         db.get(
@@ -357,12 +357,12 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     const { id } = req.params;
 
-    log(`🗑️ Deletando usuário ID: ${id}`);
+    log(`Deletando usuário ID: ${id}`);
 
     // Verificar se usuário existe
     db.get("SELECT * FROM usuarios WHERE id = ?", [id], (err, usuario) => {
         if (err) {
-            console.error('❌ Erro ao verificar usuário:', err);
+            console.error('Erro ao verificar usuário:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro interno do servidor'
@@ -379,7 +379,7 @@ router.delete('/:id', (req, res) => {
         // Verificar se o usuário tem passagens (se tabela existir)
         db.get("SELECT COUNT(*) as count FROM passagens WHERE usuario_id = ?", [id], (err, row) => {
             if (err) {
-                console.log('ℹ️  Erro ao verificar passagens (pode ser normal):', err.message);
+                console.log('Erro ao verificar passagens (pode ser normal):', err.message);
                 // Continua mesmo com erro
             } else if (row && row.count > 0) {
                 return res.json({
@@ -391,7 +391,7 @@ router.delete('/:id', (req, res) => {
             // Verificar se é piloto em algum voo
             db.get("SELECT COUNT(*) as count FROM voos WHERE piloto_id = ? OR co_piloto_id = ?", [id, id], (err, row) => {
                 if (err) {
-                    console.log('ℹ️  Erro ao verificar voos (pode ser normal):', err.message);
+                    console.log('Erro ao verificar voos (pode ser normal):', err.message);
                     // Continua mesmo com erro
                 } else if (row && row.count > 0) {
                     return res.json({
@@ -403,7 +403,7 @@ router.delete('/:id', (req, res) => {
                 // Verificar se é comissário em algum voo - NOME DA TABELA CORRIGIDO
                 db.get("SELECT COUNT(*) as count FROM tripulacao_voos WHERE usuario_id = ?", [id], (err, row) => {
                     if (err) {
-                        console.log('ℹ️  Erro ao verificar tripulação (pode ser normal):', err.message);
+                        console.log('Erro ao verificar tripulação (pode ser normal):', err.message);
                         // Continua mesmo com erro
                     } else if (row && row.count > 0) {
                         return res.json({
@@ -415,14 +415,14 @@ router.delete('/:id', (req, res) => {
                     // Deletar usuário
                     db.run("DELETE FROM usuarios WHERE id = ?", [id], function(err) {
                         if (err) {
-                            console.error('❌ Erro ao deletar usuário:', err);
+                            console.error('Erro ao deletar usuário:', err);
                             return res.status(500).json({
                                 success: false,
                                 message: 'Erro ao deletar usuário: ' + err.message
                             });
                         }
 
-                        log(`✅ Usuário deletado com sucesso`);
+                        log(`Usuário deletado com sucesso`);
                         
                         res.json({
                             success: true,
@@ -437,7 +437,7 @@ router.delete('/:id', (req, res) => {
 
 // Buscar estatísticas de usuários (CORRIGIDO)
 router.get('/estatisticas/geral', (req, res) => {
-    log('📊 Buscando estatísticas de usuários');
+    log('Buscando estatísticas de usuários');
 
     const query = `
         SELECT 
@@ -450,7 +450,7 @@ router.get('/estatisticas/geral', (req, res) => {
 
     db.all(query, (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar estatísticas:', err);
+            console.error('Erro ao buscar estatísticas:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao buscar estatísticas'
@@ -470,7 +470,7 @@ router.get('/estatisticas/geral', (req, res) => {
 
 // Buscar pilotos disponíveis (CORRIGIDO - remove filtro de status)
 router.get('/pilotos/disponiveis', (req, res) => {
-    log('👨‍✈️ Buscando pilotos disponíveis');
+    log('Buscando pilotos disponíveis');
 
     const query = `
         SELECT 
@@ -482,14 +482,14 @@ router.get('/pilotos/disponiveis', (req, res) => {
 
     db.all(query, (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar pilotos:', err);
+            console.error('Erro ao buscar pilotos:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao buscar pilotos'
             });
         }
 
-        log(`✅ Encontrados ${rows.length} pilotos disponíveis`);
+        log(`Encontrados ${rows.length} pilotos disponíveis`);
         
         res.json({
             success: true,
@@ -500,7 +500,7 @@ router.get('/pilotos/disponiveis', (req, res) => {
 
 // Buscar comissários disponíveis (CORRIGIDO - remove filtro de status)
 router.get('/comissarios/disponiveis', (req, res) => {
-    log('👩‍✈️ Buscando comissários disponíveis');
+    log('Buscando comissários disponíveis');
 
     const query = `
         SELECT 
@@ -512,14 +512,14 @@ router.get('/comissarios/disponiveis', (req, res) => {
 
     db.all(query, (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar comissários:', err);
+            console.error('Erro ao buscar comissários:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao buscar comissários'
             });
         }
 
-        log(`✅ Encontrados ${rows.length} comissários disponíveis`);
+        log(`Encontrados ${rows.length} comissários disponíveis`);
         
         res.json({
             success: true,
@@ -533,7 +533,7 @@ router.patch('/:id/status', (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
 
-    log(`🔄 Atualizando status do usuário ${id} para: ${status}`);
+    log(`Atualizando status do usuário ${id} para: ${status}`);
 
     if (!status || !['ativo', 'inativo'].includes(status)) {
         return res.json({
@@ -548,7 +548,7 @@ router.patch('/:id/status', (req, res) => {
         [status, id],
         function(err) {
             if (err) {
-                console.log('ℹ️  Coluna status não existe ou erro (pode ser normal):', err.message);
+                console.log('Coluna status não existe ou erro (pode ser normal):', err.message);
                 return res.json({
                     success: false,
                     message: 'Funcionalidade de status não disponível'
@@ -562,7 +562,7 @@ router.patch('/:id/status', (req, res) => {
                 });
             }
 
-            log(`✅ Status atualizado com sucesso`);
+            log(`Status atualizado com sucesso`);
             
             res.json({
                 success: true,
@@ -574,7 +574,7 @@ router.patch('/:id/status', (req, res) => {
 
 // Buscar diretores (NOVO)
 router.get('/diretores/disponiveis', (req, res) => {
-    log('👔 Buscando diretores');
+    log('Buscando diretores');
 
     const query = `
         SELECT 
@@ -586,14 +586,14 @@ router.get('/diretores/disponiveis', (req, res) => {
 
     db.all(query, (err, rows) => {
         if (err) {
-            console.error('❌ Erro ao buscar diretores:', err);
+            console.error('Erro ao buscar diretores:', err);
             return res.status(500).json({
                 success: false,
                 message: 'Erro ao buscar diretores'
             });
         }
 
-        log(`✅ Encontrados ${rows.length} diretores`);
+        log(`Encontrados ${rows.length} diretores`);
         
         res.json({
             success: true,

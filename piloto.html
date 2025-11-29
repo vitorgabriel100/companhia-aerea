@@ -945,7 +945,7 @@
             const userData = localStorage.getItem('user');
             if (userData) {
                 usuarioLogado = JSON.parse(userData);
-                console.log('✅ Piloto logado:', usuarioLogado);
+                console.log('Piloto logado:', usuarioLogado);
                 
                 document.getElementById('userName').textContent = usuarioLogado.nome;
                 document.getElementById('userAvatar').textContent = usuarioLogado.nome.charAt(0).toUpperCase();
@@ -953,7 +953,7 @@
                 carregarMeusVoosAtribuidos();
                 carregarPerfil();
             } else {
-                console.error('❌ Usuário não logado! Redirecionando...');
+                console.error('Usuário não logado! Redirecionando...');
                 window.location.href = '/login';
             }
         });
@@ -1010,13 +1010,13 @@
                         }
                     ];
                     
-                    console.log('✅ Voos atribuídos carregados:', meusVoosAtribuidos);
+                    console.log('Voos atribuídos carregados:', meusVoosAtribuidos);
                     renderizarMeusVoosAtribuidos();
                     renderizarDashboard();
                 }, 1000);
                 
             } catch (error) {
-                console.error('❌ Erro ao carregar voos atribuídos:', error);
+                console.error('Erro ao carregar voos atribuídos:', error);
                 meusVoosAtribuidos = [];
                 renderizarMeusVoosAtribuidos();
             }
@@ -1186,7 +1186,7 @@
         function finalizarChecklist() {
             if (!vooChecklistAtual) return;
             
-            alert(`✅ Checklist finalizado com sucesso!\nVoo ${vooChecklistAtual.vooId} liberado para partida.`);
+            alert(`Checklist finalizado com sucesso!\nVoo ${vooChecklistAtual.vooId} liberado para partida.`);
             
             const vooIndex = meusVoosAtribuidos.findIndex(v => v.vooId === vooChecklistAtual.vooId);
             if (vooIndex !== -1) {

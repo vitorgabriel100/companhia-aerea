@@ -49,7 +49,7 @@
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                // ✅ CORREÇÃO: A rota de sessão retorna 'usuario'
+                                
                                 const userFromServer = data.usuario; 
                                 
                                 if (!userFromServer || !userFromServer.nome) {

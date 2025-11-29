@@ -887,11 +887,11 @@
                 } catch (error) {
                     console.error("Erro ao carregar dados do usuário:", error);
                     localStorage.removeItem('user');
-                    alert('❌ Sua sessão é inválida. Por favor, faça login novamente.');
+                    alert('Sua sessão é inválida. Por favor, faça login novamente.');
                     window.location.href = '/login';
                 }
             } else {
-                alert('❌ Usuário não logado!');
+                alert('Usuário não logado!');
                 window.location.href = '/login';
             }
         });
@@ -953,7 +953,7 @@
                     container.innerHTML = `<div class="empty-state"><i class="fas fa-plane-slash"></i><h3>Nenhum voo disponível</h3><p>Volte mais tarde.</p></div>`;
                 }
             } catch (error) {
-                console.error('❌ Erro ao carregar voos:', error);
+                console.error('Erro ao carregar voos:', error);
                 container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-exclamation-triangle"></i>

@@ -6,14 +6,6 @@ const { db } = require('../models/database');
 // ROTA PRINCIPAL DO PILOTO: GET /api/piloto/meus-voos
 // ==========================================================
 // Esta rota busca todos os voos associados a um piloto.
-//
-// IMPORTANTE: Esta rota DEVE ser protegida!
-// Você precisa de um middleware de autenticação (ex: authMiddleware)
-// que verifique o token/sessão e coloque os dados do usuário em `req.user`.
-//
-// Por enquanto, estou simulando o ID do piloto (req.user.id)
-// com o valor '5' (Paulo Piloto do seu reset-db.js).
-// Você DEVE substituir '5' pela lógica de usuário logado.
 // ==========================================================
 router.get('/meus-voos', (req, res) => {
     // LÓGICA DE AUTENTICAÇÃO (SUBSTITUIR)

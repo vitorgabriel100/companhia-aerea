@@ -278,7 +278,7 @@ router.get('/usuario/:id', (req, res) => {
 
 // Buscar todas as passagens (para administração)
 router.get('/', (req, res) => {
-    log('🔍 Buscando todas as passagens (admin)');
+    log('Buscando todas as passagens (admin)');
 
     const query = `
         SELECT 
