@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-// ✅ CORREÇÃO: Caminho correto para o banco de dados
+//CORREÇÃO: Caminho correto para o banco de dados
 const dbPath = path.join(__dirname, '..', 'database.sqlite');
 
 console.log('Caminho do banco:', dbPath);

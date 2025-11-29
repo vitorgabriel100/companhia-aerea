@@ -1,13 +1,13 @@
 // scripts/cadastro.js - VERSÃO CORRIGIDA SEM ALERT
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🎯 CADASTRO SCRIPT CARREGADO!');
+    console.log('CADASTRO SCRIPT CARREGADO!');
     
     const form = document.getElementById("cadastroForm");
 
     if (form) {
         form.addEventListener("submit", async function(e) {
             e.preventDefault();
-            console.log('📝 FORMULÁRIO SUBMETIDO');
+            console.log('FORMULÁRIO SUBMETIDO');
 
             // Coletar dados REAIS do formulário
             const getValue = (id) => {
@@ -27,26 +27,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 salario: getValue('salario')
             };
 
-            console.log('📤 DADOS PARA CADASTRO:', dados);
+            console.log('DADOS PARA CADASTRO:', dados);
 
             // Validações básicas
             if (!dados.nome) {
-                showMessage('❌ Nome é obrigatório', 'error');
+                showMessage('Nome é obrigatório', 'error');
                 return;
             }
 
             if (!dados.cpf || dados.cpf.length !== 11) {
-                showMessage('❌ CPF inválido', 'error');
+                showMessage('CPF inválido', 'error');
                 return;
             }
 
             if (!dados.senha || dados.senha.length < 8) {
-                showMessage('❌ Senha deve ter pelo menos 8 caracteres', 'error');
+                showMessage('Senha deve ter pelo menos 8 caracteres', 'error');
                 return;
             }
 
             if (dados.tipo !== 'cliente' && !dados.matricula) {
-                showMessage('❌ Matrícula é obrigatória para funcionários', 'error');
+                showMessage('Matrícula é obrigatória para funcionários', 'error');
                 return;
             }
 
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.classList.add('btn-loading');
                 btnText.textContent = 'Criando conta...';
 
-                console.log('🔄 ENVIANDO PARA API...');
+                console.log('ENVIANDO PARA API...');
                 
                 const response = await fetch('/api/auth/cadastro', {
                     method: 'POST',
@@ -68,30 +68,30 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify(dados)
                 });
 
-                console.log('📥 STATUS:', response.status);
+                console.log('STATUS:', response.status);
 
                 const data = await response.json();
-                console.log('📥 RESPOSTA:', data);
+                console.log('RESPOSTA:', data);
 
                 // Remover loading
                 btn.classList.remove('btn-loading');
                 btnText.textContent = 'Criar Conta';
 
                 if (data.success) {
-                    showMessage('✅ ' + data.message, 'success');
-                    console.log('✅ USUÁRIO CRIADO:', data.usuario);
+                    showMessage('USUÁRIO CRIADO:' + data.message, 'success');
+                    console.log('USUÁRIO CRIADO:', data.usuario);
                     
                     // Redirecionar para login
                     setTimeout(() => {
                         window.location.href = '/login';
                     }, 2000);
                 } else {
-                    showMessage('❌ ' + data.message, 'error');
+                    showMessage('Erro: ' + data.message, 'error');
                 }
 
             } catch (error) {
-                console.error('❌ ERRO:', error);
-                showMessage('❌ Erro de conexão: ' + error.message, 'error');
+                console.error('ERRO:', error);
+                showMessage('Erro de conexão: ' + error.message, 'error');
                 
                 // Remover loading em caso de erro
                 const btn = document.getElementById('cadastroBtn');
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     } else {
-        console.error('❌ FORMULÁRIO NÃO ENCONTRADO!');
+        console.error('FORMULÁRIO NÃO ENCONTRADO!');
     }
 
     // Função para mostrar mensagens na página

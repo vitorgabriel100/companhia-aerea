@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
   Object.keys(queries).forEach(key => {
     db.get(queries[key], (err, row) => { // 'db' da linha 2 funciona aqui
       if (err) {
-        console.error(`❌ Erro na query ${key}:`, err);
+        console.error(`Erro na query ${key}:`, err);
         results[key] = { error: 'Erro ao buscar dados' };
       } else {
         results[key] = row;

@@ -115,7 +115,7 @@ router.post('/cadastro', (req, res) => {
     if (senha.length < 4) {
         return res.json({ 
             success: false, 
-            message: 'A senha deve ter pelo menos 4 caracteres' 
+            message: 'A senha deve ter pelo menos 8 caracteres' 
         });
     }
 
@@ -283,7 +283,7 @@ router.post('/cadastro', (req, res) => {
 router.get('/sessao/:userId', (req, res) => {
     const { userId } = req.params;
 
-    log(`🔍 Verificando sessão para usuário ID: ${userId}`);
+    log(`Verificando sessão para usuário ID: ${userId}`);
 
     const query = `
         SELECT 
